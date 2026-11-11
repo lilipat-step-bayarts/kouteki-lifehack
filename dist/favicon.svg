@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="fav-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Base Rounded Background -->
+  <rect width="64" height="64" rx="16" fill="url(#fav-grad)"/>
+  
+  <!-- Inner Subtle Border -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2"/>
+  
+  <!-- "公" Symbol in Japanese -->
+  <text x="32" y="44" font-family="'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle" filter="url(#shadow)">
+    公
+  </text>
+  
+  <!-- Little Golden Sparkle Badge (Lifehack sparkle) -->
+  <circle cx="50" cy="14" r="7" fill="#fbbf24"/>
+  <path d="M50 9 L51.5 12.5 L55 14 L51.5 15.5 L50 19 L48.5 15.5 L45 14 L48.5 12.5 Z" fill="#ffffff"/>
+</svg>
