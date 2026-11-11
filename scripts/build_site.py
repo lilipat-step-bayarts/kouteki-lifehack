@@ -6,8 +6,10 @@ Cloudflare Pages公開用の静的HTMLサイトジェネレーター（忍者AdM
 import json
 import os
 
-ARTICLES_JSON = "/home/antigravity/proto/articles/articles.json"
-DIST_DIR = "/home/antigravity/proto/dist"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+ARTICLES_JSON = os.path.join(PROJECT_ROOT, "articles", "articles.json")
+DIST_DIR = os.path.join(PROJECT_ROOT, "dist")
 
 # ユーザー様から提供された実稼働 忍者AdMax タグ
 NINJA_AD_TAG = """
