@@ -1,0 +1,49 @@
+name: 毎日定時 記事自動生成＆サイト自動更新
+
+on:
+  schedule:
+    # 毎朝日本時間7:00 (UTC 22:00) に自動実行
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python環境のセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Node.js環境のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 新着記事の自動生成
+        run: |
+          python3 scripts/generate_articles.py
+
+      - name: 静的Webサイトのビルド
+        run: |
+          python3 scripts/build_site.py
+
+      - name: Cloudflare Pagesへ自動デプロイ
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler pages deploy dist --project-name=kouteki-lifehack --commit-dirty=true
+
+      - name: 生成した記事をGitHubに自動コミット＆保存
+        run: |
+          git config --global user.name "Hoporin AutoBot"
+          git config --global user.email "bot@kouteki-lifehack.pages.dev"
+          git add articles/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(auto): 毎日の公的ライフハック記事自動生成 [skip ci]" && git push)
