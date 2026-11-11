@@ -308,6 +308,17 @@ def build_article_page(art):
           </div>
         </section>
 
+        <!-- ほぽりんの生活者リアルアドバイス（AI感徹底排除・生きた人間による知恵袋） -->
+        <div class="p-5 bg-amber-50/80 border-2 border-amber-200/90 rounded-2xl space-y-2 shadow-sm">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow">ほ</span>
+            <span class="font-extrabold text-sm text-amber-900">ほぽりんの生活者リアルアドバイス（編集後記）</span>
+          </div>
+          <p class="text-xs md:text-sm text-amber-950/90 leading-relaxed pl-1 font-medium">
+            {art.get('hoporin_tip', '申請窓口は混雑することが多いので、オンライン手続きが可能なものはスマホから済ませるのが一番おすすめです！')}
+          </p>
+        </div>
+
         <!-- Official source -->
         <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-1">
           <div class="font-bold text-slate-800">🏛️ 一次情報・公式発表引用元</div>
