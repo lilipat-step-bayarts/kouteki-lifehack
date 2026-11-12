@@ -21,25 +21,22 @@ NINJA_AD_TAG = """
 BASE_HTML_HEAD = """
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/jpeg" href="/assets/hoporin_icon.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Noto Sans JP', sans-serif; }
-    /* テーブル横スクロールのヒント */
-    .table-container {
-      position: relative;
-    }
+    .table-container { position: relative; }
   </style>
 """
 
 HEADER_NAV = """
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
     <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2">
-        <span class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-base shadow-sm">公</span>
+      <a href="/" class="flex items-center gap-2.5">
+        <img src="/assets/hoporin_icon.jpg" alt="ほぽりん" class="w-9 h-9 rounded-full object-cover shadow-sm border border-slate-200">
         <div class="flex flex-col">
           <span class="font-extrabold text-slate-900 text-base tracking-tight leading-tight">公的ライフハック速報</span>
           <span class="text-[10px] text-slate-500 font-medium">制度とお金の知恵袋 by ほぽりん</span>
@@ -72,9 +69,7 @@ FOOTER = """
 
 AUTHOR_CARD = """
   <div class="mt-8 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl flex items-center gap-4">
-    <div class="w-14 h-14 rounded-full bg-blue-600 text-white flex-shrink-0 flex items-center justify-center font-bold text-xl shadow-md border-2 border-white">
-      ほ
-    </div>
+    <img src="/assets/hoporin_icon.jpg" alt="ほぽりん" class="w-16 h-16 rounded-full object-cover shadow-md border-2 border-white flex-shrink-0">
     <div class="space-y-1">
       <div class="flex items-center gap-2">
         <span class="text-xs font-bold text-blue-800">この記事の編集・監修</span>
