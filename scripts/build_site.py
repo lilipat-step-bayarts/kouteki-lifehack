@@ -446,5 +446,15 @@ def main():
 
     print("Site generated with real Ninja AdMax tags at:", DIST_DIR)
 
+    # 毎朝のサイトビルド完了時に自動でXへ新着記事を速報ツイート
+    try:
+        distribute_script = os.path.join(SCRIPT_DIR, "distribute_tweet.py")
+        if os.path.exists(distribute_script):
+            import subprocess
+            print("Triggering automated X tweet distribution...")
+            subprocess.run(["python3", distribute_script], check=False)
+    except Exception as e:
+        print("Note: Automated tweet skipped or failed:", e)
+
 if __name__ == "__main__":
     main()

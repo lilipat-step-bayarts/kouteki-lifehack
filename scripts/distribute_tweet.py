@@ -24,10 +24,10 @@ ARTICLES_JSON = os.path.join(PROJECT_ROOT, "articles", "articles.json")
 HISTORY_FILE = os.path.join(PROJECT_ROOT, ".tweet_history.json")
 
 # X API 認証情報
-API_KEY = os.environ.get("X_API_KEY", "").strip()
-API_SECRET = os.environ.get("X_API_SECRET", "").strip()
-ACCESS_TOKEN = os.environ.get("X_ACCESS_TOKEN", "").strip()
-ACCESS_TOKEN_SECRET = os.environ.get("X_ACCESS_TOKEN_SECRET", "").strip()
+API_KEY = os.environ.get("X_API_KEY", "TaLCNgeiDz1M1eAea2WJUYEFf").strip()
+API_SECRET = os.environ.get("X_API_SECRET", "DWEQkGCOo0Hw1T10f6CbpqOpaXEL1apZrfnhSErwZcX2YTsSds").strip()
+ACCESS_TOKEN = os.environ.get("X_ACCESS_TOKEN", "1797376557805441024-O2Jxw5zSBXikqg9tEMaU3mt8wZl2pu").strip()
+ACCESS_TOKEN_SECRET = os.environ.get("X_ACCESS_TOKEN_SECRET", "71tB68bfw1zhilRi2FWBQoyhNkZM1BG7m5a2Xa1igRmAA").strip()
 
 def percent_encode(s):
     return urllib.parse.quote(str(s), safe="")
