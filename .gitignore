@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+node_modules/
+.env
+scripts/set_github_secret.py
+scripts/push_to_github.py
