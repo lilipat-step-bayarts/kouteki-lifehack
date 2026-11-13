@@ -1,9 +1,13 @@
-name: 毎日定時 記事自動生成＆サイト自動更新
+name: 1日5回 記事自動更新＆X自動分散ポスト
 
 on:
   schedule:
-    # 毎朝日本時間7:00 (UTC 22:00) に自動実行
-    - cron: '0 22 * * *'
+    # 1日5回（日本時間 JST 07:00, 10:00, 12:15, 18:00, 21:00）に自動分散配信
+    - cron: '0 22 * * *'  # 07:00 JST（朝の通勤速報）
+    - cron: '0 1 * * *'   # 10:00 JST（午前の知恵袋）
+    - cron: '15 3 * * *'  # 12:15 JST（お昼休みのスマホ閲覧ピーク）
+    - cron: '0 9 * * *'   # 18:00 JST（退勤・夕方ハック）
+    - cron: '0 12 * * *'  # 21:00 JST（夜のリラックス・まとめ）
   workflow_dispatch:
 
 permissions:
@@ -30,7 +34,7 @@ jobs:
         run: |
           python3 scripts/generate_articles.py
 
-      - name: 静的Webサイトのビルド
+      - name: 静的Webサイトのビルド＆X自動ポスト（1号店＋2号店）
         run: |
           python3 scripts/build_site.py
 
@@ -41,9 +45,10 @@ jobs:
         run: |
           npx wrangler pages deploy dist --project-name=kouteki-lifehack --commit-dirty=true
 
-      - name: 生成した記事をGitHubに自動コミット＆保存
+      - name: 生成した記事と投稿履歴をGitHubに自動コミット＆保存
         run: |
           git config --global user.name "Hoporin AutoBot"
           git config --global user.email "bot@kouteki-lifehack.pages.dev"
-          git add articles/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(auto): 毎日の公的ライフハック記事自動生成 [skip ci]" && git push)
+          git add -A articles/ store2/articles/ .tweet_history.json store2/.tweet_history.json 2>/dev/null || true
+          git commit -m "chore(auto): 記事更新＆X投稿履歴同期 [skip ci]" || echo "No changes to commit"
+          git push || echo "Push skipped"
