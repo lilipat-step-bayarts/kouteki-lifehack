@@ -309,8 +309,43 @@ def build_article_page(article_meta):
             official_name="ロート製薬「メラノCC」公式ブランドサイト"
         )
 
-    encoded_title = urllib.parse.quote(article_meta['title'])
-    encoded_share_url = urllib.parse.quote(f"{SITE_URL}/articles/{slug}.html")
+    # 関連記事（自記事以外から最大4件）
+    all_articles = []
+    if os.path.exists(ARTICLES_JSON):
+        try:
+            with open(ARTICLES_JSON, "r", encoding="utf-8") as af:
+                all_articles = json.load(af)
+        except Exception:
+            all_articles = []
+
+    related = [a for a in all_articles if a.get("slug") != slug][:4]
+    related_html = ""
+    for r_art in related:
+        related_html += f"""
+        <a href="/articles/{r_art['slug']}.html" class="block p-4 bg-rose-50/40 hover:bg-emerald-50/60 border border-rose-100 hover:border-emerald-300 rounded-2xl transition group">
+          <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+            <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">{r_art.get('category', '成分解析')}</span>
+            <span>{r_art['date']}</span>
+          </div>
+          <div class="text-xs md:text-sm font-bold text-slate-900 group-hover:text-emerald-700 leading-snug">{r_art['title']}</div>
+        </a>
+        """
+    next_art = related[0] if related else article_meta
+
+    article_url = f"{SITE_URL}/articles/{slug}.html"
+    encoded_title = urllib.parse.quote(f"{article_meta['title']} #コスメ成分 #プチプラコスメ #イケロ")
+    encoded_share_url = urllib.parse.quote(article_url)
+
+    json_ld = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": article_meta['title'],
+        "description": article_meta['summary'],
+        "image": [f"{SITE_URL}/assets/ikero_banner.jpg"],
+        "datePublished": article_meta['date'],
+        "dateModified": article_meta['date'],
+        "author": [{"@type": "Person", "name": "イケロ (コスメ成分ラボ)", "url": f"{SITE_URL}/about.html"}]
+    }, ensure_ascii=False)
 
     page_html = f"""<!DOCTYPE html>
 <html lang="ja">
@@ -319,18 +354,29 @@ def build_article_page(article_meta):
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{article_meta['title']} | イケロのコスメ成分ラボ</title>
   <meta name="description" content="{article_meta['summary']}">
+  <link rel="canonical" href="{article_url}">
+  <link rel="alternate" type="application/rss+xml" title="イケロのコスメ成分ラボ RSS" href="/rss.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="イケロのコスメ成分ラボ">
   <meta property="og:title" content="{article_meta['title']}">
-  <meta property="og:image" content="{SITE_URL}/assets/ikero_avatar.jpg">
+  <meta property="og:description" content="{article_meta['summary']}">
+  <meta property="og:url" content="{article_url}">
+  <meta property="og:image" content="{SITE_URL}/assets/ikero_banner.jpg">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ikero_lab">
+  <meta name="twitter:title" content="{article_meta['title']}">
+  <meta name="twitter:description" content="{article_meta['summary']}">
+  <meta name="twitter:image" content="{SITE_URL}/assets/ikero_banner.jpg">
+  <script type="application/ld+json">{json_ld}</script>
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3133098627249534" crossorigin="anonymous"></script>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#fafafa] text-slate-800 antialiased font-sans">
+<body class="bg-[#fafafa] text-slate-800 antialiased font-sans pb-16 md:pb-0">
   {get_header("article")}
 
   <main class="max-w-3xl mx-auto px-4 py-8">
@@ -353,7 +399,7 @@ def build_article_page(article_meta):
       <div class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 flex items-start gap-3">
         <img src="/assets/ikero_avatar.jpg" alt="イケロ" class="w-12 h-12 rounded-full border-2 border-emerald-400 shrink-0 shadow-sm object-cover">
         <div class="text-xs space-y-1">
-          <div class="font-bold text-emerald-900 flex items-center gap-1">
+          <div class="font-bold text-emerald-900 flex items-center gap-1 flex-wrap">
             <span>知恵の案内人 イケロの忖度なし成分チェック</span>
             <span class="text-[10px] px-1.5 py-0.2 bg-emerald-200 text-emerald-800 rounded">科学的視点</span>
           </div>
@@ -389,19 +435,55 @@ def build_article_page(article_meta):
 
       {NINJA_AD_SCRIPT}
 
-      <!-- シェア & 戻る -->
+      <!-- シェア & フォロー & 戻る -->
       <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
         <a href="/" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
           ← 記事一覧に戻る
         </a>
-        <a href="https://twitter.com/intent/tweet?text={encoded_title}&url={encoded_share_url}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition">
-          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          この成分情報をXでシェア
+        <div class="flex items-center gap-2">
+          <a href="https://twitter.com/intent/tweet?text={encoded_title}&url={encoded_share_url}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Xでシェア
+          </a>
+          <a href="https://x.com/ikero_lab" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-sm transition">
+            🦉 @ikero_lab をフォロー
+          </a>
+        </div>
+      </div>
+
+      <!-- 🔥 サイト内回遊（PV倍増用・関連成分記事レコメンド） -->
+      <section class="pt-6 border-t border-rose-100 space-y-3">
+        <h3 class="text-sm md:text-base font-black text-slate-900 flex items-center gap-1.5">
+          <span>🔥</span> あわせて読みたい！今もっとも読まれている成分解析
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {related_html}
+        </div>
+      </section>
+
+      <!-- 🐧 姉妹サイト相互送客カード -->
+      <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="text-xs space-y-1">
+          <span class="px-2 py-0.5 rounded bg-blue-600 text-white font-bold text-[10px]">姉妹メディア人気記事</span>
+          <div class="font-bold text-slate-900 text-sm">🐧 公的ライフハック速報 by ほぽりん</div>
+          <div class="text-slate-600">ドラッグストアの市販薬レシートで税金が戻る「セルフメディケーション税制」や給付金まとめ！</div>
+        </div>
+        <a href="https://hoporin.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="shrink-0 px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition">
+          お得制度を見る →
         </a>
       </div>
 
     </article>
   </main>
+
+  <!-- スマホ下部固定「次の注目記事」回遊バー -->
+  <div class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-rose-200 px-4 py-2.5 shadow-lg flex items-center justify-between gap-2 md:hidden">
+    <div class="truncate text-xs">
+      <span class="text-[10px] font-bold text-emerald-600 block">NEXT › 次に読まれている成分解析</span>
+      <a href="/articles/{next_art['slug']}.html" class="font-bold text-slate-900 truncate block">{next_art['title']}</a>
+    </div>
+    <a href="/articles/{next_art['slug']}.html" class="shrink-0 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold">読む →</a>
+  </div>
 
   {get_footer()}
 </body>
@@ -445,17 +527,26 @@ def build_home_page(articles):
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{SITE_TITLE}</title>
   <meta name="description" content="{SITE_DESCRIPTION}">
+  <link rel="canonical" href="{SITE_URL}/">
+  <link rel="alternate" type="application/rss+xml" title="イケロのコスメ成分ラボ RSS" href="/rss.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="イケロのコスメ成分ラボ">
   <meta property="og:title" content="{SITE_TITLE}">
   <meta property="og:description" content="{SITE_DESCRIPTION}">
-  <meta property="og:image" content="{SITE_URL}/assets/ikero_avatar.jpg">
+  <meta property="og:url" content="{SITE_URL}/">
+  <meta property="og:image" content="{SITE_URL}/assets/ikero_banner.jpg">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ikero_lab">
+  <meta name="twitter:title" content="{SITE_TITLE}">
+  <meta name="twitter:description" content="{SITE_DESCRIPTION}">
+  <meta name="twitter:image" content="{SITE_URL}/assets/ikero_banner.jpg">
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3133098627249534" crossorigin="anonymous"></script>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#fafafa] text-slate-800 antialiased font-sans">
   {get_header("home")}
@@ -465,7 +556,7 @@ def build_home_page(articles):
     <div class="max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="space-y-3 max-w-xl text-center md:text-left">
         <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-300">
-          <span>🧪</span> 科学的知恵で選ぶ賢いコスメ
+          <span>🧪</span> 科学的知恵で選ぶ賢いコスメ (@ikero_lab)
         </div>
         <h1 class="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
           高いデパコスと何が違う？<br>
@@ -500,6 +591,18 @@ def build_home_page(articles):
       {''.join(cards_html)}
     </div>
 
+    <!-- 姉妹店クロス送客バナー -->
+    <section class="p-5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="space-y-1">
+        <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-blue-600 text-white">姉妹メディアのご案内</span>
+        <h3 class="text-sm md:text-base font-bold text-slate-900">🐧 公的ライフハック速報 by ほぽりん</h3>
+        <p class="text-xs text-slate-600">申請しないと損する国の給付金・補助金・医療費控除を3秒図解で解説！</p>
+      </div>
+      <a href="https://hoporin.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="shrink-0 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl shadow-sm transition">
+        公的ライフハック速報を見る →
+      </a>
+    </section>
+
     {NINJA_AD_SCRIPT}
   </main>
 
@@ -525,7 +628,7 @@ def build_about_page():
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#fafafa] text-slate-800 antialiased font-sans">
   {get_header("about")}
@@ -574,7 +677,7 @@ def build_privacy_page():
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#fafafa] text-slate-800 antialiased font-sans">
   {get_header("privacy")}
@@ -600,6 +703,25 @@ def build_privacy_page():
         f.write(privacy_html)
     print("Built privacy: dist/privacy.html")
 
+def build_seo_files(articles):
+    urls = [f"  <url><loc>{SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>"]
+    for art in articles:
+        urls.append(f"  <url><loc>{SITE_URL}/articles/{art['slug']}.html</loc><lastmod>{art['date']}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>")
+    sitemap_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
+    with open(os.path.join(DIST_DIR, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write(sitemap_xml)
+
+    robots_txt = f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n"
+    with open(os.path.join(DIST_DIR, "robots.txt"), "w", encoding="utf-8") as f:
+        f.write(robots_txt)
+
+    items = []
+    for art in articles[:15]:
+        items.append(f"    <item><title>{art['title']}</title><link>{SITE_URL}/articles/{art['slug']}.html</link><description>{art['summary']}</description><pubDate>{art['date']}</pubDate></item>")
+    rss_xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>{SITE_TITLE}</title><link>{SITE_URL}/</link><description>{SITE_DESCRIPTION}</description>\n' + "\n".join(items) + "\n</channel></rss>\n"
+    with open(os.path.join(DIST_DIR, "rss.xml"), "w", encoding="utf-8") as f:
+        f.write(rss_xml)
+
 def main():
     print("Building Store 2: イケロのコスメ成分ラボ...")
     with open(ARTICLES_JSON, "r", encoding="utf-8") as f:
@@ -612,11 +734,12 @@ def main():
     # 2. トップページ生成
     build_home_page(articles)
 
-    # 3. 固定ページ生成
+    # 3. 固定ページ＆SEOファイル生成
     build_about_page()
     build_privacy_page()
+    build_seo_files(articles)
 
-    print("✨ Successfully built Store 2 static site in dist/!")
+    print("✨ Successfully built Store 2 static site with OGP cards and SEO sitemaps in dist/!")
 
 if __name__ == "__main__":
     main()

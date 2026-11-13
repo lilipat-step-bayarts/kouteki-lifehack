@@ -18,10 +18,13 @@ NINJA_AD_TAG = """
 <!-- admax -->
 """
 
+SITE_URL = "https://hoporin.lilipat-cosme-bayarts.com"
+
 BASE_HTML_HEAD = """
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/jpeg" href="/assets/hoporin_icon.jpg">
+  <link rel="alternate" type="application/rss+xml" title="公的ライフハック速報 RSS" href="/rss.xml">
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3133098627249534" crossorigin="anonymous"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -46,6 +49,7 @@ HEADER_NAV = """
       </a>
       <nav class="flex items-center gap-3 md:gap-4 text-xs font-semibold text-slate-600">
         <a href="/" class="hover:text-blue-600">最新記事</a>
+        <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">🦉 姉妹店:コスメ成分ラボ</a>
         <a href="/about.html" class="hover:text-blue-600">運営者:ほぽりん</a>
         <a href="/privacy.html" class="hover:text-blue-600">プライバシー</a>
       </nav>
@@ -60,11 +64,13 @@ FOOTER = """
         <a href="/" class="hover:text-white">トップページ</a>
         <a href="/about.html" class="hover:text-white">運営者情報・編集方針（ほぽりん）</a>
         <a href="/privacy.html" class="hover:text-white">プライバシーポリシー・免責事項</a>
+        <a href="/sitemap.xml" class="hover:text-white">サイトマップ</a>
+        <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="text-emerald-400 hover:text-emerald-300">姉妹サイト：イケロのコスメ成分ラボ</a>
       </div>
       <div class="max-w-lg mx-auto text-slate-500 leading-relaxed text-[11px]">
         当サイトは編集長「ほぽりん」が各省庁・自治体等の公的発表（一次情報）を収集し、生活者視点で分かりやすく図解・要約してお届けする個人メディアです。
       </div>
-      <p class="text-slate-600">© 2024 公的ライフハック速報 All Rights Reserved.</p>
+      <p class="text-slate-600">© 2024-2026 公的ライフハック速報 All Rights Reserved.</p>
     </div>
   </footer>
 """
@@ -73,10 +79,11 @@ AUTHOR_CARD = """
   <div class="mt-8 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl flex items-center gap-4">
     <img src="/assets/hoporin_icon.jpg" alt="ほぽりん" class="w-16 h-16 rounded-full object-cover shadow-md border-2 border-white flex-shrink-0">
     <div class="space-y-1">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <span class="text-xs font-bold text-blue-800">この記事の編集・監修</span>
         <span class="font-extrabold text-sm text-slate-900">ほぽりん</span>
         <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-200 text-blue-800 font-medium">制度ハック研究家</span>
+        <a href="https://x.com/ramune_lilipat" target="_blank" rel="noopener noreferrer" class="ml-auto text-[11px] px-2.5 py-1 rounded-full bg-slate-900 text-white hover:bg-slate-700 font-bold transition">𝕏 @ramune_lilipat をフォロー</a>
       </div>
       <p class="text-xs text-slate-600 leading-relaxed">
         「難解な官公庁の発表を、3秒でわかる結論にする」をモットーに公的情報・補助金・税制改正を毎日チェック＆発信中。損をしない生活防衛術をお届けします。
@@ -127,6 +134,18 @@ def build_index(articles):
   {BASE_HTML_HEAD}
   <title>公的ライフハック速報 - 制度・給付金・生活マネーまとめ by ほぽりん</title>
   <meta name="description" content="難解な公的制度・補助金・減税手続きを、3秒でわかる結論・チェックリスト・比較表で解説する生活応援メディアです。運営：ほぽりん">
+  <link rel="canonical" href="{SITE_URL}/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="公的ライフハック速報 by ほぽりん">
+  <meta property="og:title" content="公的ライフハック速報 - 制度・給付金・生活マネーまとめ by ほぽりん">
+  <meta property="og:description" content="難解な公的制度・補助金・減税手続きを、3秒でわかる結論・チェックリスト・比較表で解説する生活応援メディアです。">
+  <meta property="og:url" content="{SITE_URL}/">
+  <meta property="og:image" content="{SITE_URL}/assets/hoporin_banner.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ramune_lilipat">
+  <meta name="twitter:title" content="公的ライフハック速報 - 制度・給付金・生活マネーまとめ by ほぽりん">
+  <meta name="twitter:description" content="難解な公的制度・補助金・減税手続きを、3秒でわかる結論・チェックリスト・比較表で解説する生活応援メディアです。">
+  <meta name="twitter:image" content="{SITE_URL}/assets/hoporin_banner.jpg">
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
   <div>
@@ -136,11 +155,11 @@ def build_index(articles):
       
       <!-- Hero -->
       <section class="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white rounded-3xl p-6 md:p-8 shadow-md">
-        <div class="flex items-center gap-2 mb-2">
+        <div class="flex items-center gap-2 mb-2 flex-wrap">
           <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white">
             公的情報・補助金速報
           </span>
-          <span class="text-xs text-blue-200">編集長：ほぽりん</span>
+          <span class="text-xs text-blue-200">編集長：ほぽりん (@ramune_lilipat)</span>
         </div>
         <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">「知らないと損する」公的制度を<br class="hidden sm:inline">3秒でわかる結論に。</h1>
         <p class="text-xs md:text-sm text-blue-100 mt-2 max-w-xl leading-relaxed">
@@ -155,13 +174,25 @@ def build_index(articles):
         <div class="flex items-center justify-between border-b border-slate-200 pb-2">
           <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-            注目の制度・給付金解説
+            注目の制度・給付金解説（全{len(articles)}記事）
           </h2>
-          <span class="text-xs text-slate-400">毎日更新中</span>
+          <span class="text-xs text-slate-400">毎日定時更新中</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {cards_html}
         </div>
+      </section>
+
+      <!-- 姉妹店クロス送客バナー -->
+      <section class="p-5 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="space-y-1">
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">姉妹メディアのご案内</span>
+          <h3 class="text-sm md:text-base font-bold text-slate-900">🦉 イケロのコスメ成分ラボ・プチプラ速報</h3>
+          <p class="text-xs text-slate-600">1万円のデパコスと同じ有効成分が入った1,000円台の神プチプラを科学的根拠で徹底比較！</p>
+        </div>
+        <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="shrink-0 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-sm transition">
+          コスメ成分ラボを見る →
+        </a>
       </section>
 
       {live_ad_box("トップ下部")}
@@ -173,7 +204,9 @@ def build_index(articles):
 </html>
 """
 
-def build_article_page(art):
+def build_article_page(art, all_articles=None):
+    import urllib.parse
+    all_articles = all_articles or []
     audience_li = "".join([f'<li class="flex items-start gap-2 text-sm text-slate-700"><span class="text-blue-500 font-bold mt-0.5">✅</span><span class="leading-relaxed">{a}</span></li>' for a in art['target_audience']])
     
     table_headers = "".join([f'<th class="px-3 py-2.5 font-bold bg-slate-100 whitespace-nowrap">{h}</th>' for h in art['table_headers']])
@@ -194,6 +227,7 @@ def build_article_page(art):
         """
 
     faq_html = ""
+    faq_entities = []
     for f in art['faq']:
         faq_html += f"""
         <div class="space-y-1 p-3 bg-slate-50 rounded-xl border border-slate-100">
@@ -206,6 +240,47 @@ def build_article_page(art):
           </div>
         </div>
         """
+        faq_entities.append({
+            "@type": "Question",
+            "name": f['q'],
+            "acceptedAnswer": {"@type": "Answer", "text": f['a']}
+        })
+
+    # 関連人気記事（自記事以外から最大4件）
+    related = [a for a in all_articles if a['id'] != art['id']][:4]
+    related_html = ""
+    for r_art in related:
+        related_html += f"""
+        <a href="/articles/{r_art['id']}.html" class="block p-4 bg-slate-50 hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 rounded-2xl transition group">
+          <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+            <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">{r_art['category']}</span>
+            <span>{r_art['date']}</span>
+          </div>
+          <div class="text-xs md:text-sm font-bold text-slate-900 group-hover:text-blue-600 leading-snug">{r_art['title']}</div>
+        </a>
+        """
+    next_art = related[0] if related else art
+    article_url = f"{SITE_URL}/articles/{art['id']}.html"
+    encoded_title = urllib.parse.quote(f"【保存版】{art['title']} #公的ライフハック #給付金 #ほぽりん")
+    encoded_url = urllib.parse.quote(article_url)
+
+    json_ld = json.dumps([
+        {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": art['title'],
+            "description": art['summary'],
+            "image": [f"{SITE_URL}/assets/hoporin_banner.jpg"],
+            "datePublished": art['date'],
+            "dateModified": art['date'],
+            "author": [{"@type": "Person", "name": "ほぽりん", "url": f"{SITE_URL}/about.html"}]
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faq_entities
+        }
+    ], ensure_ascii=False)
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -213,6 +288,19 @@ def build_article_page(art):
   {BASE_HTML_HEAD}
   <title>{art['title']} - 公的ライフハック速報 by ほぽりん</title>
   <meta name="description" content="{art['summary']}">
+  <link rel="canonical" href="{article_url}">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="公的ライフハック速報 by ほぽりん">
+  <meta property="og:title" content="{art['title']}">
+  <meta property="og:description" content="{art['summary']}">
+  <meta property="og:url" content="{article_url}">
+  <meta property="og:image" content="{SITE_URL}/assets/hoporin_banner.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ramune_lilipat">
+  <meta name="twitter:title" content="{art['title']}">
+  <meta name="twitter:description" content="{art['summary']}">
+  <meta name="twitter:image" content="{SITE_URL}/assets/hoporin_banner.jpg">
+  <script type="application/ld+json">{json_ld}</script>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
   <div>
@@ -308,7 +396,7 @@ def build_article_page(art):
           </div>
         </section>
 
-        <!-- ほぽりんの生活者リアルアドバイス（AI感徹底排除・生きた人間による知恵袋） -->
+        <!-- ほぽりんの生活者リアルアドバイス -->
         <div class="p-5 bg-amber-50/80 border-2 border-amber-200/90 rounded-2xl space-y-2 shadow-sm">
           <div class="flex items-center gap-2">
             <span class="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shadow">ほ</span>
@@ -317,6 +405,22 @@ def build_article_page(art):
           <p class="text-xs md:text-sm text-amber-950/90 leading-relaxed pl-1 font-medium">
             {art.get('hoporin_tip', '申請窓口は混雑することが多いので、オンライン手続きが可能なものはスマホから済ませるのが一番おすすめです！')}
           </p>
+        </div>
+
+        <!-- SNSシェア＆フォロー促しボタン -->
+        <div class="flex flex-wrap items-center justify-between gap-3 p-4 bg-slate-900 text-white rounded-2xl">
+          <div class="text-xs">
+            <div class="font-bold">📢 家族や友人にもこの制度をシェアしませんか？</div>
+            <div class="text-slate-300 text-[11px]">申請漏れを防ぐため、Xでのブックマーク・共有がおすすめです🐧</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="https://twitter.com/intent/tweet?text={encoded_title}&url={encoded_url}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-xl text-xs font-bold transition">
+              𝕏 ポストして保存
+            </a>
+            <a href="https://x.com/ramune_lilipat" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition">
+              フォローする
+            </a>
+          </div>
         </div>
 
         <!-- Official source -->
@@ -333,9 +437,39 @@ def build_article_page(art):
 
         {live_ad_box("記事末尾・読了後レコメンド枠")}
 
+        <!-- 🔥 サイト内回遊（PV倍増用・関連記事レコメンド） -->
+        <section class="pt-4 border-t border-slate-200 space-y-3">
+          <h3 class="text-sm md:text-base font-extrabold text-slate-900 flex items-center gap-1.5">
+            <span>🔥</span> あわせて読みたい！今もっとも多く読まれている制度ハック
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {related_html}
+          </div>
+        </section>
+
+        <!-- 🦉 姉妹サイト相互送客カード -->
+        <div class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="text-xs space-y-1">
+            <span class="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[10px]">姉妹メディア人気記事</span>
+            <div class="font-bold text-slate-900 text-sm">🦉 デパコス級なのに1,000円台！イケロのコスメ成分ラボ</div>
+            <div class="text-slate-600">レチノール・ナイアシンアミド・セラミドなど科学的根拠で日用品・美容費を賢く節約！</div>
+          </div>
+          <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="shrink-0 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition">
+            成分比較を見る →
+          </a>
+        </div>
+
       </div>
 
     </main>
+  </div>
+  <!-- スマホ下部固定「次の注目記事」回遊バー -->
+  <div class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 px-4 py-2.5 shadow-lg flex items-center justify-between gap-2 md:hidden">
+    <div class="truncate text-xs">
+      <span class="text-[10px] font-bold text-blue-600 block">NEXT › 次に読まれている記事</span>
+      <a href="/articles/{next_art['id']}.html" class="font-bold text-slate-900 truncate block">{next_art['title']}</a>
+    </div>
+    <a href="/articles/{next_art['id']}.html" class="shrink-0 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold">読む →</a>
   </div>
   {FOOTER}
 </body>
@@ -422,6 +556,28 @@ def build_static_pages():
 
     return about_html, privacy_html
 
+def build_seo_files(articles):
+    # sitemap.xml
+    urls = [f"  <url><loc>{SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>"]
+    for art in articles:
+        urls.append(f"  <url><loc>{SITE_URL}/articles/{art['id']}.html</loc><lastmod>{art['date']}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>")
+    sitemap_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
+    with open(os.path.join(DIST_DIR, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write(sitemap_xml)
+
+    # robots.txt
+    robots_txt = f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n"
+    with open(os.path.join(DIST_DIR, "robots.txt"), "w", encoding="utf-8") as f:
+        f.write(robots_txt)
+
+    # rss.xml
+    items = []
+    for art in articles[:15]:
+        items.append(f"    <item><title>{art['title']}</title><link>{SITE_URL}/articles/{art['id']}.html</link><description>{art['summary']}</description><pubDate>{art['date']}</pubDate></item>")
+    rss_xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>公的ライフハック速報 by ほぽりん</title><link>{SITE_URL}/</link><description>知らないと損する公的制度・給付金・減税まとめ</description>\n' + "\n".join(items) + "\n</channel></rss>\n"
+    with open(os.path.join(DIST_DIR, "rss.xml"), "w", encoding="utf-8") as f:
+        f.write(rss_xml)
+
 def main():
     os.makedirs(DIST_DIR, exist_ok=True)
     os.makedirs(os.path.join(DIST_DIR, "articles"), exist_ok=True)
@@ -437,16 +593,17 @@ def main():
     for art in articles:
         p = os.path.join(DIST_DIR, "articles", f"{art['id']}.html")
         with open(p, "w", encoding="utf-8") as f:
-            f.write(build_article_page(art))
+            f.write(build_article_page(art, articles))
 
-    # 3. about & privacy
+    # 3. about & privacy & SEO files (sitemap.xml, robots.txt, rss.xml)
     about_html, privacy_html = build_static_pages()
     with open(os.path.join(DIST_DIR, "about.html"), "w", encoding="utf-8") as f:
         f.write(about_html)
     with open(os.path.join(DIST_DIR, "privacy.html"), "w", encoding="utf-8") as f:
         f.write(privacy_html)
+    build_seo_files(articles)
 
-    print("Site generated with real Ninja AdMax tags at:", DIST_DIR)
+    print("Site generated with real Ninja AdMax tags, OGP cards, and SEO sitemaps at:", DIST_DIR)
 
     import sys
     build_only = "--build-only" in sys.argv

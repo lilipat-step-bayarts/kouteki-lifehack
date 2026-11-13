@@ -65,9 +65,13 @@ jobs:
           python3 scripts/distribute_tweet.py || echo "Store 1 tweet skipped"
           python3 store2/scripts/distribute_tweet.py || echo "Store 2 tweet skipped"
 
+      - name: X（旧Twitter）自動フォローバック＆関心層フォロー（PV・フォロワー増加エンジン）
+        run: |
+          python3 scripts/x_auto_engage.py || echo "X auto-engage skipped"
+
       - name: 生成した記事・ビルド成果物・投稿履歴をGitHubに自動コミット＆保存
         run: |
           git config --global user.name "Hoporin AutoBot"
           git config --global user.email "bot@kouteki-lifehack.pages.dev"
-          git add -A articles/ dist/ store2/articles/ store2/dist/ .tweet_history.json store2/.tweet_history.json 2>/dev/null || true
+          git add -A articles/ dist/ store2/articles/ store2/dist/ .tweet_history.json store2/.tweet_history.json .follow_history.json 2>/dev/null || true
           git diff --staged --quiet || (git commit -m "chore(auto): 1号店・2号店の記事更新＆本番デプロイ同期 [skip ci]" && git push)

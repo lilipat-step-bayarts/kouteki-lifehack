@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ikero.lilipat-cosme-bayarts.com/sitemap.xml
