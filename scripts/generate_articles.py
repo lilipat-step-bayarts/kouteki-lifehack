@@ -546,6 +546,49 @@ source_url: "{item['source_url']}"
 """
     return md
 
+def create_dynamic_fallback_article(date_str, seq_num):
+    """ストックプール消化後も毎日欠かさず新規記事を自動生成する動的ジェネレーター"""
+    themes = [
+        ("医療・健康保険", "傷病手当金『退職後も最長1年6ヶ月』給料の3分の2をもらい続ける条件と申請手順の落とし穴", "厚生労働省・全国健康保険協会「傷病手当金について」", "https://www.kyoukaikenpo.or.jp", "退職日に『出勤』してしまうと継続給付の資格が消滅します！退職日は必ず有給消化または欠勤にするのが最大の鉄則です🐧！"),
+        ("住まい・補助金", "自治体の『引っ越し・家賃補助＆結婚新生活支援事業』最大60万円を現金受給する条件チェック", "内閣府「地域少子化対策重点推進交付金・結婚新生活支援」", "https://www.cfa.go.jp", "国の予算枠を使って自治体が実施しているため、年度後半は予算上限で締め切られる市区町村が続出します。転居前に必ず役所HPを確認しましょう🐧！"),
+        ("税金・手取り防衛", "会社員の『特定支出控除』と副業経費で年末調整後に税金を取り戻す確定申告テクニック", "国税庁「給与所得者の特定支出控除」", "https://www.nta.go.jp", "資格取得費や業務関連の書籍代・研修費が一定額を超えた年は、会社員でも確定申告で所得税・住民税を直接減らせます🐧✨"),
+        ("年金・シニア", "国民年金保険料『前納・口座振替・付加年金（月400円）』で生涯受給額を最も効率よく増やす方法", "日本年金機構「国民年金保険料の前納・付加保険料」", "https://www.nenkin.go.jp", "第1号被保険者（自営業・フリーランス等）なら月額たった400円の『付加年金』が最強です！2年間受給するだけで元が取れ、一生涯上乗せされます🐧！"),
+        ("介護・家族支援", "親の介護で仕事を辞めるな！『介護休業給付金（賃金の67%）』と高額介護サービス費の自己負担上限", "厚生労働省「介護休業給付・高額介護サービス費制度」", "https://www.mhlw.go.jp", "介護休業は『親を自分で介護するため』の期間ではなく、『ケアマネジャーと体制を整えて仕事と両立する準備期間』として国が給料の67%を補償してくれる制度です🐧！")
+    ]
+    cat, base_title, src_name, src_url, tip = themes[(seq_num - 1) % len(themes)]
+    art_id = f"daily-lifehack-{date_str}-slot{seq_num}"
+    return {
+        "id": art_id,
+        "category": cat,
+        "title": f"{base_title}（{date_str} 制度チェック版）",
+        "summary": f"知らないと数十万円単位で差がつく公的支援・制度ハック（{cat}分野）。対象者の条件、受給・控除の目安金額、申請の3ステップを分かりやすく整理しました。",
+        "target_audience": [
+            f"{cat}に関する最新の公的支援・給付制度を漏れなく活用したい方",
+            "役所や勤務先からの案内を待たずに自分で申請して手取りを守りたい方",
+            "申請期限切れや手続きミスによる不支給を防ぎたいご家庭"
+        ],
+        "benefit_amount": "要件を満たす世帯・個人あたり数万円〜最大60万円相当の給付・負担軽減",
+        "table_headers": ["チェック項目", "原則の取り扱い", "特例・お得な活用法", "注意点"],
+        "table_rows": [
+            ["申請方式", "本人からの書面・電子申請主義", "マイナポータル・オンライン申請対応拡大", "申請しない限り自動振込はされない"],
+            ["税・社会保険の扱い", "公的給付金は原則非課税枠多数", "扶養判定の収入要件も事前確認", "健康保険組合ごとの付加給付も要確認"],
+            ["申請期限・時効", "事由発生から2年〜5年以内", "早めの事前相談で書類不備を防止", "最終日の出勤・日付要件に厳重注意"]
+        ],
+        "steps": [
+            {"step": "Step 1", "title": "公式窓口（役所・ハローワーク・健保）で対象要件を確認", "desc": "自身の加入している保険種別や世帯所得区分を確認します。"},
+            {"step": "Step 2", "title": "必要書類（証明書類・マイナンバー・振込口座）を準備", "desc": "オンライン申請または郵送で提出できるよう控えを保管します。"},
+            {"step": "Step 3", "title": "支給決定通知書・決定通知で金額を答え合わせ", "desc": "振込または税額控除が正しく反映されているか確認します。"}
+        ],
+        "faq": [
+            {"q": "会社や役所の担当者から案内がなかった場合でも自分で申請できますか？", "a": "はい。日本の公的制度はすべて『申請主義』のため、要件を満たしていればご自身で窓口またはオンラインから直接申請する権利があります。"},
+            {"q": "過去の分を遡って申請することは可能ですか？", "a": "医療費還付や確定申告は5年、健康保険や雇用保険の給付金は原則2年の時効内であれば遡って請求が可能です。"}
+        ],
+        "hoporin_tip": tip,
+        "source_name": src_name,
+        "source_url": src_url,
+        "date": date_str
+    }
+
 def main():
     os.makedirs(ARTICLES_DIR, exist_ok=True)
 
@@ -570,16 +613,23 @@ def main():
         if art_id not in merged_by_id:
             merged_by_id[art_id] = art
 
-    # 2. もし今日（TODAY_STR > 2026-11-13）の記事がまだ1件も無ければ、DAILY_POOL から未公開記事を1件追加
-    has_today = any(a.get("date") == TODAY_STR for a in merged_by_id.values())
-    if TODAY_STR > "2026-11-13" and not has_today:
+    # 2. 1日5回の定時実行ごとに、当日(TODAY_STR)の新着記事を1件ずつ追加（1日最大5記事まで追加）
+    today_articles = [a for a in merged_by_id.values() if a.get("date") == TODAY_STR]
+    if TODAY_STR > "2026-11-13" and len(today_articles) < 5:
+        added = False
         for candidate in DAILY_POOL:
             if candidate["id"] not in merged_by_id:
                 new_art = dict(candidate)
                 new_art["date"] = TODAY_STR
                 merged_by_id[new_art["id"]] = new_art
-                print(f"✨ Added new daily article for {TODAY_STR}: {new_art['title'][:30]}...")
+                print(f"✨ Added new daily article for {TODAY_STR} ( today count: {len(today_articles) + 1} ): {new_art['title'][:30]}...")
+                added = True
                 break
+        if not added:
+            dyn_art = create_dynamic_fallback_article(TODAY_STR, len(today_articles) + 1)
+            if dyn_art["id"] not in merged_by_id:
+                merged_by_id[dyn_art["id"]] = dyn_art
+                print(f"✨ Added dynamic daily article for {TODAY_STR}: {dyn_art['title'][:30]}...")
 
     # 日付降順（新しい順）にソート
     all_articles = sorted(

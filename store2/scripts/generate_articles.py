@@ -263,6 +263,57 @@ DAILY_POOL = [
     }
 ]
 
+def create_dynamic_cosme_article(date_str, seq_num):
+    """ストック消化後も毎日欠かさず新規コスメ成分解析記事を生成する動的ジェネレーター"""
+    themes = [
+        ("peptides-matrixyl-argireline", "ハリ・ペプチド解析", "【塗るボトックス？】ペプチド（マトリキシル・アルジレリン）配合プチプラ美容液の実力とレチノール併用術", ["ペプチド", "マトリキシル", "アルジレリン", "ハリ対策"]),
+        ("salicylic-acid-bha-aha-pha", "角質・毛穴ケア", "【AHA・BHA・PHAの違い】サリチル酸とグルコノラクトン、敏感肌の毛穴角栓に本当に合うピーリング成分はどれ？", ["サリチル酸", "PHA", "角栓ケア", "ピーリング"]),
+        ("astaxanthin-fullerene-antioxidant", "抗酸化・エイジングケア", "【ビタミンCの6000倍？】アスタキサンチン＆フラーレンの抗酸化パワー！赤いプチプラ美容液の科学的真実", ["アスタキサンチン", "フラーレン", "抗酸化", "エイジングケア"]),
+        ("heparin-allantoin-dry-skin", "高保湿・肌荒れ予防", "【皮膚科処方級の保水力】ヘパリン類似物質×アラントイン配合の薬用プチプラ保湿ローション徹底比較", ["ヘパリン類似物質", "アラントイン", "乾燥肌対策", "医薬部外品"]),
+        ("zinc-oxide-non-chemical-uv", "UV・毛穴崩れ対策", "【酸化亜鉛フリーは本当に正解？】毛穴詰まりを防ぐ日焼け止めの成分選び（酸化セリウム・酸化チタン比較）", ["酸化亜鉛フリー", "ノンケミカルUV", "毛穴詰まり", "紫外線対策"])
+    ]
+    base_slug, cat, base_title, tags = themes[(seq_num - 1) % len(themes)]
+    slug = f"{base_slug}-{date_str}-s{seq_num}"
+    title = f"{base_title}（{date_str} ラボ解析）"
+    meta = {
+        "slug": slug,
+        "title": title,
+        "date": date_str,
+        "category": cat,
+        "tags": tags,
+        "summary": f"知恵の白フクロウ研究員イケロが『{'・'.join(tags[:2])}』の分子特性とエビデンスを徹底解剖。高いデパコスを買わずに1,000円〜2,000円台で同等の成分構成を手に入れる選び方です。",
+        "reading_time": 4,
+        "featured": False,
+        "icon": "🧪"
+    }
+    md = f"""# {title}
+
+「SNSで話題だけど、実際どの濃度・どの組み合わせで選べばいいの？」
+今回は知恵と科学の目で全成分表示を読み解く**イケロ**が、**{tags[0]}（{cat}）**の働きとプチプラ名品の選び方を徹底比較します！
+
+---
+
+## 1. {tags[0]}の科学的メカニズムと他成分との比較
+
+| 成分区分 | 主なアプローチ | 肌への刺激性 | 相性の良い組み合わせ |
+| :--- | :--- | :--- | :--- |
+| **{tags[0]}（主役成分）** | {cat}・角質層のコンディション維持 | 低刺激〜中程度 | ヒト型セラミド・ナイアシンアミド |
+| **サポート保湿成分** | バリア機能補助・水分保持 | 極めて低刺激 | パンテノール・ヒアルロン酸Na |
+| **攻めの併用成分** | ターンオーバー・透明感サポート | 肌状態に合わせて調整 | ビタミンC誘導体・レチノール |
+
+---
+
+## 2. イケロ流・失敗しない選び方3つのルール
+
+1. **全成分表示の「上位〜中位」または「有効成分欄」に記載があるか確認:**
+   パッケージのキャッチコピーだけでなく、裏面の全成分表示でしっかり配合されているアイテムを選びましょう。
+2. **摩擦レスな塗布と紫外線対策をセットにする:**
+   どんな優秀な成分も、塗布時のこすりすぎや日中の紫外線ダメージがあると効果が半減します。
+3. **まずは2週間〜1ヶ月、肌のキメと水分量の変化を観察する:**
+   ターンオーバー周期に合わせて継続使用しやすい価格帯（1,000円〜2,000円台）のアイテムこそが最強の味方です🦉✨
+"""
+    return meta, md
+
 def main():
     os.makedirs(ARTICLES_DIR, exist_ok=True)
 
@@ -286,9 +337,10 @@ def main():
             f.write(item["markdown"])
         print(f"[{meta['date']}] Generated Store 2 article: {meta['title'][:30]}...")
 
-    # 2. 2026-11-14 以降、当日の記事がまだ無ければ DAILY_POOL から1件自動解禁
-    has_today = any(a.get("date") == TODAY_STR for a in by_slug.values())
-    if TODAY_STR > "2026-11-13" and not has_today:
+    # 2. 1日5回の定時実行ごとに、当日(TODAY_STR)の新着記事を1件ずつ追加（1日最大5記事まで追加）
+    today_articles = [a for a in by_slug.values() if a.get("date") == TODAY_STR]
+    if TODAY_STR > "2026-11-13" and len(today_articles) < 5:
+        added = False
         for candidate in DAILY_POOL:
             slug = candidate["meta"]["slug"]
             if slug not in by_slug:
@@ -298,8 +350,17 @@ def main():
                 md_path = os.path.join(ARTICLES_DIR, f"{slug}.md")
                 with open(md_path, "w", encoding="utf-8") as f:
                     f.write(candidate["markdown"])
-                print(f"✨ Added new Store 2 daily article for {TODAY_STR}: {new_meta['title'][:30]}...")
+                print(f"✨ Added new Store 2 daily article for {TODAY_STR} ( today count: {len(today_articles) + 1} ): {new_meta['title'][:30]}...")
+                added = True
                 break
+        if not added:
+            dyn_meta, dyn_md = create_dynamic_cosme_article(TODAY_STR, len(today_articles) + 1)
+            if dyn_meta["slug"] not in by_slug:
+                by_slug[dyn_meta["slug"]] = dyn_meta
+                md_path = os.path.join(ARTICLES_DIR, f"{dyn_meta['slug']}.md")
+                with open(md_path, "w", encoding="utf-8") as f:
+                    f.write(dyn_md)
+                print(f"✨ Added dynamic Store 2 daily article for {TODAY_STR}: {dyn_meta['title'][:30]}...")
 
     # 日付降順でソート
     all_articles = sorted(
