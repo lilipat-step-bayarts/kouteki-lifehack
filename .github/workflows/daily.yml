@@ -59,10 +59,13 @@ jobs:
             (cd store2 && npx wrangler pages deploy dist --project-name=cosme-lab-ikero --branch=main --commit-dirty=true) || true
           fi
 
-      - name: X（旧Twitter）自動分散ポスト（1日5回の定時スケジュール実行時のみ1記事ずつ投稿）
-        if: github.event_name == 'schedule'
+      - name: X（旧Twitter）自動分散ポスト（1日5回の定時スケジュールで1記事ずつ投稿）
         run: |
-          python3 scripts/distribute_tweet.py || echo "Store 1 tweet skipped"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            python3 scripts/distribute_tweet.py || echo "Store 1 tweet skipped"
+          else
+            echo "Manual run: Store 1 tweet skipped (already posted for morning slot)"
+          fi
           python3 store2/scripts/distribute_tweet.py || echo "Store 2 tweet skipped"
 
       - name: 生成した記事・ビルド成果物・投稿履歴をGitHubに自動コミット＆保存

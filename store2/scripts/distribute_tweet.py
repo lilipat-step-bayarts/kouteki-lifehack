@@ -133,6 +133,17 @@ def main():
         articles = json.load(f)
 
     history = load_history()
+    last_posted_str = history.get("last_posted_at")
+    if last_posted_str:
+        try:
+            last_dt = datetime.fromisoformat(last_posted_str)
+            elapsed_min = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60.0
+            if elapsed_min < 75:
+                print(f"⏳ Store 2 already tweeted {elapsed_min:.1f} mins ago. Skipping to keep 1 tweet per time slot.")
+                return
+        except Exception:
+            pass
+
     posted_slugs = set(history.get("posted_slugs", []))
 
     unposted = [a for a in articles if a["slug"] not in posted_slugs]
