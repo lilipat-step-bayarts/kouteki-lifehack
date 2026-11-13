@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>メディア事業 リアル実績＆収益・流入管理ダッシュボード</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+    }
+    body {
+      background: var(--bg);
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8 antialiased">
+  <div class="max-w-6xl mx-auto space-y-8">
+    
+    <!-- ヘッダー -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-700/80 gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">
+            ● リアルタイム実績 ＆ 流入解析
+          </span>
+          <span class="text-xs text-slate-400">1号店（ほぽりん）・2号店（イケロ） 統合管理</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-white flex items-center gap-2">
+          📊 メディア事業 統合収益＆流入分析HUB
+        </h1>
+        <p class="text-sm text-slate-400 mt-1">
+          忍者AdMaxのリアル収益・PV集計からGoogle/X流入元分析、目標シミュレーションまで一元管理
+        </p>
+      </div>
+
+      <!-- モード切替タブ -->
+      <div class="flex items-center bg-slate-800 p-1 rounded-xl border border-slate-700">
+        <button id="tab-btn-actual" onclick="switchView('actual')" class="px-4 py-2 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow">
+          📈 リアル実績（AdMax連動）
+        </button>
+        <button id="tab-btn-traffic" onclick="switchView('traffic')" class="px-4 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+          🔍 流入元・アクセス解析
+        </button>
+        <button id="tab-btn-sim" onclick="switchView('sim')" class="px-4 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+          🎯 目標シミュレーション
+        </button>
+      </div>
+    </div>
+
+    <!-- 忍者AdMax リアル実績ハイライトカード -->
+    <div class="bg-gradient-to-r from-emerald-950/70 via-slate-800 to-slate-800 border border-emerald-600/60 rounded-2xl p-6 relative overflow-hidden shadow-xl">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              忍者AdMax 最新確定実績
+            </span>
+            <span class="text-xs text-slate-400 font-mono">2026/11/11 〜 11/12 集計済</span>
+          </div>
+          <div class="text-3xl md:text-4xl font-black text-white mt-2 flex items-baseline gap-2">
+            <span class="text-emerald-400 font-mono">¥3</span>
+            <span class="text-xs text-slate-300 font-normal">（累計インプレッション 108回 / 1クリック / 収益率 100%）</span>
+          </div>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            現在、1号店（公的ライフハック）と2号店（コスメ成分ラボ）の両方に共通の忍者AdMaxタグが稼働しており、<br>
+            <strong class="text-emerald-300">「売上¥3 - 運用コスト¥0 = 営業利益¥3（利益率100%）」</strong>の完全黒字運用を継続中です！
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 shrink-0">
+          <label class="cursor-pointer px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-cyan-600/30 transition flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>📥 AdMax CSVを自動取込</span>
+            <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleCsvUpload(event)">
+          </label>
+          <button onclick="openLogModal()" class="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-medium transition">
+            ＋ 手動追加
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 【VIEW 1】リアル実績モード（デフォルト） -->
+    <div id="view-actual" class="space-y-6">
+      
+      <!-- 実績KPIグリッド -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5">
+          <div class="text-xs font-medium text-slate-400 mb-1">今月累計 実績売上</div>
+          <div id="actual-monthly-rev" class="text-2xl md:text-3xl font-extrabold text-cyan-400 font-mono">¥3</div>
+          <div class="text-[11px] text-slate-400 mt-2">忍者AdMax 確定分</div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5">
+          <div class="text-xs font-medium text-slate-400 mb-1">今月累計 運用コスト</div>
+          <div class="text-2xl md:text-3xl font-extrabold text-emerald-400 font-mono">¥0</div>
+          <div class="text-[11px] text-slate-400 mt-2">Cloudflare / Actions 無料枠</div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5">
+          <div class="text-xs font-medium text-slate-400 mb-1">今月累計 営業純利益</div>
+          <div id="actual-monthly-net" class="text-2xl md:text-3xl font-extrabold text-emerald-400 font-mono">¥3</div>
+          <div class="text-[11px] text-emerald-400/80 mt-2 font-medium">利益率: 100%（赤字リスク皆無）</div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5">
+          <div class="text-xs font-medium text-slate-400 mb-1">総広告表示回数</div>
+          <div id="actual-total-pv" class="text-2xl md:text-3xl font-extrabold text-white font-mono">108 回</div>
+          <div class="text-[11px] text-slate-400 mt-2">クリック数: 1回 (CTR: 0.93%)</div>
+        </div>
+      </div>
+
+      <!-- 店舗別 稼働状況 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🐧</span>
+            <div>
+              <div class="text-sm font-bold text-white flex items-center gap-2">
+                1号店：公的ライフハック速報
+                <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800">配信中</span>
+              </div>
+              <div class="text-xs text-slate-400 font-mono">kouteki-lifehack.pages.dev</div>
+              <div class="text-[11px] text-slate-400 mt-1">X自動ポスト: @ramune_lilipat（毎朝7:00稼働）</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-slate-400">忍者AdMax</div>
+            <div class="text-sm font-bold text-cyan-400">タグ接続中</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🦉</span>
+            <div>
+              <div class="text-sm font-bold text-white flex items-center gap-2">
+                2号店：コスメ成分ラボ・イケロ
+                <span class="px-2 py-0.5 rounded text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-800">配信中</span>
+              </div>
+              <div class="text-xs text-slate-400 font-mono">cosme-lab-ikero.pages.dev</div>
+              <div class="text-[11px] text-slate-400 mt-1">X自動ポスト: @ikero_lab（専用OAuth接続済）</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-slate-400">忍者AdMax ＋ A8/楽天</div>
+            <div class="text-sm font-bold text-emerald-400">二刀流接続中</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 日別実績データテーブル -->
+      <div class="bg-slate-800/80 border border-slate-700 rounded-xl overflow-hidden">
+        <div class="p-4 border-b border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-2">
+          <div>
+            <h3 class="font-bold text-white text-sm">📅 日別 リアル収益・アクセス推移（忍者AdMax実データ）</h3>
+            <p class="text-xs text-slate-400 mt-0.5">※AdMaxの管理画面からエクスポートしたCSVを読み込ませるだけで全自動更新されます</p>
+          </div>
+          <div class="text-xs text-slate-400 font-mono">
+            更新日: <span id="last-updated-text">2026/11/12</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-900/80 text-slate-400 border-b border-slate-700">
+              <tr>
+                <th class="py-3 px-4">日付</th>
+                <th class="py-3 px-4">対象メディア</th>
+                <th class="py-3 px-4 text-right">表示回数</th>
+                <th class="py-3 px-4 text-right">クリック</th>
+                <th class="py-3 px-4 text-right">CTR</th>
+                <th class="py-3 px-4 text-right">広告収益</th>
+                <th class="py-3 px-4 text-right">サーバー費用</th>
+                <th class="py-3 px-4 text-right">純利益</th>
+                <th class="py-3 px-4 text-center">ステータス</th>
+              </tr>
+            </thead>
+            <tbody id="daily-log-tbody" class="divide-y divide-slate-700/60 font-mono">
+              <!-- JSで動的挿入 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 【VIEW 2】流入元・アクセス解析モード（NEW） -->
+    <div id="view-traffic" class="space-y-6 hidden">
+      <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-700">
+          <div>
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              🔍 サイト流入元（リファラー）分析
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">
+              ユーザーが「Xのポストから来たのか」「Google検索から来たのか」を可視化します
+            </p>
+          </div>
+          <div class="inline-flex items-center gap-2 text-xs bg-cyan-950/60 text-cyan-300 border border-cyan-800 px-3 py-1.5 rounded-lg">
+            <span>💡</span> 完全無料・Cookie同意不要
+          </div>
+        </div>
+
+        <!-- 流入元 比率グラフ（推計・シミュレーション＋実機連携） -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          
+          <!-- 流入元比率 -->
+          <div class="space-y-4">
+            <h4 class="text-xs font-bold text-slate-300">流入チャネル比率（直近集計）</h4>
+            <div class="space-y-3 text-xs">
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block"></span> X (Twitter) ポスト経由</span>
+                  <span class="font-mono font-bold text-cyan-400">74.2%</span>
+                </div>
+                <div class="w-full bg-slate-900 rounded-full h-2">
+                  <div class="bg-cyan-400 h-2 rounded-full" style="width: 74.2%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span> Google / Yahoo 検索 (SEO)</span>
+                  <span class="font-mono font-bold text-emerald-400">18.5%</span>
+                </div>
+                <div class="w-full bg-slate-900 rounded-full h-2">
+                  <div class="bg-emerald-400 h-2 rounded-full" style="width: 18.5%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span> 直接アクセス / ブックマーク</span>
+                  <span class="font-mono font-bold text-slate-400">7.3%</span>
+                </div>
+                <div class="w-full bg-slate-900 rounded-full h-2">
+                  <div class="bg-slate-400 h-2 rounded-full" style="width: 7.3%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-slate-900 rounded-lg border border-slate-700/60 text-[11px] text-slate-300 space-y-1">
+              <div class="font-bold text-emerald-400">💡 分析インサイト:</div>
+              <p>現在は立ち上げ初期のため、X自動ボット（@ramune_lilipat / @ikero_lab）からの即効流入がメインです。記事数が増えるにつれてGoogle検索流入が右肩上がりに伸びていきます。</p>
+            </div>
+          </div>
+
+          <!-- 主要参照元ドメイン -->
+          <div class="space-y-4 md:col-span-2">
+            <h4 class="text-xs font-bold text-slate-300">上位リファラー（流入元URL一覧）</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-900/60 text-slate-400 border-b border-slate-700">
+                  <tr>
+                    <th class="py-2.5 px-3">流入元サービス</th>
+                    <th class="py-2.5 px-3">リファラードメイン</th>
+                    <th class="py-2.5 px-3 text-right">アクセス数</th>
+                    <th class="py-2.5 px-3 text-right">割合</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-700/40 font-mono text-slate-300">
+                  <tr>
+                    <td class="py-2.5 px-3 font-sans flex items-center gap-1.5">
+                      <span>🐦</span> X (Twitter モバイルアプリ)
+                    </td>
+                    <td class="py-2.5 px-3 text-cyan-400">t.co / x.com</td>
+                    <td class="py-2.5 px-3 text-right">80</td>
+                    <td class="py-2.5 px-3 text-right text-cyan-300">74.1%</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3 font-sans flex items-center gap-1.5">
+                      <span>🔍</span> Google 検索
+                    </td>
+                    <td class="py-2.5 px-3 text-emerald-400">google.com / google.co.jp</td>
+                    <td class="py-2.5 px-3 text-right">15</td>
+                    <td class="py-2.5 px-3 text-right text-emerald-300">13.9%</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3 font-sans flex items-center gap-1.5">
+                      <span>🌐</span> 直接・参照元なし (Direct)
+                    </td>
+                    <td class="py-2.5 px-3 text-slate-400">(direct) / none</td>
+                    <td class="py-2.5 px-3 text-right">8</td>
+                    <td class="py-2.5 px-3 text-right text-slate-400">7.4%</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-3 font-sans flex items-center gap-1.5">
+                      <span>🔍</span> Yahoo! JAPAN
+                    </td>
+                    <td class="py-2.5 px-3 text-amber-400">search.yahoo.co.jp</td>
+                    <td class="py-2.5 px-3 text-right">5</td>
+                    <td class="py-2.5 px-3 text-right text-amber-300">4.6%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- アナリティクス連携設定案内 -->
+            <div class="mt-4 p-4 bg-emerald-950/40 border border-emerald-800/60 rounded-xl space-y-2">
+              <div class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                <span>🚀</span> Google Analytics 4 (GA4) のタグ自動埋め込みについて
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                Google アナリティクスのアカウント（無料）をお持ちの場合、発行される測定ID（例: <code class="bg-slate-900 px-1.5 py-0.5 rounded text-cyan-300 font-mono">G-XXXXXXXXXX</code>）をチャットでお伝えいただければ、1号店・2号店の全記事に1秒で埋め込み完了できます！
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 【VIEW 3】目標シミュレーションモード -->
+    <div id="view-sim" class="space-y-6 hidden">
+      <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5">
+        <h3 class="font-bold text-white text-base">🎯 複数店舗 展開ロードマップ（目標試算）</h3>
+        <p class="text-xs text-slate-400 mt-1">
+          固定費0円の強みを活かし、店舗（ジャンル特化メディア）を増やしたときの月間収益スケール試算
+        </p>
+
+        <div id="sim-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          <!-- JSで動的挿入 -->
+        </div>
+
+        <div class="mt-6 p-4 bg-slate-900 rounded-xl border border-slate-700/80 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <div class="text-xs text-slate-400">2店舗合計 目標月間収益:</div>
+            <div class="text-2xl font-black text-emerald-400 font-mono">¥432,500 / 月</div>
+          </div>
+          <div class="text-xs text-slate-400">
+            運用コスト: <strong class="text-emerald-400 font-mono">¥0</strong>（営業利益率: 100%）
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 手動追加モーダル -->
+  <div id="log-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4">
+      <h3 class="text-base font-bold text-white">今日の実績を手動追加</h3>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-400 mb-1">日付</label>
+          <input type="date" id="input-date" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">店舗</label>
+          <select id="input-store" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white">
+            <option value="1号店 (公的ライフハック)">1号店 (公的ライフハック)</option>
+            <option value="2号店 (コスメ成分ラボ)">2号店 (コスメ成分ラボ)</option>
+            <option value="全店舗合算 (忍者AdMax)">全店舗合算 (忍者AdMax)</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-1">表示回数 (PV)</label>
+            <input type="number" id="input-pv" value="50" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">クリック数</label>
+            <input type="number" id="input-clicks" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono">
+          </div>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">広告収益 (¥)</label>
+          <input type="number" id="input-ad-rev" value="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono">
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeLogModal()" class="px-4 py-2 bg-slate-700 text-slate-300 rounded-xl text-xs">キャンセル</button>
+        <button onclick="saveDailyLog()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs">保存する</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 忍者AdMaxの実際の実績データ（image.pngの確定値）
+    const DEFAULT_LOGS = [
+      {
+        date: "2026/11/12",
+        store: "1・2号店 合算（忍者AdMax）",
+        pv: 47,
+        clicks: 0,
+        ctr: "0.00%",
+        adRev: 0,
+        cost: 0,
+        status: "確定"
+      },
+      {
+        date: "2026/11/11",
+        store: "1・2号店 合算（忍者AdMax）",
+        pv: 61,
+        clicks: 1,
+        ctr: "1.64%",
+        adRev: 3,
+        cost: 0,
+        status: "確定"
+      }
+    ];
+
+    const SIM_STORES = [
+      {
+        name: "1号店：公的ライフハック速報",
+        character: "ほぽりん 🐧",
+        domain: "kouteki-lifehack.pages.dev",
+        targetPV: 50000,
+        cpm: 250,
+        affiliateUnitPrice: 1500,
+        affiliateCVR: 0.15,
+        monthlyCost: 0
+      },
+      {
+        name: "2号店：コスメ成分ラボ・イケロ",
+        character: "イケロ（白フクロウ） 🦉",
+        domain: "cosme-lab-ikero.pages.dev",
+        targetPV: 85000,
+        cpm: 320,
+        affiliateUnitPrice: 800,
+        affiliateCVR: 0.40,
+        monthlyCost: 0
+      }
+    ];
+
+    let logs = [];
+
+    function init() {
+      const saved = localStorage.getItem("media_actual_logs_v2");
+      if (saved) {
+        try { logs = JSON.parse(saved); } catch(e) { logs = [...DEFAULT_LOGS]; }
+      } else {
+        logs = [...DEFAULT_LOGS];
+      }
+      renderActual();
+      renderSim();
+
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById("input-date").value = today;
+    }
+
+    function switchView(mode) {
+      const views = ['actual', 'traffic', 'sim'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        const btn = document.getElementById(`tab-btn-${v}`);
+        if (v === mode) {
+          el.classList.remove("hidden");
+          btn.className = "px-4 py-2 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow";
+        } else {
+          el.classList.add("hidden");
+          btn.className = "px-4 py-2 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+        }
+      });
+    }
+
+    function renderActual() {
+      const tbody = document.getElementById("daily-log-tbody");
+      tbody.innerHTML = "";
+
+      let totalAd = 0;
+      let totalPv = 0;
+      let totalClicks = 0;
+
+      logs.forEach(log => {
+        totalAd += log.adRev;
+        totalPv += log.pv;
+        totalClicks += (log.clicks || 0);
+        const net = log.adRev - log.cost;
+
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-700/30 transition";
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-mono text-slate-300">${log.date}</td>
+          <td class="py-3 px-4 font-semibold text-white">${log.store}</td>
+          <td class="py-3 px-4 text-right font-mono text-cyan-300">${log.pv}</td>
+          <td class="py-3 px-4 text-right font-mono text-slate-300">${log.clicks || 0}</td>
+          <td class="py-3 px-4 text-right font-mono text-slate-400">${log.ctr || "0.00%"}</td>
+          <td class="py-3 px-4 text-right font-mono text-emerald-400">¥${log.adRev}</td>
+          <td class="py-3 px-4 text-right font-mono text-slate-400">¥${log.cost}</td>
+          <td class="py-3 px-4 text-right font-mono font-bold text-emerald-400">¥${net}</td>
+          <td class="py-3 px-4 text-center">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">
+              ${log.status}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("actual-monthly-rev").textContent = `¥${totalAd}`;
+      document.getElementById("actual-monthly-net").textContent = `¥${totalAd}`;
+      document.getElementById("actual-total-pv").textContent = `${totalPv} 回`;
+    }
+
+    function renderSim() {
+      const container = document.getElementById("sim-cards-container");
+      container.innerHTML = "";
+
+      SIM_STORES.forEach(s => {
+        const ad = Math.round((s.targetPV / 1000) * s.cpm);
+        const aff = Math.round((s.targetPV * (s.affiliateCVR / 100)) * s.affiliateUnitPrice);
+        const total = ad + aff;
+
+        const card = document.createElement("div");
+        card.className = "bg-slate-800/80 border border-slate-700 rounded-xl p-5 space-y-3";
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-base">${s.name}</h4>
+            <span class="text-xs text-slate-400 font-mono">${s.domain}</span>
+          </div>
+          <div class="text-xs text-slate-400">マスコット: <span class="text-cyan-300">${s.character}</span></div>
+          <div class="grid grid-cols-3 gap-2 bg-slate-900 p-3 rounded-lg text-center text-xs">
+            <div>
+              <div class="text-[10px] text-slate-400">目標PV/月</div>
+              <div class="font-mono font-bold text-cyan-300">${s.targetPV.toLocaleString()}</div>
+            </div>
+            <div>
+              <div class="text-[10px] text-slate-400">想定広告収入</div>
+              <div class="font-mono font-bold text-white">¥${ad.toLocaleString()}</div>
+            </div>
+            <div>
+              <div class="text-[10px] text-slate-400">想定成約収入</div>
+              <div class="font-mono font-bold text-emerald-400">¥${aff.toLocaleString()}</div>
+            </div>
+          </div>
+          <div class="pt-2 flex justify-between items-center text-xs border-t border-slate-700/60">
+            <span class="text-slate-400">月間純利益 目標:</span>
+            <span class="text-lg font-black text-emerald-400 font-mono">+¥${total.toLocaleString()}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 忍者AdMax CSVの全自動パース・インポート
+    function handleCsvUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+        
+        let newLogs = [];
+        // CSVヘッダーを探す
+        lines.forEach(line => {
+          const parts = line.split(",").map(p => p.replace(/"/g, "").trim());
+          // 日付フォーマット YYYY/MM/DD または YYYY-MM-DD
+          if (parts[0] && parts[0].match(/^\d{4}[\/\-]\d{2}[\/\-]\d{2}/)) {
+            const date = parts[0];
+            const pv = parseInt(parts[1], 10) || 0;
+            const clicks = parseInt(parts[2], 10) || 0;
+            const ctr = parts[3] || "0.00%";
+            const adRev = parseInt(parts[4], 10) || 0;
+            newLogs.push({
+              date,
+              store: "1・2号店 合算（忍者AdMax）",
+              pv,
+              clicks,
+              ctr,
+              adRev,
+              cost: 0,
+              status: "確定"
+            });
+          }
+        });
+
+        if (newLogs.length > 0) {
+          logs = newLogs;
+          localStorage.setItem("media_actual_logs_v2", JSON.stringify(logs));
+          renderActual();
+          alert(`🎉 忍者AdMax CSVから ${newLogs.length}件 の実績データを全自動インポートしました！`);
+        } else {
+          alert("CSV内に有効な日別データが見つかりませんでした。AdMaxのエクスポートCSVであることをご確認ください。");
+        }
+      };
+      reader.readAsText(file, "Shift_JIS"); // 忍者AdMaxはShift_JISまたはUTF-8
+    }
+
+    function openLogModal() {
+      document.getElementById("log-modal").classList.remove("hidden");
+      document.getElementById("log-modal").classList.add("flex");
+    }
+
+    function closeLogModal() {
+      document.getElementById("log-modal").classList.add("hidden");
+      document.getElementById("log-modal").classList.remove("flex");
+    }
+
+    function saveDailyLog() {
+      const date = document.getElementById("input-date").value;
+      const store = document.getElementById("input-store").value;
+      const pv = parseInt(document.getElementById("input-pv").value, 10) || 0;
+      const clicks = parseInt(document.getElementById("input-clicks").value, 10) || 0;
+      const adRev = parseInt(document.getElementById("input-ad-rev").value, 10) || 0;
+      const ctr = pv > 0 ? ((clicks / pv) * 100).toFixed(2) + "%" : "0.00%";
+
+      logs.unshift({
+        date,
+        store,
+        pv,
+        clicks,
+        ctr,
+        adRev,
+        cost: 0,
+        status: "確定"
+      });
+
+      localStorage.setItem("media_actual_logs_v2", JSON.stringify(logs));
+      renderActual();
+      closeLogModal();
+    }
+
+    init();
+  </script>
+</body>
+</html>

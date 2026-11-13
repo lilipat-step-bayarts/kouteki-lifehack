@@ -446,15 +446,40 @@ def main():
 
     print("Site generated with real Ninja AdMax tags at:", DIST_DIR)
 
-    # 毎朝のサイトビルド完了時に自動でXへ新着記事を速報ツイート
+    # 毎朝のサイトビルド完了時に自動でXへ新着記事を速報ツイート (1号店: @ramune_lilipat)
     try:
         distribute_script = os.path.join(SCRIPT_DIR, "distribute_tweet.py")
         if os.path.exists(distribute_script):
             import subprocess
-            print("Triggering automated X tweet distribution...")
+            print("Triggering automated X tweet distribution for Store 1 (@ramune_lilipat)...")
             subprocess.run(["python3", distribute_script], check=False)
     except Exception as e:
-        print("Note: Automated tweet skipped or failed:", e)
+        print("Note: Store 1 automated tweet skipped or failed:", e)
+
+    # 2号店（コスメ成分ラボ・イケロ）の自動ビルド＆デプロイ＆自動ツイート (2号店: @ikero_lab)
+    try:
+        store2_dir = os.path.join(PROJECT_ROOT, "store2")
+        store2_build = os.path.join(store2_dir, "scripts", "build_site.py")
+        store2_tweet = os.path.join(store2_dir, "scripts", "distribute_tweet.py")
+        if os.path.exists(store2_build):
+            import subprocess
+            print("Triggering Store 2 (Ikero Cosme Lab) site build...")
+            subprocess.run(["python3", store2_build], check=False)
+
+            if os.environ.get("CLOUDFLARE_API_TOKEN"):
+                print("Deploying Store 2 to Cloudflare Pages (cosme-lab-ikero)...")
+                subprocess.run([
+                    "npx", "wrangler", "pages", "deploy",
+                    os.path.join(store2_dir, "dist"),
+                    "--project-name=cosme-lab-ikero",
+                    "--commit-dirty=true"
+                ], check=False)
+
+            if os.path.exists(store2_tweet):
+                print("Triggering Store 2 automated X tweet distribution (@ikero_lab)...")
+                subprocess.run(["python3", store2_tweet], check=False)
+    except Exception as e:
+        print("Note: Store 2 automated pipeline skipped or failed:", e)
 
 if __name__ == "__main__":
     main()
