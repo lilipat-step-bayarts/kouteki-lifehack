@@ -448,7 +448,28 @@ def main():
 
     print("Site generated with real Ninja AdMax tags at:", DIST_DIR)
 
-    # 毎朝のサイトビルド完了時に自動でXへ新着記事を速報ツイート (1号店: @ramune_lilipat)
+    import sys
+    build_only = "--build-only" in sys.argv
+
+    # 2号店（コスメ成分ラボ・イケロ）の記事生成＆サイトビルド
+    try:
+        import subprocess
+        store2_dir = os.path.join(PROJECT_ROOT, "store2")
+        store2_gen = os.path.join(store2_dir, "scripts", "generate_articles.py")
+        store2_build = os.path.join(store2_dir, "scripts", "build_site.py")
+        if os.path.exists(store2_gen):
+            print("Running Store 2 (Ikero Cosme Lab) article generator...")
+            subprocess.run(["python3", store2_gen], check=False)
+        if os.path.exists(store2_build):
+            print("Triggering Store 2 (Ikero Cosme Lab) site build...")
+            subprocess.run(["python3", store2_build], check=False)
+    except Exception as e:
+        print("Note: Store 2 build skipped or failed:", e)
+
+    if build_only:
+        return
+
+    # サイトビルド完了時に自動でXへ新着記事を速報ツイート (1号店: @ramune_lilipat)
     try:
         distribute_script = os.path.join(SCRIPT_DIR, "distribute_tweet.py")
         if os.path.exists(distribute_script):
@@ -458,28 +479,23 @@ def main():
     except Exception as e:
         print("Note: Store 1 automated tweet skipped or failed:", e)
 
-    # 2号店（コスメ成分ラボ・イケロ）の自動ビルド＆デプロイ＆自動ツイート (2号店: @ikero_lab)
+    # 2号店のデプロイ＆自動ツイート (2号店: @ikero_lab)
     try:
+        import subprocess
         store2_dir = os.path.join(PROJECT_ROOT, "store2")
-        store2_build = os.path.join(store2_dir, "scripts", "build_site.py")
         store2_tweet = os.path.join(store2_dir, "scripts", "distribute_tweet.py")
-        if os.path.exists(store2_build):
-            import subprocess
-            print("Triggering Store 2 (Ikero Cosme Lab) site build...")
-            subprocess.run(["python3", store2_build], check=False)
+        if os.environ.get("CLOUDFLARE_API_TOKEN"):
+            print("Deploying Store 2 to Cloudflare Pages (cosme-lab-ikero)...")
+            subprocess.run([
+                "npx", "wrangler", "pages", "deploy",
+                os.path.join(store2_dir, "dist"),
+                "--project-name=cosme-lab-ikero",
+                "--commit-dirty=true"
+            ], check=False)
 
-            if os.environ.get("CLOUDFLARE_API_TOKEN"):
-                print("Deploying Store 2 to Cloudflare Pages (cosme-lab-ikero)...")
-                subprocess.run([
-                    "npx", "wrangler", "pages", "deploy",
-                    os.path.join(store2_dir, "dist"),
-                    "--project-name=cosme-lab-ikero",
-                    "--commit-dirty=true"
-                ], check=False)
-
-            if os.path.exists(store2_tweet):
-                print("Triggering Store 2 automated X tweet distribution (@ikero_lab)...")
-                subprocess.run(["python3", store2_tweet], check=False)
+        if os.path.exists(store2_tweet):
+            print("Triggering Store 2 automated X tweet distribution (@ikero_lab)...")
+            subprocess.run(["python3", store2_tweet], check=False)
     except Exception as e:
         print("Note: Store 2 automated pipeline skipped or failed:", e)
 

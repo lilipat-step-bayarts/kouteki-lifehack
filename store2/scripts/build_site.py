@@ -207,6 +207,38 @@ def build_article_page(article_meta):
             key_ingredients=["ヒト型セラミドNP", "ヒト型セラミドAP", "ヒト型セラミドEOP"],
             merit="なんと700円台で『3種類のヒト型セラミド』を網羅。インナードライに悩む全ての乾燥肌におすすめの神コスパ品。"
         )
+    elif "tranexamic" in slug:
+        affiliate_card = get_affiliate_card(
+            product_name="肌ラボ 白潤プレミアム 薬用浸透美白化粧水 (医薬部外品)",
+            category="薬用美白・抗炎症化粧水",
+            price="¥990 (税込)",
+            key_ingredients=["ホワイトトラネキサム酸", "グリチルリチン酸2K", "ビタミンC・E"],
+            merit="美白有効成分トラネキサム酸と肌荒れ防止成分グリチルリチン酸2KのW有効成分を配合。デパコス級の処方骨格が1,000円以下で手に入る名品。"
+        )
+    elif "glutathione" in slug:
+        affiliate_card = get_affiliate_card(
+            product_name="ナンバーズイン(numbuzin) 5番 白玉グルタチオンC美容液",
+            category="高濃度グルタチオン・ビタミンC美容液",
+            price="¥2,400 (税込)",
+            key_ingredients=["リポソームグルタチオン", "ナイアシンアミド5%", "ビタミンC誘導体"],
+            merit="抗酸化ネットワークを形成するグルタチオン×ビタミンC×ナイアシンアミドの黄金比率。くすみや色ムラに多角的にアプローチ。"
+        )
+    elif "glycylglycine" in slug:
+        affiliate_card = get_affiliate_card(
+            product_name="トゥヴェール バランシングGAローション (グリシルグリシン6%配合)",
+            category="開き毛穴・キメ整肌プレ化粧水",
+            price="¥2,000 (税込)",
+            key_ingredients=["グリシルグリシン6%", "アゼライン酸誘導体", "アロエベラ葉エキス"],
+            merit="すり鉢毛穴の原因にアプローチするグリシルグリシンを高濃度6%配合。さらに皮脂トラブルを防ぐアゼライン酸誘導体も同時配合した本格派。"
+        )
+    elif "bakuchiol" in slug:
+        affiliate_card = get_affiliate_card(
+            product_name="コスアールエックス(COSRX) RXザ・レチノール0.1 / バクチオールセラム",
+            category="敏感肌向け次世代エイジングケア",
+            price="¥2,180 (税込)",
+            key_ingredients=["バクチオール", "パンテノール", "トコトリエノール(スーパービタミンE)"],
+            merit="A反応（皮剥け・赤み）が起きにくい植物由来バクチオールを採用。朝晩使えて敏感肌のハリ・弾力ケアに最適。"
+        )
     else:
         affiliate_card = get_affiliate_card(
             product_name="メラノCC 薬用しみ集中対策プレミアム美容液",
