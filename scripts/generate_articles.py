@@ -613,23 +613,26 @@ def main():
         if art_id not in merged_by_id:
             merged_by_id[art_id] = art
 
-    # 2. 1日5回の定時実行ごとに、当日(TODAY_STR)の新着記事を1件ずつ追加（1日最大5記事まで追加）
+    # 2. 毎朝07:00 JSTの実行時に、当日(TODAY_STR)の記事が合計5記事になるまで一括生成する
     today_articles = [a for a in merged_by_id.values() if a.get("date") == TODAY_STR]
-    if TODAY_STR > "2026-11-13" and len(today_articles) < 5:
+    while TODAY_STR > "2026-11-13" and len(today_articles) < 5:
         added = False
         for candidate in DAILY_POOL:
             if candidate["id"] not in merged_by_id:
                 new_art = dict(candidate)
                 new_art["date"] = TODAY_STR
                 merged_by_id[new_art["id"]] = new_art
-                print(f"✨ Added new daily article for {TODAY_STR} ( today count: {len(today_articles) + 1} ): {new_art['title'][:30]}...")
+                print(f"✨ Added new daily article for {TODAY_STR} ( today count: {len(today_articles) + 1}/5 ): {new_art['title'][:30]}...")
                 added = True
                 break
         if not added:
             dyn_art = create_dynamic_fallback_article(TODAY_STR, len(today_articles) + 1)
             if dyn_art["id"] not in merged_by_id:
                 merged_by_id[dyn_art["id"]] = dyn_art
-                print(f"✨ Added dynamic daily article for {TODAY_STR}: {dyn_art['title'][:30]}...")
+                print(f"✨ Added dynamic daily article for {TODAY_STR} ( today count: {len(today_articles) + 1}/5 ): {dyn_art['title'][:30]}...")
+            else:
+                break
+        today_articles = [a for a in merged_by_id.values() if a.get("date") == TODAY_STR]
 
     # 日付降順（新しい順）にソート
     all_articles = sorted(

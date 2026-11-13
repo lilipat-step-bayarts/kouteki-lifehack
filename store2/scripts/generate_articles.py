@@ -337,9 +337,9 @@ def main():
             f.write(item["markdown"])
         print(f"[{meta['date']}] Generated Store 2 article: {meta['title'][:30]}...")
 
-    # 2. 1日5回の定時実行ごとに、当日(TODAY_STR)の新着記事を1件ずつ追加（1日最大5記事まで追加）
+    # 2. 毎朝07:00 JSTの実行時に、当日(TODAY_STR)の記事が合計5記事になるまで一括生成する
     today_articles = [a for a in by_slug.values() if a.get("date") == TODAY_STR]
-    if TODAY_STR > "2026-11-13" and len(today_articles) < 5:
+    while TODAY_STR > "2026-11-13" and len(today_articles) < 5:
         added = False
         for candidate in DAILY_POOL:
             slug = candidate["meta"]["slug"]
@@ -350,7 +350,7 @@ def main():
                 md_path = os.path.join(ARTICLES_DIR, f"{slug}.md")
                 with open(md_path, "w", encoding="utf-8") as f:
                     f.write(candidate["markdown"])
-                print(f"✨ Added new Store 2 daily article for {TODAY_STR} ( today count: {len(today_articles) + 1} ): {new_meta['title'][:30]}...")
+                print(f"✨ Added new Store 2 daily article for {TODAY_STR} ( today count: {len(today_articles) + 1}/5 ): {new_meta['title'][:30]}...")
                 added = True
                 break
         if not added:
@@ -360,7 +360,10 @@ def main():
                 md_path = os.path.join(ARTICLES_DIR, f"{dyn_meta['slug']}.md")
                 with open(md_path, "w", encoding="utf-8") as f:
                     f.write(dyn_md)
-                print(f"✨ Added dynamic Store 2 daily article for {TODAY_STR}: {dyn_meta['title'][:30]}...")
+                print(f"✨ Added dynamic Store 2 daily article for {TODAY_STR} ( today count: {len(today_articles) + 1}/5 ): {dyn_meta['title'][:30]}...")
+            else:
+                break
+        today_articles = [a for a in by_slug.values() if a.get("date") == TODAY_STR]
 
     # 日付降順でソート
     all_articles = sorted(
