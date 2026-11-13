@@ -75,13 +75,19 @@ def post_tweet_to_x(text):
         data=payload,
         headers={
             "Authorization": oauth_header,
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "User-Agent": "IkeroBot/1.0"
         },
         method="POST"
     )
 
-    with urllib.request.urlopen(req) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode("utf-8", errors="ignore")
+        print(f"X API HTTPError {e.code}: {err_body}")
+        raise
 
 def load_history():
     if os.path.exists(HISTORY_FILE):
@@ -114,11 +120,12 @@ def generate_tweet_text(article):
         time_hook = "【夜のスキンケア速報🌙】"
         lead = "知恵の白フクロウ・イケロが忖度なしで解説する成分の真実👇"
 
-    title = article["title"]
+    title = article.get("title", "")
+    short_title = title[:36] + "…" if len(title) > 37 else title
     url = f"https://ikero.lilipat-cosme-bayarts.com/articles/{article['slug']}.html"
     hashtags = "#コスメ成分 #プチプラコスメ #スキンケア #イケロ"
 
-    tweet = f"{time_hook}\n『{title}』\n\n{lead}\n{url}\n{hashtags}"
+    tweet = f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n{hashtags}"
     return tweet
 
 def main():
