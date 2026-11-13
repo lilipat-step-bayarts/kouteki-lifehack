@@ -130,7 +130,7 @@ def generate_tweet_text(article):
         benefit = benefit[:24] + "…"
 
     article_id = article.get("id", "")
-    article_url = f"https://kouteki-lifehack.pages.dev/articles/{article_id}.html"
+    article_url = f"https://hoporin.lilipat-cosme-bayarts.com/articles/{article_id}.html"
 
     # タイトルが長い場合は要約
     if len(title) > 36:
