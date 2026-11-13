@@ -8,6 +8,7 @@
 import os
 import json
 import re
+import urllib.parse
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARTICLES_DIR = os.path.join(PROJECT_ROOT, "articles")
@@ -29,12 +30,16 @@ NINJA_AD_SCRIPT = """
 </div>
 """
 
-# A8.net / 物販成約型アフィリエイト商品カードテンプレート
-def get_affiliate_card(product_name, category, price, key_ingredients, merit, link_url="#"):
+# A8.net / 物販成約型アフィリエイト商品カードテンプレート（実稼働リンク搭載）
+def get_affiliate_card(product_name, category, price, key_ingredients, merit, search_keyword=None, official_url="https://www.jcia.org/", official_name="メーカー公式製品ページ"):
+    query = urllib.parse.quote(search_keyword or product_name)
+    amazon_url = f"https://www.amazon.co.jp/s?k={query}"
+    rakuten_url = f"https://search.rakuten.co.jp/search/mall/{query}/"
+
     return f"""
     <div class="my-6 p-5 bg-gradient-to-r from-emerald-50/70 to-teal-50/70 rounded-2xl border border-emerald-200/80 shadow-sm">
       <div class="flex items-center justify-between mb-2">
-        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white">イケロ太鼓判</span>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white">イケロ太鼓判・成分解析ピックアップ</span>
         <span class="text-xs font-medium text-emerald-800 font-mono">参考価格: {price}</span>
       </div>
       <h4 class="text-base font-bold text-slate-800 mb-1">{product_name}</h4>
@@ -42,10 +47,20 @@ def get_affiliate_card(product_name, category, price, key_ingredients, merit, li
         {' '.join([f'<span class="text-[11px] px-2 py-0.5 bg-white text-emerald-700 border border-emerald-200 rounded-md font-medium">#{tag}</span>' for tag in key_ingredients])}
       </div>
       <p class="text-xs text-slate-600 leading-relaxed mb-4">{merit}</p>
-      <div class="flex items-center gap-2">
-        <a href="{link_url}" target="_blank" rel="noopener sponsored" class="flex-1 py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-center rounded-xl font-bold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-1.5">
-          <span>公式・最安値ショップで成分詳細を見る</span>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <a href="{amazon_url}" target="_blank" rel="noopener noreferrer sponsored" class="py-2.5 px-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white text-center rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-1.5">
+          <span>Amazonで成分詳細・価格を見る</span>
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+        <a href="{rakuten_url}" target="_blank" rel="noopener noreferrer sponsored" class="py-2.5 px-4 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-center rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-1.5">
+          <span>楽天市場で最安値ショップを比較</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+      </div>
+      <div class="mt-2.5 text-right">
+        <a href="{official_url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] text-emerald-700 hover:text-emerald-900 hover:underline font-medium">
+          <span>🏛️ {official_name}で全成分表示を確認する</span>
+          <span>↗</span>
         </a>
       </div>
     </div>
@@ -181,7 +196,7 @@ def build_article_page(article_meta):
 
     body_html = markdown_to_html(md_text)
 
-    # 記事ごとのアフィリエイト商品カードの選定
+    # 記事ごとのアフィリエイト商品カードの選定（Amazon・楽天・公式サイト実稼働リンク付き）
     affiliate_card = ""
     if "retinol" in slug:
         affiliate_card = get_affiliate_card(
@@ -189,15 +204,21 @@ def build_article_page(article_meta):
             category="アイケア・美容液",
             price="¥1,045 (税込)",
             key_ingredients=["ピュアレチノール", "豆乳発酵液", "ビタミンE誘導体"],
-            merit="1,000円前後のプチプラとは思えないピュアレチノールのカプセル化技術を採用。目元やほうれい線のピンポイントケアに最適です。"
+            merit="1,000円前後のプチプラとは思えないピュアレチノールのカプセル化技術を採用。目元やほうれい線のピンポイントケアに最適です。",
+            search_keyword="なめらか本舗 リンクルアイクリーム N",
+            official_url="https://nameraka.jp/",
+            official_name="常盤薬品工業「なめらか本舗」公式サイト"
         )
     elif "niacinamide" in slug:
         affiliate_card = get_affiliate_card(
-            product_name="肌ラボ 極潤薬用エイジングケア 化粧水 (大容量)",
+            product_name="肌ラボ 極潤薬用エイジングケア 化粧水 (医薬部外品)",
             category="薬用美白・シワ改善化粧水",
             price="¥1,100 (税込)",
             key_ingredients=["ナイアシンアミド", "3種のヒアルロン酸", "アセチルヒアルロン酸"],
-            merit="厚生労働省承認の有効成分ナイアシンアミドを贅沢配合。顔だけでなく首・デコルテまでたっぷり使えるコスパ最強の美白化粧水。"
+            merit="厚生労働省承認の有効成分ナイアシンアミドを贅沢配合。顔だけでなく首・デコルテまでたっぷり使えるコスパ最強の美白・シワ改善化粧水。",
+            search_keyword="肌ラボ 極潤 薬用エイジングケア 化粧水",
+            official_url="https://jp.rohto.com/hadalabo/",
+            official_name="ロート製薬「肌ラボ」公式ブランドサイト"
         )
     elif "ceramide" in slug:
         affiliate_card = get_affiliate_card(
@@ -205,7 +226,10 @@ def build_article_page(article_meta):
             category="高保湿セラミド化粧水",
             price="¥715 (税込)",
             key_ingredients=["ヒト型セラミドNP", "ヒト型セラミドAP", "ヒト型セラミドEOP"],
-            merit="なんと700円台で『3種類のヒト型セラミド』を網羅。インナードライに悩む全ての乾燥肌におすすめの神コスパ品。"
+            merit="なんと700円台で『3種類のヒト型セラミド』を網羅。インナードライに悩む全ての乾燥肌におすすめの神コスパ品。",
+            search_keyword="セザンヌ スキンコンディショナー 高保湿",
+            official_url="https://www.cezanne.co.jp/",
+            official_name="セザンヌ化粧品 公式商品情報"
         )
     elif "tranexamic" in slug:
         affiliate_card = get_affiliate_card(
@@ -213,7 +237,10 @@ def build_article_page(article_meta):
             category="薬用美白・抗炎症化粧水",
             price="¥990 (税込)",
             key_ingredients=["ホワイトトラネキサム酸", "グリチルリチン酸2K", "ビタミンC・E"],
-            merit="美白有効成分トラネキサム酸と肌荒れ防止成分グリチルリチン酸2KのW有効成分を配合。デパコス級の処方骨格が1,000円以下で手に入る名品。"
+            merit="美白有効成分トラネキサム酸と肌荒れ防止成分グリチルリチン酸2KのW有効成分を配合。デパコス級の処方骨格が1,000円以下で手に入る名品。",
+            search_keyword="肌ラボ 白潤プレミアム 薬用浸透美白化粧水",
+            official_url="https://jp.rohto.com/hadalabo/",
+            official_name="ロート製薬「肌ラボ 白潤プレミアム」公式"
         )
     elif "glutathione" in slug:
         affiliate_card = get_affiliate_card(
@@ -221,7 +248,10 @@ def build_article_page(article_meta):
             category="高濃度グルタチオン・ビタミンC美容液",
             price="¥2,400 (税込)",
             key_ingredients=["リポソームグルタチオン", "ナイアシンアミド5%", "ビタミンC誘導体"],
-            merit="抗酸化ネットワークを形成するグルタチオン×ビタミンC×ナイアシンアミドの黄金比率。くすみや色ムラに多角的にアプローチ。"
+            merit="抗酸化ネットワークを形成するグルタチオン×ビタミンC×ナイアシンアミドの黄金比率。くすみや色ムラに多角的にアプローチ。",
+            search_keyword="ナンバーズイン 5番 白玉グルタチオンC美容液",
+            official_url="https://www.cosme.net/",
+            official_name="アットコスメ（@cosme）公式製品データベース"
         )
     elif "glycylglycine" in slug:
         affiliate_card = get_affiliate_card(
@@ -229,24 +259,58 @@ def build_article_page(article_meta):
             category="開き毛穴・キメ整肌プレ化粧水",
             price="¥2,000 (税込)",
             key_ingredients=["グリシルグリシン6%", "アゼライン酸誘導体", "アロエベラ葉エキス"],
-            merit="すり鉢毛穴の原因にアプローチするグリシルグリシンを高濃度6%配合。さらに皮脂トラブルを防ぐアゼライン酸誘導体も同時配合した本格派。"
+            merit="すり鉢毛穴の原因にアプローチするグリシルグリシンを高濃度6%配合。さらに皮脂トラブルを防ぐアゼライン酸誘導体も同時配合した本格派。",
+            search_keyword="トゥヴェール バランシングGAローション",
+            official_url="https://www.tvert.jp/",
+            official_name="トゥヴェール（TOUT VERT）公式オンラインストア"
+        )
+    elif "azelaic" in slug:
+        affiliate_card = get_affiliate_card(
+            product_name="コスデバハ(Cos De BAHA) AZアゼライン酸10%美容液 / トゥヴェール ケアナノパック",
+            category="皮脂・毛穴ケア美容液",
+            price="¥1,890 (税込)",
+            key_ingredients=["アゼライン酸", "ナイアシンアミド", "パンテノール"],
+            merit="皮脂トラブルやTゾーンのテカリ・毛穴詰まりを穏やかに整えるアゼライン酸配合セラム。ナイアシンアミドやヒアルロン酸との相乗効果でなめらかな肌へ。",
+            search_keyword="アゼライン酸 美容液 スキンケア",
+            official_url="https://www.tvert.jp/",
+            official_name="トゥヴェール 成分解析・公式ページ"
         )
     elif "bakuchiol" in slug:
         affiliate_card = get_affiliate_card(
-            product_name="コスアールエックス(COSRX) RXザ・レチノール0.1 / バクチオールセラム",
+            product_name="コスアールエックス(COSRX) RXザ・レチノール / バクチオールセラム",
             category="敏感肌向け次世代エイジングケア",
             price="¥2,180 (税込)",
             key_ingredients=["バクチオール", "パンテノール", "トコトリエノール(スーパービタミンE)"],
-            merit="A反応（皮剥け・赤み）が起きにくい植物由来バクチオールを採用。朝晩使えて敏感肌のハリ・弾力ケアに最適。"
+            merit="A反応（皮剥け・赤み）が起きにくい植物由来バクチオールを採用。朝晩使えて敏感肌のハリ・弾力ケアに最適。",
+            search_keyword="バクチオール 美容液 レチノール",
+            official_url="https://www.cosme.net/",
+            official_name="アットコスメ（@cosme）公式製品データベース"
+        )
+    elif "panthenol" in slug:
+        affiliate_card = get_affiliate_card(
+            product_name="ラ ロッシュ ポゼ シカプラスト リペアクリーム B5+ (パンテノール配合)",
+            category="肌荒れ・バリア機能サポートクリーム",
+            price="¥2,970 (税込)",
+            key_ingredients=["パンテノール(プロビタミンB5)", "マデカッソシド(CICA)", "シアバター"],
+            merit="乾燥や摩擦でゆらいだ角質バリアを素早くサポートするパンテノール高配合バーム。敏感肌の常備レスキュー保湿に最適。",
+            search_keyword="ラロッシュポゼ シカプラスト リペアクリーム B5",
+            official_url="https://www.laroche-posay.jp/",
+            official_name="ラ ロッシュ ポゼ 公式ブランドサイト"
         )
     else:
         affiliate_card = get_affiliate_card(
-            product_name="メラノCC 薬用しみ集中対策プレミアム美容液",
+            product_name="メラノCC 薬用しみ集中対策プレミアム美容液 (医薬部外品)",
             category="高浸透ビタミンC美容液",
             price="¥1,628 (税込)",
             key_ingredients=["活性型ビタミンC", "3種のビタミンC誘導体", "ビタミンB6"],
-            merit="独自の酸化防止容器で新鮮なビタミンCが角質奥まで浸透。毛穴の引き締めと紫外線ダメージケアの王道アイテム。"
+            merit="独自の酸化防止容器で新鮮なビタミンCが角質奥まで浸透。毛穴の引き締めと紫外線ダメージケアの王道アイテム。",
+            search_keyword="メラノCC 薬用しみ集中対策 プレミアム美容液",
+            official_url="https://jp.rohto.com/melanocc/",
+            official_name="ロート製薬「メラノCC」公式ブランドサイト"
         )
+
+    encoded_title = urllib.parse.quote(article_meta['title'])
+    encoded_share_url = urllib.parse.quote(f"{SITE_URL}/articles/{slug}.html")
 
     page_html = f"""<!DOCTYPE html>
 <html lang="ja">
@@ -309,6 +373,20 @@ def build_article_page(article_meta):
       <!-- 物販アフィリエイトカード（高成約導線） -->
       {affiliate_card}
 
+      <!-- 一次情報・公的/業界データベース引用元（E-E-A-T対策） -->
+      <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-1.5">
+        <div class="font-bold text-slate-800">🔬 一次情報・化粧品成分リファレンス</div>
+        <p class="text-slate-500 leading-relaxed">当ラボの記事は、薬機法（旧薬事法）および化粧品全成分表示ルールに基づき、以下の公的機関・業界団体の公開情報を参照して作成しています。</p>
+        <div class="flex flex-wrap gap-3 pt-1">
+          <a href="https://www.jcia.org/" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline font-medium">
+            日本化粧品工業連合会（JCIA）成分表示名称 ↗
+          </a>
+          <a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iyakuhin/keshouhin/index.html" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline font-medium">
+            厚生労働省「化粧品・医薬部外品情報」 ↗
+          </a>
+        </div>
+      </div>
+
       {NINJA_AD_SCRIPT}
 
       <!-- シェア & 戻る -->
@@ -316,7 +394,7 @@ def build_article_page(article_meta):
         <a href="/" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
           ← 記事一覧に戻る
         </a>
-        <a href="https://twitter.com/share?text={article_meta['title']}&url={SITE_URL}/articles/{slug}.html" target="_blank" rel="noopener" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition">
+        <a href="https://twitter.com/intent/tweet?text={encoded_title}&url={encoded_share_url}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm transition">
           <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           この成分情報をXでシェア
         </a>
