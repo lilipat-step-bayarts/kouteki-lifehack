@@ -18,7 +18,7 @@ DIST_ASSETS_DIR = os.path.join(DIST_DIR, "assets")
 
 SITE_TITLE = "コスメ成分ラボ・プチプラ速報 | 知恵の案内人イケロが忖度なし比較"
 SITE_DESCRIPTION = "高いデパコスと何が違う？レチノール、ナイアシンアミド、ヒト型セラミド、ビタミンCなどの有効成分を、知恵のマスコット『イケロ』が科学的根拠に基づいて徹底比較・解説する美容情報メディア。"
-SITE_URL = "https://cosme-lab-ikero.pages.dev"
+SITE_URL = "https://ikero.lilipat-cosme-bayarts.com"
 
 # 忍者AdMax 広告コード（ビュー型）
 NINJA_AD_SCRIPT = """
@@ -226,6 +226,8 @@ def build_article_page(article_meta):
   <meta property="og:title" content="{article_meta['title']}">
   <meta property="og:image" content="{SITE_URL}/assets/ikero_avatar.jpg">
   <meta name="twitter:card" content="summary_large_image">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3133098627249534" crossorigin="anonymous"></script>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -337,6 +339,8 @@ def build_home_page(articles):
   <meta property="og:description" content="{SITE_DESCRIPTION}">
   <meta property="og:image" content="{SITE_URL}/assets/ikero_avatar.jpg">
   <meta name="twitter:card" content="summary_large_image">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3133098627249534" crossorigin="anonymous"></script>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -405,6 +409,8 @@ def build_about_page():
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>イケロについて | イケロのコスメ成分ラボ</title>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3133098627249534" crossorigin="anonymous"></script>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -452,6 +458,8 @@ def build_privacy_page():
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>プライバシーポリシー・広告開示 | イケロのコスメ成分ラボ</title>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3133098627249534" crossorigin="anonymous"></script>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">

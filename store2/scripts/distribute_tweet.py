@@ -115,7 +115,7 @@ def generate_tweet_text(article):
         lead = "知恵の白フクロウ・イケロが忖度なしで解説する成分の真実👇"
 
     title = article["title"]
-    url = f"https://cosme-lab-ikero.pages.dev/articles/{article['slug']}.html"
+    url = f"https://ikero.lilipat-cosme-bayarts.com/articles/{article['slug']}.html"
     hashtags = "#コスメ成分 #プチプラコスメ #スキンケア #イケロ"
 
     tweet = f"{time_hook}\n『{title}』\n\n{lead}\n{url}\n{hashtags}"
