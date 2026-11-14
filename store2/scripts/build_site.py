@@ -30,10 +30,12 @@ NINJA_AD_SCRIPT = """
 </div>
 """
 
-# A8.net / 物販成約型アフィリエイト商品カードテンプレート（実稼働リンク搭載）
+AMAZON_TAG = "ikerocosme-22"
+
+# A8.net / 物販成約型アフィリエイト商品カードテンプレート（実稼働リンク＋AmazonアソシエイトID搭載）
 def get_affiliate_card(product_name, category, price, key_ingredients, merit, search_keyword=None, official_url="https://www.jcia.org/", official_name="メーカー公式製品ページ"):
     query = urllib.parse.quote(search_keyword or product_name)
-    amazon_url = f"https://www.amazon.co.jp/s?k={query}"
+    amazon_url = f"https://www.amazon.co.jp/s?k={query}&tag={AMAZON_TAG}"
     rakuten_url = f"https://search.rakuten.co.jp/search/mall/{query}/"
 
     return f"""

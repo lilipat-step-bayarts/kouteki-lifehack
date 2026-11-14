@@ -5,6 +5,7 @@ Cloudflare Pages公開用の静的HTMLサイトジェネレーター（忍者AdM
 
 import json
 import os
+import urllib.parse
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
@@ -98,6 +99,53 @@ def live_ad_box(label):
       <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">スポンサーリンク</div>
       <div class="flex justify-center items-center min-h-[250px]">
         {NINJA_AD_TAG}
+      </div>
+    </div>
+    """
+
+AMAZON_TAG = "ikerocosme-22"
+
+def get_store1_amazon_card(art):
+    cat = art.get("category", "")
+    title = art.get("title", "")
+    if "マイナ" in title or "スマホ" in title or "e-Tax" in title or "確定申告" in title or "税金" in cat:
+        item_title = "マイナポータル・e-Tax確定申告の必須アイテム（ICカードリーダー / 節税実用書）"
+        keyword = "マイナンバーカード ICカードリーダー 確定申告 本"
+        desc = "スマホやPCでのe-Tax・マイナポータル申請をスムーズにする公的個人認証対応ICカードリーダーや、最新の税金・控除ハック本をAmazonでチェックできます。"
+    elif "省エネ" in title or "電気" in title or "エアコン" in title or "断熱" in title or "補助金" in cat:
+        item_title = "電気代・光熱費を即効カットする省エネ・断熱対策グッズ"
+        keyword = "省エネ 断熱シート スマートプラグ 節電グッズ"
+        desc = "補助金と併用してさらに光熱費を抑える窓用断熱シート、消費電力が見えるスマートプラグ、最新省エネ家電の売れ筋ランキングをチェック！"
+    elif "防災" in title or "防犯" in title:
+        item_title = "自治体助成の対象にもなる家庭用防災・防犯対策セット"
+        keyword = "防災セット 非常食 防犯カメラ センサーライト"
+        desc = "自治体の防災・防犯グッズ購入費助成とあわせて備えておきたい、長期保存水・非常食セットや工事不要の防犯センサーライト。"
+    else:
+        item_title = "知らないと損する「お金・補助金・税金」のベストセラー実用書＆家計管理グッズ"
+        keyword = "補助金 税金 届出 だけでお金がもらえる本"
+        desc = "申請だけで貰える給付金・手当・減税制度を1冊で網羅できる人気の制度ハック本や、領収書・公的書類の整理に便利なドキュメントファイル。"
+
+    query = urllib.parse.quote(keyword)
+    amazon_url = f"https://www.amazon.co.jp/s?k={query}&tag={AMAZON_TAG}"
+    rakuten_url = f"https://search.rakuten.co.jp/search/mall/{query}/"
+
+    return f"""
+    <div class="my-6 p-5 bg-gradient-to-r from-amber-50/90 to-orange-50/90 border border-amber-200 rounded-2xl shadow-sm space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-600 text-white">🐧 ほぽりん厳選・家計防衛アイテム</span>
+        <span class="text-[10px] text-amber-700 font-bold">PR・Amazonアソシエイト</span>
+      </div>
+      <h3 class="text-sm md:text-base font-extrabold text-slate-900">{item_title}</h3>
+      <p class="text-xs text-slate-600 leading-relaxed">{desc}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+        <a href="{amazon_url}" target="_blank" rel="noopener noreferrer sponsored" class="py-2.5 px-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white text-center rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-1.5">
+          <span>🛒 Amazonで人気の関連アイテムを見る</span>
+          <span>↗</span>
+        </a>
+        <a href="{rakuten_url}" target="_blank" rel="noopener noreferrer sponsored" class="py-2.5 px-4 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-center rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-1.5">
+          <span>🛍️ 楽天市場でポイント還元を比較する</span>
+          <span>↗</span>
+        </a>
       </div>
     </div>
     """
@@ -406,6 +454,9 @@ def build_article_page(art, all_articles=None):
             {art.get('hoporin_tip', '申請窓口は混雑することが多いので、オンライン手続きが可能なものはスマホから済ませるのが一番おすすめです！')}
           </p>
         </div>
+
+        <!-- Amazonアソシエイト連動（ikerocosme-22）：記事テーマ別 節税・家計防衛おすすめアイテム枠 -->
+        {get_store1_amazon_card(art)}
 
         <!-- SNSシェア＆フォロー促しボタン -->
         <div class="flex flex-wrap items-center justify-between gap-3 p-4 bg-slate-900 text-white rounded-2xl">
