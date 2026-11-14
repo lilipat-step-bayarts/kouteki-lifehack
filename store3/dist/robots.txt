@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://onigon-night-lab.pages.dev/sitemap.xml

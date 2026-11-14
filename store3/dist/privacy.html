@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>プライバシーポリシー・広告開示・免責事項 | オニゴンの夜更かしラボ</title>
+  <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen">
+  
+<!-- 18歳以上年齢確認モーダル (DMM/FANZA審査対応) -->
+<div id="onigon-age-gate" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/95 backdrop-blur-md p-4">
+  <div class="max-w-md w-full bg-slate-900 border-2 border-purple-500/60 rounded-3xl p-6 md:p-8 text-center shadow-2xl shadow-purple-950/80 space-y-5">
+    <div class="relative mx-auto w-20 h-20">
+      <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-20 h-20 rounded-full object-cover border-2 border-fuchsia-400 shadow-lg">
+      <span class="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white border border-white">18+</span>
+    </div>
+    <div class="space-y-2">
+      <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-950 text-purple-300 border border-purple-700/60">
+        年齢確認 / Age Verification
+      </span>
+      <h2 class="text-xl font-black text-white leading-snug">
+        ここから先は成人向け（18歳以上対象）のレビュー情報を含みます
+      </h2>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        当サイト「オニゴンの夜更かしラボ」は、成人向けエンタメ作品（FANZA / DMM / 同人ASMR等）のセール情報・レビューを掲載しています。18歳未満の方の閲覧は固くお断りいたします。
+      </p>
+    </div>
+    <div class="space-y-2.5 pt-2">
+      <button onclick="confirmAgeGate()" class="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white font-black text-sm shadow-lg shadow-fuchsia-600/30 transition cursor-pointer">
+        はい、私は18歳以上です（ENTER）
+      </button>
+      <a href="https://www.google.co.jp/" rel="nofollow" class="block w-full py-2.5 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 font-bold text-xs transition">
+        いいえ、18歳未満です（EXIT）
+      </a>
+    </div>
+  </div>
+</div>
+<script>
+  (function() {
+    try {
+      if (localStorage.getItem('onigon_age_verified_v1') !== 'true') {
+        var modal = document.getElementById('onigon-age-gate');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }
+      }
+    } catch (e) {}
+  })();
+  function confirmAgeGate() {
+    try {
+      localStorage.setItem('onigon_age_verified_v1', 'true');
+    } catch (e) {}
+    var modal = document.getElementById('onigon-age-gate');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+</script>
+
+  
+  <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-purple-500/30 shadow-lg">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2.5 group">
+        <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-10 h-10 rounded-full border-2 border-fuchsia-400 shadow-md object-cover group-hover:scale-105 transition-transform">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-bold text-fuchsia-400 tracking-wider">MIDNIGHT CURATION LAB</span>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-600/90 text-white font-black">R18</span>
+          </div>
+          <span class="text-base font-black text-white tracking-tight block">オニゴンの夜更かしラボ</span>
+        </div>
+      </a>
+      <nav class="flex items-center gap-3 md:gap-5 text-xs font-bold text-slate-300">
+        <a href="/" class="hover:text-fuchsia-400 transition ">新着速報</a>
+        <a href="/newcomers.html" class="px-2.5 py-1 rounded-full border bg-purple-950/80 text-fuchsia-300 border-fuchsia-500/40 hover:bg-purple-900 transition flex items-center gap-1">
+          <span>🌟</span><span>新人図鑑・サムネ</span>
+        </a>
+        <a href="/about.html" class="hidden sm:inline hover:text-fuchsia-400 transition ">オニゴンとは？</a>
+        <a href="/privacy.html" class="hidden sm:inline hover:text-fuchsia-400 transition text-fuchsia-400">免責・規約</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <main class="max-w-3xl mx-auto px-4 py-8">
+    <div class="bg-slate-900/90 rounded-3xl p-6 md:p-10 border border-purple-500/30 shadow-2xl space-y-6">
+      <h1 class="text-xl font-black text-white border-b border-slate-800 pb-3">プライバシーポリシー及び広告掲載に関する表記</h1>
+      <div class="text-xs md:text-sm text-slate-300 space-y-4 leading-relaxed">
+        <h2 class="font-bold text-fuchsia-300 text-sm">1. 年齢制限（18歳未満の閲覧禁止）について</h2>
+        <p>当サイト「オニゴンの夜更かしラボ」は、成人向けコンテンツ（FANZA / DMM等）に関するレビューおよびセール情報を取り扱っております。18歳未満の方の閲覧は固くお断りいたします。</p>
+
+        <h2 class="font-bold text-fuchsia-300 text-sm">2. 広告の配信・アフィリエイトプログラムについて</h2>
+        <p>当サイトは、DMMアフィリエイト、忍者AdMax等のアフィリエイトプログラムおよび第三者配信広告サービスに参加しています。記事内のリンクを経由して商品が購入された場合、当サイトに紹介料が支払われることがあります。</p>
+
+        <h2 class="font-bold text-fuchsia-300 text-sm">3. 免責事項</h2>
+        <p>当サイトに掲載しているセール期間、価格、ポイント還元率等の情報は記事執筆時点のものです。最新の価格やキャンペーン適用条件については、必ず遷移先のFANZA / DMM公式ページにてご確認ください。</p>
+      </div>
+    </div>
+  </main>
+
+  
+  <footer class="bg-slate-950 text-slate-400 py-12 mt-16 border-t border-purple-900/50">
+    <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
+      <div class="flex items-center justify-center gap-2.5">
+        <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-8 h-8 rounded-full border border-fuchsia-400 object-cover">
+        <span class="font-bold text-white text-sm">オニゴンの夜更かしラボ（Onigon Night Lab）</span>
+      </div>
+      <p class="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">
+        当サイトは18歳以上を対象とした深夜エンタメ・FANZAセール・大型新人レビュー・同人ASMR音声のキュレーションメディアです。著作権および各配信プラットフォームの規約を遵守して運営しています。
+      </p>
+      <div class="text-[11px] text-slate-400 flex flex-wrap justify-center gap-4 pt-2">
+        <a href="/" class="hover:text-fuchsia-400">トップページ</a>
+        <span>•</span>
+        <a href="/newcomers.html" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">🌟 新人女優・注目ルーキー図鑑</a>
+        <span>•</span>
+        <a href="/about.html" class="hover:text-fuchsia-400">運営者情報（オニゴン）</a>
+        <span>•</span>
+        <a href="/privacy.html" class="hover:text-fuchsia-400">プライバシーポリシー・広告開示</a>
+        <span>•</span>
+        <a href="/sitemap.xml" class="hover:text-fuchsia-400">サイトマップ</a>
+      </div>
+      <div class="text-[11px] text-slate-600 font-mono">
+        © 2026 Onigon Night Lab. All Rights Reserved. (18+ Adult Only)
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
