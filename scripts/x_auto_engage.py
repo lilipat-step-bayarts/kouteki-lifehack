@@ -115,55 +115,105 @@ def load_follow_history():
         except Exception:
             pass
     return {
-        "store1_hoporin": {"followed_ids": [], "last_run_at": None},
-        "store2_ikero": {"followed_ids": [], "last_run_at": None}
+        "store1_hoporin": {"followed_ids": [], "followed_timestamps": {}, "unfollowed_ids": [], "last_run_at": None},
+        "store2_ikero": {"followed_ids": [], "followed_timestamps": {}, "unfollowed_ids": [], "last_run_at": None}
     }
 
 def save_follow_history(history):
     with open(FOLLOW_HISTORY_FILE, "w", encoding="utf-8") as f:
         json.dump(history, f, ensure_ascii=False, indent=2)
 
-def follow_user(account, target_user_id, followed_set, reason=""):
-    if not target_user_id or str(target_user_id) == str(account["user_id"]):
+def follow_user(account, target_user_id, followed_set, followed_timestamps, unfollowed_set, reason=""):
+    uid_str = str(target_user_id)
+    if not uid_str or uid_str == str(account["user_id"]):
         return False
-    if str(target_user_id) in followed_set:
+    if uid_str in followed_set or uid_str in unfollowed_set:
         return False
 
     url = f"https://api.twitter.com/2/users/{account['user_id']}/following"
-    res = x_api_request("POST", url, account, json_body={"target_user_id": str(target_user_id)})
+    res = x_api_request("POST", url, account, json_body={"target_user_id": uid_str})
+    now_iso = datetime.now(timezone.utc).isoformat()
     if res and res.get("data", {}).get("following"):
-        print(f"  ✅ {account['name']} followed user {target_user_id} ({reason})")
-        followed_set.add(str(target_user_id))
+        print(f"  ✅ {account['name']} followed user {uid_str} ({reason})")
+        followed_set.add(uid_str)
+        followed_timestamps[uid_str] = now_iso
         return True
-    # すでにフォロー済みまたは制限時もIDを記録して無駄な再試行を防止
-    followed_set.add(str(target_user_id))
+    # すでにフォロー済みまたは制限時もIDと日時を記録して無駄な再試行を防止
+    followed_set.add(uid_str)
+    followed_timestamps.setdefault(uid_str, now_iso)
     return False
 
+def unfollow_user(account, target_user_id, followed_set, followed_timestamps, unfollowed_set, reason=""):
+    uid_str = str(target_user_id)
+    if not uid_str or uid_str == str(account["user_id"]) or uid_str == str(account.get("peer_user_id", "")):
+        return False
+
+    url = f"https://api.twitter.com/2/users/{account['user_id']}/following/{uid_str}"
+    res = x_api_request("DELETE", url, account)
+    print(f"  🔄 {account['name']} unfollowed user {uid_str} ({reason})")
+    followed_set.discard(uid_str)
+    followed_timestamps.pop(uid_str, None)
+    unfollowed_set.add(uid_str)
+    return bool(res)
+
 def process_account(key, account, history):
-    print(f"\n=== Processing X Auto-Follow / Followback for {account['name']} ===")
-    acc_hist = history.setdefault(key, {"followed_ids": [], "last_run_at": None})
+    print(f"\n=== Processing X Auto-Follow / Followback / 30-Day Cleanup for {account['name']} ===")
+    acc_hist = history.setdefault(key, {"followed_ids": [], "followed_timestamps": {}, "unfollowed_ids": [], "last_run_at": None})
     followed_set = set(str(x) for x in acc_hist.get("followed_ids", []))
+    followed_timestamps = acc_hist.setdefault("followed_timestamps", {})
+    unfollowed_set = set(str(x) for x in acc_hist.get("unfollowed_ids", []))
+
+    now_dt = datetime.now(timezone.utc)
+    now_iso = now_dt.isoformat()
+
+    # 既存履歴でタイムスタンプが未設定のIDに現在日時を補完（マイグレーション）
+    for uid in followed_set:
+        if uid not in followed_timestamps:
+            followed_timestamps[uid] = now_iso
 
     # 1. 姉妹店アカウント（1号店⇔2号店）の相互フォロー確保
-    peer_id = account.get("peer_user_id")
+    peer_id = str(account.get("peer_user_id", ""))
     if peer_id and peer_id not in followed_set:
-        follow_user(account, peer_id, followed_set, reason="姉妹店相互フォロー")
+        follow_user(account, peer_id, followed_set, followed_timestamps, unfollowed_set, reason="姉妹店相互フォロー")
 
-    # 2. 新規フォロワーの自動フォローバック（最大2名/回）
+    # 2. フォロワー一覧を取得し、新規フォロワーを自動フォローバック（最大2名/回）
     followers_url = f"https://api.twitter.com/2/users/{account['user_id']}/followers"
-    followers_res = x_api_request("GET", followers_url, account, query_params={"max_results": "10"})
+    followers_res = x_api_request("GET", followers_url, account, query_params={"max_results": "100"})
+    current_follower_ids = set()
     fb_count = 0
     if followers_res and "data" in followers_res:
         for u in followers_res["data"]:
             uid = str(u.get("id", ""))
-            if uid and uid not in followed_set:
-                if follow_user(account, uid, followed_set, reason=f"自動フォローバック @{u.get('username', '')}"):
+            if uid:
+                current_follower_ids.add(uid)
+            if uid and uid not in followed_set and uid not in unfollowed_set and fb_count < 2:
+                if follow_user(account, uid, followed_set, followed_timestamps, unfollowed_set, reason=f"自動フォローバック @{u.get('username', '')}"):
                     fb_count += 1
                     time.sleep(1.5)
-                if fb_count >= 2:
-                    break
 
-    # 3. 関心層ユーザーの検索＆自動フォロー（最大2名/回）
+    # 3. フォローしてから30日以上経過し、フォローバックがないアカウントを自動解除（最大2名/回）
+    unfollow_count = 0
+    for uid, ts_str in list(followed_timestamps.items()):
+        if uid == peer_id or uid == str(account["user_id"]):
+            continue
+        if uid in current_follower_ids:
+            # フォローバックしてくれているユーザーは維持
+            continue
+        try:
+            followed_dt = datetime.fromisoformat(ts_str)
+            if followed_dt.tzinfo is None:
+                followed_dt = followed_dt.replace(tzinfo=timezone.utc)
+            days_elapsed = (now_dt - followed_dt).total_seconds() / 86400.0
+            if days_elapsed >= 30.0:
+                unfollow_user(account, uid, followed_set, followed_timestamps, unfollowed_set, reason=f"{int(days_elapsed)}日間フォローバックなしのため整理")
+                unfollow_count += 1
+                time.sleep(1.5)
+                if unfollow_count >= 2:
+                    break
+        except Exception:
+            continue
+
+    # 4. 関心層ユーザーの検索＆自動フォロー（最大2名/回 = 1日最大10名ペース）
     search_url = "https://api.twitter.com/2/tweets/search/recent"
     search_res = x_api_request(
         "GET", search_url, account,
@@ -177,22 +227,24 @@ def process_account(key, account, history):
     if search_res and "data" in search_res:
         for t in search_res["data"]:
             author_id = str(t.get("author_id", ""))
-            if author_id and author_id not in followed_set:
-                if follow_user(account, author_id, followed_set, reason="関心層アプローチ"):
+            if author_id and author_id not in followed_set and author_id not in unfollowed_set:
+                if follow_user(account, author_id, followed_set, followed_timestamps, unfollowed_set, reason="関心層アプローチ"):
                     target_count += 1
                     time.sleep(1.5)
                 if target_count >= 2:
                     break
 
-    acc_hist["followed_ids"] = list(followed_set)[-500:]
-    acc_hist["last_run_at"] = datetime.now(timezone.utc).isoformat()
+    acc_hist["followed_ids"] = list(followed_set)[-1000:]
+    acc_hist["followed_timestamps"] = {k: v for k, v in followed_timestamps.items() if k in followed_set}
+    acc_hist["unfollowed_ids"] = list(unfollowed_set)[-1000:]
+    acc_hist["last_run_at"] = now_iso
 
 def main():
     history = load_follow_history()
     for key, account in ACCOUNTS.items():
         process_account(key, account, history)
     save_follow_history(history)
-    print("\n✨ X Auto-Followback & Engagement cycle completed.")
+    print("\n✨ X Auto-Followback, Engagement & 30-Day Cleanup cycle completed.")
 
 if __name__ == "__main__":
     main()
