@@ -109,22 +109,46 @@ RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"
 def get_store1_amazon_card(art):
     cat = art.get("category", "")
     title = art.get("title", "")
-    if "マイナ" in title or "スマホ" in title or "e-Tax" in title or "確定申告" in title or "税金" in cat:
-        item_title = "マイナポータル・e-Tax確定申告の必須アイテム（ICカードリーダー / 節税実用書）"
+    if "ふるさと納税" in title or "マイナ" in title or "スマホ" in title or "e-Tax" in title or "確定申告" in title or "税金" in cat or "NISA" in title:
+        item_title = "マイナポータル・e-Tax確定申告の必須アイテム＆ふるさと納税返礼品"
         keyword = "マイナンバーカード ICカードリーダー 確定申告 本"
         desc = "スマホやPCでのe-Tax・マイナポータル申請をスムーズにする公的個人認証対応ICカードリーダーや、最新の税金・控除ハック本をAmazon・楽天でチェックできます。"
-    elif "省エネ" in title or "電気" in title or "エアコン" in title or "断熱" in title or "補助金" in cat:
+        high_ticket_badge = "💰 節税・控除枠の無料最大化"
+        high_ticket_title = "【楽天ふるさと納税】年収・家族構成を入れるだけ！控除上限額3秒シミュレーター"
+        high_ticket_desc = "自己負担2,000円で黒毛和牛・海鮮・日用品がもらえる「ふるさと納税」の自分の上限額を無料で診断。楽天ポイントも同時に貯まってダブルでお得です。"
+        high_ticket_target = "https://event.rakuten.co.jp/furusato/guide/totalsimulation/"
+        high_ticket_btn = "🎁 楽天ふるさと納税で無料控除シミュレーション＆人気返礼品を見る"
+        amazon_sub_keyword = "ふるさと納税 確定申告 節税 本"
+    elif "省エネ" in title or "電気" in title or "エアコン" in title or "断熱" in title or "補助金" in cat or "住宅" in title:
         item_title = "電気代・光熱費を即効カットする省エネ・断熱対策グッズ"
         keyword = "省エネ 断熱シート スマートプラグ 節電グッズ"
         desc = "補助金と併用してさらに光熱費を抑える窓用断熱シート、消費電力が見えるスマートプラグ、最新省エネ家電の売れ筋ランキングをチェック！"
-    elif "防災" in title or "防犯" in title:
-        item_title = "自治体助成の対象にもなる家庭用防災・防犯対策セット"
-        keyword = "防災セット 非常食 防犯カメラ センサーライト"
-        desc = "自治体の防災・防犯グッズ購入費助成とあわせて備えておきたい、長期保存水・非常食セットや工事不要の防犯センサーライト。"
+        high_ticket_badge = "⚡ 固定費・光熱費の無料診断"
+        high_ticket_title = "【固定費削減】省エネ家電・断熱リフォーム＆節電アイテム徹底比較ランキング"
+        high_ticket_desc = "国の補助金対象にもなる最新省エネエアコン・給湯器・内窓断熱グッズの価格とポイント還元率を一括比較。毎月の電気・ガス代を根本から引き下げます。"
+        high_ticket_target = "https://search.rakuten.co.jp/search/mall/%E7%9C%81%E3%82%A8%E3%83%8D%E5%AE%B6%E9%9B%BB+%E7%AF%80%E9%9B%BB/"
+        high_ticket_btn = "⚡ 楽天市場で省エネ・節電ランキング＆還元率をチェックする"
+        amazon_sub_keyword = "省エネ家電 節電タップ スマートリモコン"
+    elif "教育" in title or "失業" in title or "雇用" in title or "年収" in title or "キャリア" in title:
+        item_title = "給付金対象講座にも対応！資格取得・リスキリング実用書ランキング"
+        keyword = "資格 勉強 リスキリング 補助金 税金 本"
+        desc = "教育訓練給付金（最大70%〜80%還付）の対象となるIT・簿記・FP・医療事務などの人気資格テキストやキャリアアップ実用書。"
+        high_ticket_badge = "🎓 給付金対象・キャリア支援"
+        high_ticket_title = "【最大70%還付】教育訓練給付金で取れる人気資格・通信講座テキスト特集"
+        high_ticket_desc = "ハローワークの給付金制度を使って実質負担を大幅に抑えられる国家資格・ITスキル・FP講座の定番テキスト＆問題集を今すぐチェック！"
+        high_ticket_target = "https://search.rakuten.co.jp/search/mall/%E8%B3%87%E6%A0%BC+%E9%80%9A%E4%BF%A1%E8%AC%9B%E5%BA%A7+%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88/"
+        high_ticket_btn = "📚 給付金で狙える人気資格テキスト・講座を楽天で見る"
+        amazon_sub_keyword = "FP 簿記 ITパスポート 資格 テキスト"
     else:
         item_title = "知らないと損する「お金・補助金・税金」のベストセラー実用書＆家計管理グッズ"
         keyword = "補助金 税金 届出 だけでお金がもらえる本"
         desc = "申請だけで貰える給付金・手当・減税制度を1冊で網羅できる人気の制度ハック本や、領収書・公的書類の整理に便利なドキュメントファイル。"
+        high_ticket_badge = "📊 家計防衛・無料診断特集"
+        high_ticket_title = "【申請漏れゼロへ】届出だけでもらえるお金・ふるさと納税・節税バイブル特集"
+        high_ticket_desc = "年金・医療費・子育て・住宅など、役所や税務署が教えてくれない「申請主義」の給付金を網羅したベストセラーガイドとふるさと納税の特設会場。"
+        high_ticket_target = "https://event.rakuten.co.jp/furusato/"
+        high_ticket_btn = "🏆 楽天ふるさと納税 特設会場＆控除シミュレーターを見る"
+        amazon_sub_keyword = "届出だけでもらえるお金 税金 補助金 本"
 
     query = urllib.parse.quote(keyword)
     amazon_url = f"https://www.amazon.co.jp/s?k={query}&tag={AMAZON_TAG}"
@@ -132,7 +156,32 @@ def get_store1_amazon_card(art):
     rakuten_pc = urllib.parse.quote(rakuten_search_url, safe="")
     rakuten_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={rakuten_pc}&link_type=text"
 
+    ht_pc = urllib.parse.quote(high_ticket_target, safe="")
+    ht_rakuten_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={ht_pc}&link_type=text"
+    ht_amazon_url = f"https://www.amazon.co.jp/s?k={urllib.parse.quote(amazon_sub_keyword)}&tag={AMAZON_TAG}"
+
     return f"""
+    <!-- 特大単価・高成約枠：カテゴリ連動シミュレーション＆特設診断 -->
+    <div class="my-6 p-5 bg-gradient-to-br from-indigo-50 via-blue-50 to-emerald-50 border-2 border-indigo-200 rounded-2xl shadow-sm space-y-3">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-indigo-600 text-white">{high_ticket_badge}</span>
+        <span class="text-[10px] text-indigo-700 font-bold">PR・公式シミュレーション＆特設ガイド</span>
+      </div>
+      <h3 class="text-sm md:text-base font-extrabold text-slate-900 leading-snug">{high_ticket_title}</h3>
+      <p class="text-xs text-slate-700 leading-relaxed">{high_ticket_desc}</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+        <a href="{ht_rakuten_url}" target="_blank" rel="noopener noreferrer sponsored" class="py-3 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-center rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5">
+          <span>{high_ticket_btn}</span>
+          <span>↗</span>
+        </a>
+        <a href="{ht_amazon_url}" target="_blank" rel="noopener noreferrer sponsored" class="py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white text-center rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-1.5">
+          <span>📘 Amazonでベストセラー解説書・30日間無料読み放題を見る</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 物販アフィリエイト枠：記事テーマ別 家計防衛アイテム -->
     <div class="my-6 p-5 bg-gradient-to-r from-amber-50/90 to-orange-50/90 border border-amber-200 rounded-2xl shadow-sm space-y-3">
       <div class="flex items-center justify-between">
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-600 text-white">🐧 ほぽりん厳選・家計防衛アイテム</span>

@@ -41,6 +41,11 @@ def get_affiliate_card(product_name, category, price, key_ingredients, merit, se
     rakuten_pc = urllib.parse.quote(rakuten_search_url, safe="")
     rakuten_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={rakuten_pc}&link_type=text"
 
+    trial_query = urllib.parse.quote("オルビス ファンケル キュレル トライアルセット 医薬部外品")
+    trial_amazon_url = f"https://www.amazon.co.jp/s?k={trial_query}&tag={AMAZON_TAG}"
+    trial_rakuten_search = f"https://search.rakuten.co.jp/search/mall/{urllib.parse.quote('医薬部外品 スキンケア トライアルセット 公式')}/"
+    trial_rakuten_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote(trial_rakuten_search, safe='')}&link_type=text"
+
     return f"""
     <div class="my-6 p-5 bg-gradient-to-r from-emerald-50/70 to-teal-50/70 rounded-2xl border border-emerald-200/80 shadow-sm">
       <div class="flex items-center justify-between mb-2">
@@ -65,6 +70,30 @@ def get_affiliate_card(product_name, category, price, key_ingredients, merit, se
       <div class="mt-2.5 text-right">
         <a href="{official_url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] text-emerald-700 hover:text-emerald-900 hover:underline font-medium">
           <span>🏛️ {official_name}で全成分表示を確認する</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 💎 高成約枠：デパコス・薬用コスメの初回1,000円台トライアルセット比較枠 -->
+    <div class="my-6 p-5 bg-gradient-to-br from-rose-50 via-pink-50/70 to-amber-50/60 rounded-2xl border-2 border-rose-200 shadow-sm space-y-3">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-600 text-white">💎 失敗しないための初回限定・お試し比較</span>
+        <span class="text-[10px] text-rose-700 font-bold">PR・薬用/デパコス 1,000円台〜トライアル</span>
+      </div>
+      <h4 class="text-sm md:text-base font-black text-slate-900 leading-snug">
+        いきなり現品を買って肌に合わないのが不安な方へ｜薬用・敏感肌トライアルセット比較
+      </h4>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        高濃度成分や医薬部外品は、まず<strong>1,000円〜1,500円台のミニサイズ（7日〜14日間トライアルセット）</strong>で自分の肌との相性をテストするのが美肌への最短ルートです。オルビス・ファンケル・キュレル等の公式お試しセットを一覧で比較できます。
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+        <a href="{trial_amazon_url}" target="_blank" rel="noopener noreferrer sponsored" class="py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white text-center rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-1.5">
+          <span>🎁 Amazonで1,000円台〜の薬用トライアルセットを見る</span>
+          <span>↗</span>
+        </a>
+        <a href="{trial_rakuten_url}" target="_blank" rel="noopener noreferrer sponsored" class="py-2.5 px-4 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white text-center rounded-xl font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-1.5">
+          <span>✨ 楽天の公式ショップ限定お試しセットを比較する</span>
           <span>↗</span>
         </a>
       </div>
