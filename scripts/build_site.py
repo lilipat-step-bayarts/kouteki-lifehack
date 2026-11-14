@@ -104,6 +104,7 @@ def live_ad_box(label):
     """
 
 AMAZON_TAG = "ikerocosme-22"
+RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"
 
 def get_store1_amazon_card(art):
     cat = art.get("category", "")
@@ -111,7 +112,7 @@ def get_store1_amazon_card(art):
     if "マイナ" in title or "スマホ" in title or "e-Tax" in title or "確定申告" in title or "税金" in cat:
         item_title = "マイナポータル・e-Tax確定申告の必須アイテム（ICカードリーダー / 節税実用書）"
         keyword = "マイナンバーカード ICカードリーダー 確定申告 本"
-        desc = "スマホやPCでのe-Tax・マイナポータル申請をスムーズにする公的個人認証対応ICカードリーダーや、最新の税金・控除ハック本をAmazonでチェックできます。"
+        desc = "スマホやPCでのe-Tax・マイナポータル申請をスムーズにする公的個人認証対応ICカードリーダーや、最新の税金・控除ハック本をAmazon・楽天でチェックできます。"
     elif "省エネ" in title or "電気" in title or "エアコン" in title or "断熱" in title or "補助金" in cat:
         item_title = "電気代・光熱費を即効カットする省エネ・断熱対策グッズ"
         keyword = "省エネ 断熱シート スマートプラグ 節電グッズ"
@@ -127,13 +128,15 @@ def get_store1_amazon_card(art):
 
     query = urllib.parse.quote(keyword)
     amazon_url = f"https://www.amazon.co.jp/s?k={query}&tag={AMAZON_TAG}"
-    rakuten_url = f"https://search.rakuten.co.jp/search/mall/{query}/"
+    rakuten_search_url = f"https://search.rakuten.co.jp/search/mall/{query}/"
+    rakuten_pc = urllib.parse.quote(rakuten_search_url, safe="")
+    rakuten_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={rakuten_pc}&link_type=text"
 
     return f"""
     <div class="my-6 p-5 bg-gradient-to-r from-amber-50/90 to-orange-50/90 border border-amber-200 rounded-2xl shadow-sm space-y-3">
       <div class="flex items-center justify-between">
         <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-600 text-white">🐧 ほぽりん厳選・家計防衛アイテム</span>
-        <span class="text-[10px] text-amber-700 font-bold">PR・Amazonアソシエイト</span>
+        <span class="text-[10px] text-amber-700 font-bold">PR・Amazon / 楽天アフィリエイト</span>
       </div>
       <h3 class="text-sm md:text-base font-extrabold text-slate-900">{item_title}</h3>
       <p class="text-xs text-slate-600 leading-relaxed">{desc}</p>

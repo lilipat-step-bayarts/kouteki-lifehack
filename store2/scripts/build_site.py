@@ -31,12 +31,15 @@ NINJA_AD_SCRIPT = """
 """
 
 AMAZON_TAG = "ikerocosme-22"
+RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"
 
-# A8.net / 物販成約型アフィリエイト商品カードテンプレート（実稼働リンク＋AmazonアソシエイトID搭載）
+# A8.net / 物販成約型アフィリエイト商品カードテンプレート（実稼働リンク＋Amazon＆楽天アソシエイトID搭載）
 def get_affiliate_card(product_name, category, price, key_ingredients, merit, search_keyword=None, official_url="https://www.jcia.org/", official_name="メーカー公式製品ページ"):
     query = urllib.parse.quote(search_keyword or product_name)
     amazon_url = f"https://www.amazon.co.jp/s?k={query}&tag={AMAZON_TAG}"
-    rakuten_url = f"https://search.rakuten.co.jp/search/mall/{query}/"
+    rakuten_search_url = f"https://search.rakuten.co.jp/search/mall/{query}/"
+    rakuten_pc = urllib.parse.quote(rakuten_search_url, safe="")
+    rakuten_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={rakuten_pc}&link_type=text"
 
     return f"""
     <div class="my-6 p-5 bg-gradient-to-r from-emerald-50/70 to-teal-50/70 rounded-2xl border border-emerald-200/80 shadow-sm">
