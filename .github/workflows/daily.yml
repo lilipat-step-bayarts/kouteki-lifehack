@@ -78,16 +78,11 @@ jobs:
             (cd store3 && npx wrangler pages deploy dist --project-name=onigon-night-lab --branch=main --commit-dirty=true) || true
           fi
 
-      - name: X（旧Twitter）自動分散ポスト（ポスト送信のみ・読み取り課金ゼロ）
-        if: github.event_name == 'schedule'
-        run: |
-          python3 scripts/distribute_tweet.py || echo "Store 1 tweet skipped"
-          python3 store2/scripts/distribute_tweet.py || echo "Store 2 tweet skipped"
-          python3 store3/scripts/distribute_tweet.py || echo "Store 3 tweet skipped"
+      # X（旧Twitter）への投稿・フォロー・片思い解除は別PCのローカルブラウザ自動運用（local_pc_x_automation/）へ完全移行済（API課金 $0.00）
 
       - name: 生成した記事・ビルド成果物・投稿履歴をGitHubに自動コミット＆保存
         run: |
           git config --global user.name "Hoporin AutoBot"
           git config --global user.email "bot@kouteki-lifehack.pages.dev"
-          git add -A articles/ dist/ store2/articles/ store2/dist/ store3/articles/ store3/dist/ .tweet_history.json store2/.tweet_history.json store3/.tweet_history.json 2>/dev/null || true
+          git add -A articles/ dist/ store2/articles/ store2/dist/ store3/articles/ store3/dist/ 2>/dev/null || true
           git diff --staged --quiet || (git commit -m "chore(auto): 1号店・2号店・3号店の記事更新＆本番デプロイ同期 [skip ci]" && git push)

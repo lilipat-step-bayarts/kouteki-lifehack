@@ -1,18 +1,27 @@
 #!/usr/bin/env python3
 """
-【完全無料 $0.00・API不使用】自宅PCローカルブラウザ自動運用エンジン
-対象3アカウント：
-1. 1号店（ほぽりん: @ramune_lilipat） - 節約・給付金・税金ジャンル
-2. 2号店（イケロ: @ikero_lab）       - 美容・コスメ成分・スキンケアジャンル
-3. 3号店（オニゴン: @Onigon_yfks）   - 夜更かし・同人ASMR・バイノーラルジャンル（1・2号店と完全分離）
+【完全無料 $0.00・X API不使用】別PCスタンドアロン稼働用 X統合運用エンジン
+（自動時間差ポスト ＋ 自動フォローバック ＋ 同ジャンル関心層フォロー ＋ 30日片思い自動解除）
 
-【機能】
-- APIクレジット消費ゼロ（Playwrightでアカウントごとの専用Chromeプロファイルを起動）
-- 初回のみ手動でXにログインすれば、2回目以降はCookie/セッション維持で完全自動実行
-- ① フォロワー一覧ページを開き、「フォローバック」ボタンがある新規フォロワーを自動フォロバ
-- ② 同ジャンルの検索結果（最新タブ）を開き、投稿者を順番に自動フォロー（ランダム待機秒数つき）
-- ③ フォロー日時を `local_follow_history.json` に記録し、14日（または指定日数）経過後に
-     プロフィールを確認して「フォローされています」バッジがない片思い相手を自動アンフォロー
+■ このファイルの特徴（別PCにこのフォルダを渡すだけで動作）
+- GitやクラウドのAPIキー設定は一切不要！インターネット経由でGitHub上の最新記事データ（`articles.json`）
+  を自動取得するため、このフォルダを別のPCの好きな場所に置くだけで最新記事をポストできます。
+- Xの有料APIを一切使わず、Playwrightで各アカウント専用のChromeプロファイル（`browser_profiles/`）を操縦するため、
+  APIクレジット消費は永久に $0.00 です。
+
+■ 対象3アカウントと運用ルール
+1. 1号店（ほぽりん: @ramune_lilipat）
+   - 稼働時間帯：06:00〜21:59 JST（1日最大5ポスト、75分以上の間隔ガード付き）
+   - キャラクター：ペンギンの制度ハック研究家「ほぽりん」🐧
+   - 相互フォロー保護：@ikero_lab
+2. 2号店（イケロ: @ikero_lab）
+   - 稼働時間帯：06:00〜21:59 JST（1日最大5ポスト、75分以上の間隔ガード付き）
+   - キャラクター：知恵の白キツネ研究員「イケロ」🦊（※フクロウではなくキツネ！）
+   - 相互フォロー保護：@ramune_lilipat
+3. 3号店（オニゴン: @Onigon_yfks）
+   - 稼働時間帯：夜間 20:00〜翌02:59 JST のみ（1晩最大3ポスト、45分以上の間隔ガード付き）
+   - キャラクター：夜更かしエンタメ案内人「オニゴン」👿
+   - アカウント分離：成人向け属性のため、1号店・2号店とは完全分離（相互フォロー・干渉なし）
 """
 
 import os
@@ -21,59 +30,108 @@ import json
 import time
 import random
 import argparse
-from datetime import datetime, timezone
+import urllib.request
+from datetime import datetime, timezone, timedelta
 from urllib.parse import quote
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import sync_playwright
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROFILES_DIR = os.path.join(BASE_DIR, "browser_profiles")
-HISTORY_FILE = os.path.join(BASE_DIR, "local_follow_history.json")
+STATE_FILE = os.path.join(BASE_DIR, "local_x_state.json")
+
+# GitHub上の最新記事JSON URL（別PCにフォルダだけ渡しても常に最新の記事リストを自動取得できる）
+GITHUB_RAW_BASE = "https://raw.githubusercontent.com/lilipat-step-bayarts/kouteki-lifehack/main"
 
 ACCOUNTS = {
     "store1_hoporin": {
         "name": "1号店（ほぽりん @ramune_lilipat）",
         "handle": "ramune_lilipat",
+        "site_url": "https://hoporin.lilipat-cosme-bayarts.com",
+        "remote_articles_url": f"{GITHUB_RAW_BASE}/articles/articles.json",
+        "local_articles_fallback": os.path.join( os.path.dirname(BASE_DIR), "articles", "articles.json"),
+        "id_key": "id",
+        "active_window": "day",       # 06:00 - 21:59 JST
+        "max_posts_per_day": 5,
+        "min_post_interval_min": 75,
         "search_keywords": [
             "ふるさと納税 節約 lang:ja",
             "医療費控除 確定申告 lang:ja",
             "新NISA 家計管理 lang:ja",
             "給付金 補助金 lang:ja"
         ],
-        "max_followback_per_run": 4,
-        "max_new_follow_per_run": 5,
-        "max_unfollow_per_run": 4,
+        "max_followback_per_run": 3,
+        "max_new_follow_per_run": 4,
+        "max_unfollow_per_run": 3,
         "unfollow_after_days": 30,
         "protected_handles": {"ramune_lilipat", "ikero_lab"}
     },
     "store2_ikero": {
         "name": "2号店（イケロ @ikero_lab）",
         "handle": "ikero_lab",
+        "site_url": "https://ikero.lilipat-cosme-bayarts.com",
+        "remote_articles_url": f"{GITHUB_RAW_BASE}/store2/articles/articles.json",
+        "local_articles_fallback": os.path.join(os.path.dirname(BASE_DIR), "store2", "articles", "articles.json"),
+        "id_key": "slug",
+        "active_window": "day",       # 06:00 - 21:59 JST
+        "max_posts_per_day": 5,
+        "min_post_interval_min": 75,
         "search_keywords": [
             "プチプラコスメ スキンケア lang:ja",
             "レチノール ナイアシンアミド lang:ja",
             "毛穴ケア セラミド lang:ja",
             "美容垢さんと繋がりたい lang:ja"
         ],
-        "max_followback_per_run": 4,
-        "max_new_follow_per_run": 5,
-        "max_unfollow_per_run": 4,
+        "max_followback_per_run": 3,
+        "max_new_follow_per_run": 4,
+        "max_unfollow_per_run": 3,
         "unfollow_after_days": 30,
         "protected_handles": {"ramune_lilipat", "ikero_lab"}
     },
     "store3_onigon": {
         "name": "3号店（オニゴン @Onigon_yfks）",
         "handle": "Onigon_yfks",
+        "site_url": "https://onigon.lilipat-cosme-bayarts.com",
+        "remote_articles_url": f"{GITHUB_RAW_BASE}/store3/articles/articles.json",
+        "local_articles_fallback": os.path.join(os.path.dirname(BASE_DIR), "store3", "articles", "articles.json"),
+        "id_key": "slug",
+        "active_window": "night",     # 20:00 - 02:59 JST
+        "max_posts_per_day": 3,
+        "min_post_interval_min": 45,
         "search_keywords": [
             "同人ASMR 耳かき lang:ja",
             "バイノーラル 睡眠導入 lang:ja",
             "FANZA同人 セール lang:ja"
         ],
-        "max_followback_per_run": 4,
-        "max_new_follow_per_run": 5,
-        "max_unfollow_per_run": 4,
+        "max_followback_per_run": 3,
+        "max_new_follow_per_run": 4,
+        "max_unfollow_per_run": 3,
         "unfollow_after_days": 30,
-        "protected_handles": {"Onigon_yfks", "ramune_lilipat", "ikero_lab"}
+        "protected_handles": {"onigon_yfks", "ramune_lilipat", "ikero_lab"}
     }
+}
+
+# 初回移行時にすでにAPIで投稿済みの記事IDをシード（重複投稿防止）
+INITIAL_POSTED_SEED = {
+    "store1_hoporin": [
+        "jidou-teate-kakuju-2026", "nenshu-no-kabe-minaoshi-2026", "jutaku-shoene-campaign-2026",
+        "maina-kougaku-ryouyouhi-2026", "shussan-ikuji-ichijikin-teate-2026", "denki-gas-hojo-winter-2026",
+        "shitsugyou-hoken-65sai-ichijikin-2026", "souzoku-zoyo-kazei-minaoshi-2026",
+        "daily-lifehack-2026-11-14-slot4", "daily-lifehack-2026-11-14-slot5",
+        "iryouhi-koujo-self-medication-2026", "daily-lifehack-2026-11-15-slot1",
+        "daily-lifehack-2026-11-15-slot2", "daily-lifehack-2026-11-15-slot3",
+        "daily-lifehack-2026-11-15-slot4"
+    ],
+    "store2_ikero": [
+        "glycylglycine-pore-tightening", "salicylic-acid-bha-aha-pha-2026-11-15-s2",
+        "heparin-allantoin-dry-skin-2026-11-14-s4", "retinol-puchipura-hikaku",
+        "peptides-matrixyl-argireline-2026-11-15-s1", "panthenol-cica-skin-barrier",
+        "bakuchiol-sensitive-retinol", "zinc-oxide-non-chemical-uv-2026-11-14-s5",
+        "niacinamide-whitening-dupe", "ceramide-skin-barrier-guide",
+        "astaxanthin-fullerene-antioxidant-2026-11-15-s3", "heparin-allantoin-dry-skin-2026-11-15-s4"
+    ],
+    "store3_onigon": [
+        "fanza-500yen-sale-guide"
+    ]
 }
 
 
@@ -81,28 +139,137 @@ def human_sleep(min_sec=2.5, max_sec=5.5):
     time.sleep(random.uniform(min_sec, max_sec))
 
 
-def load_history():
-    if os.path.exists(HISTORY_FILE):
+def get_now_jst():
+    return datetime.now(timezone(timedelta(hours=9)))
+
+
+def get_cycle_date_key(acc_cfg, now_jst):
+    """1・2号店は当日日付、3号店（夜間）は20:00〜翌02:59を同一ナイトサイクルとして集計"""
+    if acc_cfg["active_window"] == "night" and 0 <= now_jst.hour < 3:
+        return (now_jst - timedelta(days=1)).strftime("%Y-%m-%d")
+    return now_jst.strftime("%Y-%m-%d")
+
+
+def is_within_active_window(acc_cfg, now_jst):
+    h = now_jst.hour
+    if acc_cfg["active_window"] == "day":
+        return 6 <= h < 22
+    else:
+        return (20 <= h <= 23) or (0 <= h < 3)
+
+
+def load_state():
+    if os.path.exists(STATE_FILE):
         try:
-            with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception:
             pass
-    return {
-        k: {"followed": {}, "unfollowed": [], "last_run_at": None}
-        for k in ACCOUNTS.keys()
-    }
+    state = {}
+    for k in ACCOUNTS.keys():
+        state[k] = {
+            "posted_ids": list(INITIAL_POSTED_SEED.get(k, [])),
+            "daily_post_counts": {},
+            "last_posted_at": None,
+            "followed": {},
+            "unfollowed": [],
+            "last_run_at": None
+        }
+    return state
 
 
-def save_history(history):
-    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-        json.dump(history, f, ensure_ascii=False, indent=2)
+def save_state(state):
+    with open(STATE_FILE, "w", encoding="utf-8") as f:
+        json.dump(state, f, ensure_ascii=False, indent=2)
+
+
+def fetch_articles_for_account(key, acc_cfg):
+    """GitHub Raw URLから最新記事リストを取得（オフライン時はローカルファイルをフォールバック参照）"""
+    articles = []
+    try:
+        req = urllib.request.Request(
+            acc_cfg["remote_articles_url"],
+            headers={"User-Agent": "LocalXBrowserBot/2.0", "Cache-Control": "no-cache"}
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            articles = json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        print(f"    ℹ️ GitHubからの最新記事取得に失敗したためローカルキャッシュを確認します: {e}")
+        fb = acc_cfg.get("local_articles_fallback", "")
+        if fb and os.path.exists(fb):
+            with open(fb, "r", encoding="utf-8") as f:
+                articles = json.load(f)
+
+    if key == "store3_onigon":
+        special_hubs = [
+            {"slug": "special:newcomers.html", "title": "【毎月更新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧"},
+            {"slug": "special:asmr-ranking.html", "title": "【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング"},
+            {"slug": "special:sale-500yen.html", "title": "【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ"}
+        ]
+        articles = special_hubs + articles
+    return articles
+
+
+def build_tweet_text(key, acc_cfg, article, now_jst):
+    hour = now_jst.hour
+    title = article.get("title", "")
+    short_title = title[:36] + "…" if len(title) > 37 else title
+    id_val = article.get(acc_cfg["id_key"], "")
+
+    if key == "store1_hoporin":
+        if 5 <= hour < 10:
+            time_hook = "【朝の公的マネー速報☀️】"
+        elif 11 <= hour < 14:
+            time_hook = "【お昼休みの知恵袋🍱】"
+        elif 17 <= hour < 20:
+            time_hook = "【帰宅時の生活防衛ハック🚃】"
+        else:
+            time_hook = "【夜の家計見直し速報🌙】"
+        url = f"{acc_cfg['site_url']}/articles/{id_val}.html"
+        patterns = [
+            f"{time_hook}\n『{short_title}』\n\n国は自動で振り込んでくれません！知っておきたい要点と申請手順をまとめました🐧✨\n👇詳細はこちら\n{url}\n#公的ライフハック #給付金 #ほぽりん",
+            f"【申請しないと損する公的制度】\n『{short_title}』\n\n「自分には関係ない」と放置していませんか？\n対象者や手取りへの影響額を3秒図解で解説🐧✨\n👇詳細・申請方法\n{url}\n#公的ライフハック #節約 #ほぽりん",
+            f"{time_hook}\n『{short_title}』\n\n知っている人だけが得をする公的支援の最新情報です🐧\n手取りを守る具体策と注意点をまとめました👇\n{url}\n#公的ライフハック #家計防衛 #ほぽりん"
+        ]
+        return random.choice(patterns)
+
+    elif key == "store2_ikero":
+        if 6 <= hour < 10:
+            time_hook = "【朝のコスメ成分速報🦊】"
+            lead = "白キツネ研究員イケロです🧪高いデパコスを買う前に知ってほしい成分の真実✨"
+        elif 11 <= hour < 14:
+            time_hook = "【お昼のコスメ比較🔬】"
+            lead = "白キツネ研究員イケロの知恵袋🦊1,000円台で同じ有効成分が入ってる名品まとめ👇"
+        elif 17 <= hour < 20:
+            time_hook = "【夕方の美容成分ラボ🦊】"
+            lead = "お仕事帰りのドラッグストアで買えるデパコス級スキンケアを徹底比較🧪"
+        else:
+            time_hook = "【夜のスキンケア速報🌙】"
+            lead = "知恵の白キツネ・イケロが忖度なしで解説する成分の真実👇"
+        url = f"{acc_cfg['site_url']}/articles/{id_val}.html"
+        return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n#コスメ成分 #プチプラコスメ #スキンケア #イケロ"
+
+    else:  # store3_onigon
+        if 20 <= hour < 22:
+            time_hook = "【夜の開幕・セール速報👿🔥】"
+            lead = "オニゴンです🌙今夜ハズレを引きたくない人へ！最安値セール＆注目作の結論まとめ👇"
+        elif 22 <= hour <= 23:
+            time_hook = "【ベッドイン＆同人ASMR特選🎧🌙】"
+            lead = "イヤホン推奨！寝落ち前にじっくり楽しめる神作＆大型ルーキー図鑑👇"
+        else:
+            time_hook = "【真夜中の夜更かし神作ラボ👿✨】"
+            lead = "まだ起きてる夜更かし勢へ！サンプル後半まで検証した忖度なしの本物レビュー👇"
+        if id_val.startswith("special:"):
+            url = f"{acc_cfg['site_url']}/{id_val.replace('special:', '')}"
+        else:
+            url = f"{acc_cfg['site_url']}/articles/{id_val}.html"
+        return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n#オニゴンの夜更かしラボ #同人ASMR #ワンコインセール #深夜エンタメ"
 
 
 def is_logged_in(page):
     try:
         page.goto("https://x.com/home", wait_until="domcontentloaded", timeout=30000)
-        human_sleep(3.0, 4.5)
+        human_sleep(3.5, 5.0)
         if "login" in page.url or "i/flow/login" in page.url:
             return False
         return True
@@ -110,7 +277,87 @@ def is_logged_in(page):
         return False
 
 
-def step1_auto_followback(page, acc_cfg, acc_hist):
+def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False):
+    """【新機能】ブラウザから1記事分のポストを自動送信する（API消費 $0.00）"""
+    now_jst = get_now_jst()
+    cycle_key = get_cycle_date_key(acc_cfg, now_jst)
+    daily_counts = acc_state.setdefault("daily_post_counts", {})
+    today_count = daily_counts.get(cycle_key, 0)
+    max_posts = acc_cfg["max_posts_per_day"]
+
+    print(f"  [0/3] 記事ポスト判定中（本日 {today_count}/{max_posts} 回投稿済）...")
+
+    if not force_post and today_count >= max_posts:
+        print(f"    ℹ️ 本日上限（{max_posts}回）に達しているためポストをスキップします。")
+        return
+
+    last_posted_str = acc_state.get("last_posted_at")
+    if not force_post and last_posted_str:
+        try:
+            last_dt = datetime.fromisoformat(last_posted_str)
+            elapsed_min = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60.0
+            min_interval = acc_cfg["min_post_interval_min"]
+            if elapsed_min < min_interval:
+                print(f"    ⏳ 前回のポストから {elapsed_min:.1f}分 しか経っていないためスキップします（最低間隔: {min_interval}分）。")
+                return
+        except Exception:
+            pass
+
+    articles = fetch_articles_for_account(key, acc_cfg)
+    if not articles:
+        print("    ⚠️ 記事データが取得できなかったためポストをスキップします。")
+        return
+
+    id_key = acc_cfg["id_key"]
+    posted_ids = acc_state.setdefault("posted_ids", [])
+    unposted = [a for a in articles if a.get(id_key) and a.get(id_key) not in posted_ids]
+    if not unposted:
+        print("    🔄 全記事を一巡したため、投稿履歴をリセットして先頭から再開します。")
+        posted_ids.clear()
+        unposted = articles
+
+    target_article = unposted[0]
+    article_id = target_article.get(id_key)
+    tweet_text = build_tweet_text(key, acc_cfg, target_article, now_jst)
+
+    print("    --------------------------------------------------")
+    for line in tweet_text.splitlines():
+        print(f"    {line}")
+    print("    --------------------------------------------------")
+
+    try:
+        # Xの投稿作成画面（intent/tweet または compose/post）を開く
+        intent_url = f"https://x.com/intent/post?text={quote(tweet_text)}"
+        page.goto(intent_url, wait_until="domcontentloaded", timeout=30000)
+        human_sleep(4.5, 6.5)
+
+        # 投稿ボタン（tweetButton）をクリック
+        post_btn = page.locator('[data-testid="tweetButton"]').first
+        if post_btn.count() == 0:
+            # フォールバック：ホーム画面の投稿ボックスに直接入力
+            page.goto("https://x.com/compose/post", wait_until="domcontentloaded", timeout=30000)
+            human_sleep(3.5, 5.0)
+            textbox = page.locator('[data-testid="tweetTextarea_0"]').first
+            textbox.click()
+            human_sleep(1.0, 2.0)
+            textbox.fill(tweet_text)
+            human_sleep(2.5, 4.0)
+            post_btn = page.locator('[data-testid="tweetButton"]').first
+
+        if post_btn.count() > 0:
+            post_btn.click()
+            human_sleep(4.5, 6.5)
+            posted_ids.append(article_id)
+            daily_counts[cycle_key] = today_count + 1
+            acc_state["last_posted_at"] = datetime.now(timezone.utc).isoformat()
+            print(f"    🎉 ブラウザから記事ポストを送信しました！ ({today_count + 1}/{max_posts})")
+        else:
+            print("    ⚠️ 投稿ボタンが見つかりませんでした（ログイン状態を確認してください）。")
+    except Exception as e:
+        print(f"    ⚠️ ブラウザ投稿中にエラーが発生しました: {e}")
+
+
+def step1_auto_followback(page, acc_cfg, acc_state):
     """フォロワー一覧を開き、『フォローバック』ボタンが出ている相手を自動でフォローバックする"""
     handle = acc_cfg["handle"]
     max_fb = acc_cfg["max_followback_per_run"]
@@ -120,7 +367,6 @@ def step1_auto_followback(page, acc_cfg, acc_hist):
         page.goto(f"https://x.com/{handle}/followers", wait_until="domcontentloaded", timeout=30000)
         human_sleep(4.0, 6.0)
 
-        # 「フォローバック」または「Follow back」ボタンを検索
         buttons = page.locator('button[data-testid$="-follow"]')
         count = buttons.count()
         fb_done = 0
@@ -147,12 +393,12 @@ def step1_auto_followback(page, acc_cfg, acc_hist):
         print(f"    ⚠️ フォロワー一覧の確認中にエラー: {e}")
 
 
-def step2_search_and_follow_targets(page, acc_cfg, acc_hist):
+def step2_search_and_follow_targets(page, acc_cfg, acc_state):
     """同ジャンルの最新ポストを検索し、投稿者のプロフィールを開いて自動フォローする"""
     max_follow = acc_cfg["max_new_follow_per_run"]
     keyword = random.choice(acc_cfg["search_keywords"])
-    followed_dict = acc_hist.setdefault("followed", {})
-    unfollowed_set = set(acc_hist.setdefault("unfollowed", []))
+    followed_dict = acc_state.setdefault("followed", {})
+    unfollowed_set = set(acc_state.setdefault("unfollowed", []))
     protected = {h.lower() for h in acc_cfg["protected_handles"]}
 
     print(f"  [2/3] キーワード『{keyword}』で関心層を検索中...")
@@ -164,7 +410,6 @@ def step2_search_and_follow_targets(page, acc_cfg, acc_hist):
         page.mouse.wheel(0, 800)
         human_sleep(2.0, 3.5)
 
-        # ツイート内のユーザープロフィールリンクを抽出
         links = page.locator('article[data-testid="tweet"] a[role="link"]')
         candidate_handles = []
         skip_prefixes = {"home", "explore", "notifications", "messages", "i", "search", "hashtag", "settings", "compose"}
@@ -186,7 +431,6 @@ def step2_search_and_follow_targets(page, acc_cfg, acc_hist):
                 page.goto(f"https://x.com/{target_handle}", wait_until="domcontentloaded", timeout=25000)
                 human_sleep(3.0, 5.0)
 
-                # プロフィール画面のフォローボタンを探す
                 follow_btn = page.locator('[data-testid="placementTracking"] button[data-testid$="-follow"]').first
                 if follow_btn.count() > 0:
                     follow_btn.click()
@@ -205,12 +449,12 @@ def step2_search_and_follow_targets(page, acc_cfg, acc_hist):
         print(f"    ⚠️ 検索フォロー中にエラー: {e}")
 
 
-def step3_cleanup_non_reciprocators(page, acc_cfg, acc_hist):
-    """フォローから一定日数（デフォルト14日）経過してもフォローバックがない相手を自動解除する"""
+def step3_cleanup_non_reciprocators(page, acc_cfg, acc_state):
+    """フォローから30日以上経過してもフォローバックがない相手を自動解除する"""
     max_unfollow = acc_cfg["max_unfollow_per_run"]
     days_limit = acc_cfg["unfollow_after_days"]
-    followed_dict = acc_hist.setdefault("followed", {})
-    unfollowed_list = acc_hist.setdefault("unfollowed", [])
+    followed_dict = acc_state.setdefault("followed", {})
+    unfollowed_list = acc_state.setdefault("unfollowed", [])
     protected = {h.lower() for h in acc_cfg["protected_handles"]}
     now_dt = datetime.now(timezone.utc)
 
@@ -243,15 +487,12 @@ def step3_cleanup_non_reciprocators(page, acc_cfg, acc_hist):
             page.goto(f"https://x.com/{target_handle}", wait_until="domcontentloaded", timeout=25000)
             human_sleep(3.0, 5.0)
 
-            # 「フォローされています」または「Follows you」バッジがあるか確認
             follows_you_badge = page.locator('[data-testid="userFollowIndicator"]')
             if follows_you_badge.count() > 0:
                 print(f"    🤝 @{target_handle} は相互フォロー中のため維持します。")
-                # 確認日時を更新して再チェックを後ろ倒し
                 info["followed_at"] = now_dt.isoformat()
                 continue
 
-            # フォロー中ボタンをクリックして確認ダイアログで解除
             unfollow_btn = page.locator('[data-testid="placementTracking"] button[data-testid$="-unfollow"]').first
             if unfollow_btn.count() > 0:
                 unfollow_btn.click()
@@ -274,10 +515,17 @@ def step3_cleanup_non_reciprocators(page, acc_cfg, acc_hist):
         print("    ℹ️ 今回解除対象となる期限切れ片思いアカウントはありませんでした。")
 
 
-def run_for_account(key, acc_cfg, history, login_mode=False, headless=False):
+def run_for_account(key, acc_cfg, state, login_mode=False, headless=False, skip_post=False, skip_follow=False, force_post=False):
     os.makedirs(PROFILES_DIR, exist_ok=True)
     profile_path = os.path.join(PROFILES_DIR, key)
-    acc_hist = history.setdefault(key, {"followed": {}, "unfollowed": [], "last_run_at": None})
+    acc_state = state.setdefault(key, {
+        "posted_ids": list(INITIAL_POSTED_SEED.get(key, [])),
+        "daily_post_counts": {},
+        "last_posted_at": None,
+        "followed": {},
+        "unfollowed": [],
+        "last_run_at": None
+    })
 
     print(f"\n============================================================")
     print(f"🚀 起動中: {acc_cfg['name']} (プロファイル: {profile_path})")
@@ -309,40 +557,52 @@ def run_for_account(key, acc_cfg, history, login_mode=False, headless=False):
             context.close()
             return
 
-        step1_auto_followback(page, acc_cfg, acc_hist)
-        step2_search_and_follow_targets(page, acc_cfg, acc_hist)
-        step3_cleanup_non_reciprocators(page, acc_cfg, acc_hist)
+        if not skip_post:
+            step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=force_post)
 
-        acc_hist["last_run_at"] = datetime.now(timezone.utc).isoformat()
-        save_history(history)
+        if not skip_follow:
+            step1_auto_followback(page, acc_cfg, acc_state)
+            step2_search_and_follow_targets(page, acc_cfg, acc_state)
+            step3_cleanup_non_reciprocators(page, acc_cfg, acc_state)
+
+        acc_state["last_run_at"] = datetime.now(timezone.utc).isoformat()
+        save_state(state)
         context.close()
 
 
 def main():
-    parser = argparse.ArgumentParser(description="完全無料($0.00) 自宅PC用 X自動フォロー＆フォロバ＆片思い解除ボット")
+    parser = argparse.ArgumentParser(description="完全無料($0.00) 別PCスタンドアロン用 X自動投稿＆フォロバ＆フォロー＆30日片思い解除エンジン")
     parser.add_argument("--login", action="store_true", help="初回ログイン用モードでブラウザを開きます")
     parser.add_argument("--account", choices=list(ACCOUNTS.keys()) + ["all"], default="all", help="実行するアカウント")
     parser.add_argument("--headless", action="store_true", help="ブラウザ画面を隠してバックグラウンドで実行します")
+    parser.add_argument("--post-only", action="store_true", help="記事ポストのみを実行します")
+    parser.add_argument("--follow-only", action="store_true", help="フォロー・フォロバ・片思い解除のみを実行します")
+    parser.add_argument("--force", action="store_true", help="時間帯や間隔制限を無視して今すぐ強制テスト投稿します")
     args = parser.parse_args()
 
-    history = load_history()
+    state = load_state()
     target_keys = list(ACCOUNTS.keys()) if args.account == "all" else [args.account]
-
-    jst_hour = (datetime.now(timezone.utc).hour + 9) % 24
+    now_jst = get_now_jst()
 
     for key in target_keys:
-        # 全自動実行時（all）は時間帯に合わせて3号店と1・2号店を出し分け
-        if not args.login and args.account == "all":
-            if key == "store3_onigon" and not (jst_hour >= 20 or jst_hour <= 3):
-                print(f"⏸️ 3号店（オニゴン）は夜間専用（20:00〜03:59 JST）のため現在（{jst_hour}時）はスキップします。")
-                continue
-            if key in ("store1_hoporin", "store2_ikero") and (jst_hour < 6 or jst_hour >= 23):
-                print(f"⏸️ {ACCOUNTS[key]['name']} は深夜帯のためスキップします。")
+        acc_cfg = ACCOUNTS[key]
+        if not args.login and not args.force and args.account == "all":
+            if not is_within_active_window(acc_cfg, now_jst):
+                print(f"⏸️ {acc_cfg['name']} は稼働時間帯外（現在 {now_jst.strftime('%H:%M')} JST）のためスキップします。")
                 continue
 
-        run_for_account(key, ACCOUNTS[key], history, login_mode=args.login, headless=args.headless)
+        run_for_account(
+            key,
+            acc_cfg,
+            state,
+            login_mode=args.login,
+            headless=args.headless,
+            skip_post=args.follow_only,
+            skip_follow=args.post_only,
+            force_post=args.force
+        )
 
-    print("\n🎉 全アカウントの自動フォロー＆フォロバ＆片思い整理が完了しました！（API消費: $0.00）")
+    print("\n🎉 全自動サイクル（記事投稿＋フォロバ＋関心層フォロー＋30日片思い整理）が完了しました！（API消費: $0.00）")
 
 
 if __name__ == "__main__":
