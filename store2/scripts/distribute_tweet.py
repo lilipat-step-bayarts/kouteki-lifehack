@@ -131,8 +131,8 @@ def generate_tweet_text(article):
 def main():
     jst = timezone(timedelta(hours=9))
     now_jst = datetime.now(jst)
-    if now_jst.hour < 6 or now_jst.hour >= 23:
-        print(f"🌙 Current JST time is {now_jst.strftime('%Y-%m-%d %H:%M')} (late night due to GitHub cron delay). Skipping Store 2 tweet to avoid midnight posting.")
+    if now_jst.hour < 6 or now_jst.hour >= 22:
+        print(f"🌙 Current JST time is {now_jst.strftime('%Y-%m-%d %H:%M')} (late night slot for Store 3). Skipping Store 2 tweet.")
         return
 
     with open(ARTICLES_JSON, "r", encoding="utf-8") as f:

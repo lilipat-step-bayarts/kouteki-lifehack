@@ -172,8 +172,8 @@ def main():
     dry_run = "--dry-run" in sys.argv
     jst = timezone(timedelta(hours=9))
     now_jst = datetime.now(jst)
-    if not dry_run and (now_jst.hour < 6 or now_jst.hour >= 23):
-        print(f"🌙 Current JST time is {now_jst.strftime('%Y-%m-%d %H:%M')} (late night due to GitHub cron delay). Skipping tweet to avoid midnight posting.")
+    if not dry_run and (now_jst.hour < 6 or now_jst.hour >= 22):
+        print(f"🌙 Current JST time is {now_jst.strftime('%Y-%m-%d %H:%M')} (late night slot for Store 3). Skipping Store 1 tweet.")
         sys.exit(0)
 
     articles = load_articles()

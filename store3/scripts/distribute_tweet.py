@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-オニゴンの夜更かしラボ (3号店) - X自動分散投稿スクリプト (@Onigon_yfks)
-記事データ (articles.json) および3大特設ページ (/newcomers.html, /asmr-ranking.html, /sale-500yen.html) から
-最適なトピックを選定し、深夜の案内人「オニゴン」の視点で高CTRなツイートを生成してXへ自動投稿します。
+オニゴンの夜更かしラボ (3号店) - X夜間集中・自動ポストスクリプト (@Onigon_yfks)
+・夜間限定（20:00〜翌02:59 JST）のみ稼働し、昼間（03:00〜19:59 JST）は完全スキップ
+・毎晩3回（21時枠・23時枠・深夜24時半枠）に集中して高CTRな夜更かしツイートを自動投稿
 """
 
 import os
@@ -29,6 +29,7 @@ API_KEY = os.environ.get("X_API_KEY", "TaLCNgeiDz1M1eAea2WJUYEFf").strip()
 API_SECRET = os.environ.get("X_API_SECRET", "DWEQkGCOo0Hw1T10f6CbpqOpaXEL1apZrfnhSErwZcX2YTsSds").strip()
 DEFAULT_TOKEN = "2121799594535501824-DK2cUBHpXZJqgdu4mAxcn3tRpm1MNW"
 DEFAULT_SECRET = "oLVKVekc3mnQkGZIBUdKXzPOSEHZuLwSiZ3QjYAVDfDSx"
+
 
 def load_access_tokens():
     token = os.environ.get("X_STORE3_ACCESS_TOKEN", DEFAULT_TOKEN).strip()
@@ -115,23 +116,30 @@ def save_history(history):
         json.dump(history, f, ensure_ascii=False, indent=2)
 
 
-def generate_tweet_text(article):
-    jst = timezone(timedelta(hours=9))
-    now = datetime.now(jst)
-    hour = now.hour
-
-    if 6 <= hour < 11:
-        time_hook = "【朝のセール＆新着チェック👿】"
-        lead = "オニゴンです🌙昨夜から始まった500円セール＆注目作の結論まとめ👇"
-    elif 11 <= hour < 16:
-        time_hook = "【お昼のコスパ神作ラボ🔥】"
-        lead = "定価で買う前に待って！クーポン重ね掛け＆ワンコイン対象作を厳選👇"
-    elif 16 <= hour < 20:
-        time_hook = "【今夜の夜更かし準備リスト🌙】"
-        lead = "今夜ハズレを引きたくない人へ！サンプル後半まで検証した本物レビュー👇"
+def get_night_cycle_key(now_jst):
+    """
+    20:00〜翌02:59 JST を「同じ1晩（ナイトサイクル）」としてカウントするための日付キー。
+    深夜0時〜2時台は前日の日付キーにまとめることで「1晩につき最大3投稿」を厳密管理する。
+    """
+    if 0 <= now_jst.hour < 3:
+        night_date = (now_jst - timedelta(days=1)).strftime("%Y-%m-%d")
     else:
-        time_hook = "【深夜の夜更かし特選ラボ👿🎧】"
-        lead = "イヤホン推奨！今夜じっくり楽しめる神作＆大型新人まとめ👇"
+        night_date = now_jst.strftime("%Y-%m-%d")
+    return night_date
+
+
+def generate_tweet_text(article, now_jst):
+    hour = now_jst.hour
+
+    if 20 <= hour < 22:
+        time_hook = "【夜の開幕・セール速報👿🔥】"
+        lead = "オニゴンです🌙今夜ハズレを引きたくない人へ！最安値セール＆注目作の結論まとめ👇"
+    elif 22 <= hour <= 23:
+        time_hook = "【ベッドイン＆同人ASMR特選🎧🌙】"
+        lead = "イヤホン推奨！寝落ち前にじっくり楽しめる神作＆大型ルーキー図鑑👇"
+    else:
+        time_hook = "【真夜中の夜更かし神作ラボ👿✨】"
+        lead = "まだ起きてる夜更かし勢へ！サンプル後半まで検証した忖度なしの本物レビュー👇"
 
     title = article.get("title", "")
     short_title = title[:36] + "…" if len(title) > 37 else title
@@ -147,6 +155,16 @@ def generate_tweet_text(article):
 
 
 def main():
+    force_run = "--force" in sys.argv
+    jst = timezone(timedelta(hours=9))
+    now_jst = datetime.now(jst)
+
+    # 夜間（20:00〜翌02:59 JST）以外は完全スキップ（昼間は投稿しない）
+    is_night_window = (20 <= now_jst.hour <= 23) or (0 <= now_jst.hour < 3)
+    if not force_run and not is_night_window:
+        print(f"☀️ Current JST time is {now_jst.strftime('%Y-%m-%d %H:%M')}. Store 3 (@Onigon_yfks) only tweets at night (20:00-02:59 JST). Skipping.")
+        return
+
     access_token, access_token_secret = load_access_tokens()
     if not (access_token and access_token_secret):
         print("ℹ️ Store 3 (@Onigon_yfks) X access token not configured yet. Skipping tweet.")
@@ -173,13 +191,22 @@ def main():
     all_items = special_hubs + articles
 
     history = load_history()
+    night_key = get_night_cycle_key(now_jst)
+    night_counts = history.get("night_counts", {})
+    tonight_count = night_counts.get(night_key, 0)
+
+    # 1晩につき最大3投稿までに制限
+    if not force_run and tonight_count >= 3:
+        print(f"🌙 Store 3 (@Onigon_yfks) already completed {tonight_count}/3 tweets for night cycle {night_key}. Skipping.")
+        return
+
     last_posted_str = history.get("last_posted_at")
-    if last_posted_str:
+    if not force_run and last_posted_str:
         try:
             last_dt = datetime.fromisoformat(last_posted_str)
             elapsed_min = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60.0
-            if elapsed_min < 75:
-                print(f"⏳ Store 3 already tweeted {elapsed_min:.1f} mins ago. Skipping.")
+            if elapsed_min < 45:
+                print(f"⏳ Store 3 already tweeted {elapsed_min:.1f} mins ago. Skipping to space out night tweets.")
                 return
         except Exception:
             pass
@@ -191,19 +218,24 @@ def main():
         unposted = all_items
 
     target = unposted[0]
-    tweet_text = generate_tweet_text(target)
+    tweet_text = generate_tweet_text(target, now_jst)
 
     print("==================================================")
-    print("Generated Tweet for Store 3 (@Onigon_yfks):")
+    print(f"Generated Night Tweet ({tonight_count + 1}/3) for Store 3 (@Onigon_yfks):")
     print(tweet_text)
     print("==================================================")
 
     res = post_tweet_to_x(tweet_text, access_token, access_token_secret)
     tweet_id = res.get("data", {}).get("id")
-    print(f"🎉 Successfully posted Store 3 tweet to X! Tweet ID: {tweet_id}")
+    print(f"🎉 Successfully posted Store 3 night tweet to X! Tweet ID: {tweet_id}")
 
     posted_slugs.add(target["slug"])
-    save_history({"posted_slugs": list(posted_slugs), "last_posted_at": datetime.now(timezone.utc).isoformat()})
+    night_counts[night_key] = tonight_count + 1
+    save_history({
+        "posted_slugs": list(posted_slugs),
+        "last_posted_at": datetime.now(timezone.utc).isoformat(),
+        "night_counts": night_counts
+    })
 
 
 if __name__ == "__main__":
