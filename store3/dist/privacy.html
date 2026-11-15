@@ -62,9 +62,9 @@
 </script>
 
   
-  <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-purple-500/30 shadow-lg">
+  <header class="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-md border-b border-purple-500/30 shadow-lg">
     <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2.5 group">
+      <a href="/" class="flex items-center gap-2.5 group shrink-0">
         <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-10 h-10 rounded-full border-2 border-fuchsia-400 shadow-md object-cover group-hover:scale-105 transition-transform">
         <div>
           <div class="flex items-center gap-1.5">
@@ -74,14 +74,25 @@
           <span class="text-base font-black text-white tracking-tight block">オニゴンの夜更かしラボ</span>
         </div>
       </a>
-      <nav class="flex items-center gap-3 md:gap-5 text-xs font-bold text-slate-300">
-        <a href="/" class="hover:text-fuchsia-400 transition ">新着速報</a>
-        <a href="/newcomers.html" class="px-2.5 py-1 rounded-full border bg-purple-950/80 text-fuchsia-300 border-fuchsia-500/40 hover:bg-purple-900 transition flex items-center gap-1">
+      <nav class="hidden md:flex items-center gap-2.5 text-xs font-bold text-slate-300">
+        <a href="/" class="px-3 py-1.5 rounded-full transition hover:text-fuchsia-400">🔥 新着速報</a>
+        <a href="/newcomers.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-purple-950/70 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900">
           <span>🌟</span><span>新人図鑑・サムネ</span>
         </a>
-        <a href="/about.html" class="hidden sm:inline hover:text-fuchsia-400 transition ">オニゴンとは？</a>
-        <a href="/privacy.html" class="hidden sm:inline hover:text-fuchsia-400 transition text-fuchsia-400">免責・規約</a>
+        <a href="/asmr-ranking.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-indigo-950/70 text-indigo-300 border-indigo-500/30 hover:bg-indigo-900">
+          <span>🎧</span><span>同人ASMR殿堂</span>
+        </a>
+        <a href="/sale-500yen.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-rose-950/70 text-amber-300 border-rose-500/30 hover:bg-rose-900">
+          <span>💰</span><span>500円セール神作</span>
+        </a>
       </nav>
+    </div>
+    <!-- スマホ用 横スクロール特設タブバー（回遊率アップ用） -->
+    <div class="md:hidden border-t border-slate-800/80 bg-slate-900/90 px-3 py-2 flex items-center gap-2 overflow-x-auto text-[11px] font-bold whitespace-nowrap">
+      <a href="/" class="px-3 py-1 rounded-full bg-slate-800 text-slate-300">🔥 トップ速報</a>
+      <a href="/newcomers.html" class="px-3 py-1 rounded-full bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30">🌟 新人図鑑・サムネ</a>
+      <a href="/asmr-ranking.html" class="px-3 py-1 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-500/30">🎧 同人ASMRランキング</a>
+      <a href="/sale-500yen.html" class="px-3 py-1 rounded-full bg-rose-950 text-amber-300 border border-rose-500/30">💰 500円セール神作</a>
     </div>
   </header>
 
@@ -115,7 +126,11 @@
       <div class="text-[11px] text-slate-400 flex flex-wrap justify-center gap-4 pt-2">
         <a href="/" class="hover:text-fuchsia-400">トップページ</a>
         <span>•</span>
-        <a href="/newcomers.html" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">🌟 新人女優・注目ルーキー図鑑</a>
+        <a href="/newcomers.html" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">🌟 新人図鑑・サムネ</a>
+        <span>•</span>
+        <a href="/asmr-ranking.html" class="hover:text-indigo-400 font-bold text-indigo-300">🎧 同人ASMRランキング</a>
+        <span>•</span>
+        <a href="/sale-500yen.html" class="hover:text-amber-400 font-bold text-amber-300">💰 500円セール神作</a>
         <span>•</span>
         <a href="/about.html" class="hover:text-fuchsia-400">運営者情報（オニゴン）</a>
         <span>•</span>

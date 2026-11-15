@@ -1,0 +1,82 @@
+[
+  {
+    "id": "asmr-ku100-earpick-sanctuary",
+    "title": "【KU100完全密着】深夜2時の極上耳かき＆ゼロ距離吐息リラクゼーション（WAV高音質同梱）",
+    "circle_name": "宵宮オーディオラボ（同人ボイス殿堂入り枠）",
+    "mic_spec": "NEUMANN KU100（100万円級ダミーヘッド）",
+    "duration": "本編 118分（無料体験版 25分）",
+    "price_info": "セール時 550円〜（通常 1,320円）",
+    "rank": "殿堂入り 1位",
+    "rating": 4.95,
+    "theme_gradient": "from-indigo-700 via-purple-800 to-slate-950",
+    "tags": ["KU100収録", "極上耳かき・梵天", "ゼロ距離囁き", "非圧縮WAV同梱"],
+    "meters": {
+      "realism": 100,
+      "comfort": 98,
+      "sleep_induce": 99
+    },
+    "onigon_review": "本当に耳元に人がいると錯覚するレベルの空間定位！最初の15分の竹耳かき＋ふわふわ梵天パートだけで9割の人が寝落ちする名作です🎧💜",
+    "package_image_url": "",
+    "search_keyword": "KU100 耳かき バイノーラル"
+  },
+  {
+    "id": "asmr-twin-whisper-surround",
+    "title": "【両耳W囁き】左右から同時に甘やかされる360度バイノーラル添い寝シチュエーション",
+    "circle_name": "ルナティック・ベル（実力派声優Wキャスト）",
+    "mic_spec": "3Dio Free Space Pro II ＋ KU100 ハイブリッド",
+    "duration": "本編 140分（ボーナストラック付）",
+    "price_info": "半額セール対象常連",
+    "rank": "殿堂入り 2位",
+    "rating": 4.9,
+    "theme_gradient": "from-fuchsia-700 via-pink-800 to-purple-950",
+    "tags": ["Wキャスト両耳囁き", "添い寝・心音", "3Dio Pro II", "長尺140分"],
+    "meters": {
+      "realism": 98,
+      "comfort": 97,
+      "sleep_induce": 96
+    },
+    "onigon_review": "右耳と左耳から違う声質で交互に囁かれる脳バグ体験！密閉型イヤホンや寝ホンで聴くと鳥肌モノの没入感です👿✨",
+    "package_image_url": "",
+    "search_keyword": "バイノーラル 両耳 囁き 添い寝"
+  },
+  {
+    "id": "asmr-oil-massage-rain-sound",
+    "title": "【睡眠導入特化】雨音とアロマオイル・タッピングで脳の芯まで溶ける深夜スパ体験",
+    "circle_name": "ノクターン音響製作所",
+    "mic_spec": "3Dio Free Space Pro II（高感度カスタム）",
+    "duration": "本編 180分（セリフなし環境音トラック同梱）",
+    "price_info": "初回クーポンで300円台〜",
+    "rank": "殿堂入り 3位",
+    "rating": 4.88,
+    "theme_gradient": "from-cyan-800 via-indigo-900 to-slate-950",
+    "tags": ["オイルマッサージ音", "雨音・環境音", "セリフなし版同梱", "睡眠導入特化"],
+    "meters": {
+      "realism": 96,
+      "comfort": 100,
+      "sleep_induce": 100
+    },
+    "onigon_review": "「今夜はとにかく深く眠りたい」という日の最強のお供。セリフあり版とセリフなし（環境音＆耳かき音のみ）の両方が入っていてコスパ最強です🌙",
+    "package_image_url": "",
+    "search_keyword": "ASMR 睡眠 マッサージ 耳かき"
+  },
+  {
+    "id": "asmr-older-sister-healing-care",
+    "title": "【包容力MAX】仕事帰りの疲れを全肯定して溶かしてくれるお姉さんの膝枕＆ヘッドスパ",
+    "circle_name": "琥珀糖スタジオ",
+    "mic_spec": "NEUMANN KU100（防音スタジオ収録）",
+    "duration": "本編 105分",
+    "price_info": "週末セール対象枠",
+    "rank": "急上昇 No.1",
+    "rating": 4.92,
+    "theme_gradient": "from-amber-700 via-rose-800 to-purple-950",
+    "tags": ["お姉さん・全肯定", "膝枕・炭酸ヘッドスパ音", "KU100", "高評価レビュー"],
+    "meters": {
+      "realism": 99,
+      "comfort": 99,
+      "sleep_induce": 97
+    },
+    "onigon_review": "炭酸泡がパチパチ弾けるヘッドスパ音のリアルさが異常！優しい低音ボイスとの相乗効果でストレスが一気に吹き飛びます🎧🔥",
+    "package_image_url": "",
+    "search_keyword": "KU100 膝枕 お姉さん バイノーラル"
+  }
+]

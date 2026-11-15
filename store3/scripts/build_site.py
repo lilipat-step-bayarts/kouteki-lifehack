@@ -164,9 +164,9 @@ def build_fanza_link(raw_url):
 
 def get_header(current_page="home"):
     return f"""
-  <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-purple-500/30 shadow-lg">
+  <header class="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-md border-b border-purple-500/30 shadow-lg">
     <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2.5 group">
+      <a href="/" class="flex items-center gap-2.5 group shrink-0">
         <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-10 h-10 rounded-full border-2 border-fuchsia-400 shadow-md object-cover group-hover:scale-105 transition-transform">
         <div>
           <div class="flex items-center gap-1.5">
@@ -176,17 +176,70 @@ def get_header(current_page="home"):
           <span class="text-base font-black text-white tracking-tight block">オニゴンの夜更かしラボ</span>
         </div>
       </a>
-      <nav class="flex items-center gap-3 md:gap-5 text-xs font-bold text-slate-300">
-        <a href="/" class="hover:text-fuchsia-400 transition {'text-fuchsia-400' if current_page == 'home' else ''}">新着速報</a>
-        <a href="/newcomers.html" class="px-2.5 py-1 rounded-full border {'bg-fuchsia-600 text-white border-fuchsia-400' if current_page == 'newcomers' else 'bg-purple-950/80 text-fuchsia-300 border-fuchsia-500/40 hover:bg-purple-900'} transition flex items-center gap-1">
+      <nav class="hidden md:flex items-center gap-2.5 text-xs font-bold text-slate-300">
+        <a href="/" class="px-3 py-1.5 rounded-full transition {'bg-slate-800 text-fuchsia-400 border border-fuchsia-500/40' if current_page == 'home' else 'hover:text-fuchsia-400'}">🔥 新着速報</a>
+        <a href="/newcomers.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-fuchsia-600 text-white border-fuchsia-400 shadow-md shadow-fuchsia-950' if current_page == 'newcomers' else 'bg-purple-950/70 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900'}">
           <span>🌟</span><span>新人図鑑・サムネ</span>
         </a>
-        <a href="/about.html" class="hidden sm:inline hover:text-fuchsia-400 transition {'text-fuchsia-400' if current_page == 'about' else ''}">オニゴンとは？</a>
-        <a href="/privacy.html" class="hidden sm:inline hover:text-fuchsia-400 transition {'text-fuchsia-400' if current_page == 'privacy' else ''}">免責・規約</a>
+        <a href="/asmr-ranking.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-950' if current_page == 'asmr' else 'bg-indigo-950/70 text-indigo-300 border-indigo-500/30 hover:bg-indigo-900'}">
+          <span>🎧</span><span>同人ASMR殿堂</span>
+        </a>
+        <a href="/sale-500yen.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-rose-600 text-white border-rose-400 shadow-md shadow-rose-950' if current_page == 'sale' else 'bg-rose-950/70 text-amber-300 border-rose-500/30 hover:bg-rose-900'}">
+          <span>💰</span><span>500円セール神作</span>
+        </a>
       </nav>
+    </div>
+    <!-- スマホ用 横スクロール特設タブバー（回遊率アップ用） -->
+    <div class="md:hidden border-t border-slate-800/80 bg-slate-900/90 px-3 py-2 flex items-center gap-2 overflow-x-auto text-[11px] font-bold whitespace-nowrap">
+      <a href="/" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'home' else 'bg-slate-800 text-slate-300'}">🔥 トップ速報</a>
+      <a href="/newcomers.html" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'newcomers' else 'bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30'}">🌟 新人図鑑・サムネ</a>
+      <a href="/asmr-ranking.html" class="px-3 py-1 rounded-full {'bg-indigo-600 text-white' if current_page == 'asmr' else 'bg-indigo-950 text-indigo-300 border border-indigo-500/30'}">🎧 同人ASMRランキング</a>
+      <a href="/sale-500yen.html" class="px-3 py-1 rounded-full {'bg-rose-600 text-white' if current_page == 'sale' else 'bg-rose-950 text-amber-300 border border-rose-500/30'}">💰 500円セール神作</a>
     </div>
   </header>
 """
+
+
+def get_hub_banners(current_page="home"):
+    """全ページ下部に配置する3大特設コーナー回遊カード（1人あたりPVとAdMax表示数を3倍化する導線）"""
+    return """
+    <section class="my-8 space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm md:text-base font-black text-white flex items-center gap-2">
+          <span>👿</span><span>オニゴン特設コーナー（深夜の3大人気ランキング）</span>
+        </h3>
+        <span class="text-[11px] text-fuchsia-400 font-bold">回遊ピックアップ</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        <a href="/newcomers.html" class="group p-4 rounded-2xl bg-gradient-to-br from-fuchsia-950/90 to-slate-900 border border-fuchsia-500/40 hover:border-fuchsia-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-1.5">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-600 text-white font-black">🌟 特設コーナー①</span>
+            <h4 class="text-sm font-black text-white group-hover:text-fuchsia-300">大型新人女優＆注目ルーキー図鑑</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">ビジュアル・スタイル・没入感の3軸ステータス＆サムネイル一覧</p>
+          </div>
+          <span class="mt-3 text-[11px] font-bold text-fuchsia-300 group-hover:translate-x-1 transition inline-block">新人図鑑を見る →</span>
+        </a>
+
+        <a href="/asmr-ranking.html" class="group p-4 rounded-2xl bg-gradient-to-br from-indigo-950/90 to-slate-900 border border-indigo-500/40 hover:border-indigo-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-1.5">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-black">🎧 特設コーナー②</span>
+            <h4 class="text-sm font-black text-white group-hover:text-indigo-300">同人ASMR・耳かきボイス殿堂ランキング</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">100万円級マイクKU100収録！寝落ち確定の神サークル厳選比較</p>
+          </div>
+          <span class="mt-3 text-[11px] font-bold text-indigo-300 group-hover:translate-x-1 transition inline-block">ASMRランキングを見る →</span>
+        </a>
+
+        <a href="/sale-500yen.html" class="group p-4 rounded-2xl bg-gradient-to-br from-rose-950/90 to-slate-900 border border-rose-500/40 hover:border-amber-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-1.5">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-600 text-white font-black">💰 特設コーナー③</span>
+            <h4 class="text-sm font-black text-white group-hover:text-amber-300">500円均一＆同人10円セール神作まとめ</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">480分超え総集編や最大90%OFF対象作を最安値で揃える特設リスト</p>
+          </div>
+          <span class="mt-3 text-[11px] font-bold text-amber-300 group-hover:translate-x-1 transition inline-block">セール神作まとめを見る →</span>
+        </a>
+      </div>
+    </section>
+    """
 
 
 def get_footer():
@@ -203,7 +256,11 @@ def get_footer():
       <div class="text-[11px] text-slate-400 flex flex-wrap justify-center gap-4 pt-2">
         <a href="/" class="hover:text-fuchsia-400">トップページ</a>
         <span>•</span>
-        <a href="/newcomers.html" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">🌟 新人女優・注目ルーキー図鑑</a>
+        <a href="/newcomers.html" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">🌟 新人図鑑・サムネ</a>
+        <span>•</span>
+        <a href="/asmr-ranking.html" class="hover:text-indigo-400 font-bold text-indigo-300">🎧 同人ASMRランキング</a>
+        <span>•</span>
+        <a href="/sale-500yen.html" class="hover:text-amber-400 font-bold text-amber-300">💰 500円セール神作</a>
         <span>•</span>
         <a href="/about.html" class="hover:text-fuchsia-400">運営者情報（オニゴン）</a>
         <span>•</span>
@@ -593,6 +650,8 @@ def build_article_page(article_meta, all_articles):
           {related_html}
         </div>
       </section>
+
+      {get_hub_banners("article")}
     </article>
   </main>
 
@@ -680,6 +739,7 @@ def build_newcomers_page(newcomers):
       </a>
     </section>
 
+    {get_hub_banners("newcomers")}
     {get_adult_ad_unit("bottom")}
   </main>
 
@@ -691,6 +751,235 @@ def build_newcomers_page(newcomers):
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(page_html)
     print(f"Built newcomers page: {out_file}")
+
+
+def build_asmr_ranking_page(asmr_works):
+    cards = []
+    for item in asmr_works:
+        kw = urllib.parse.quote(item.get("search_keyword", "ASMR バイノーラル"))
+        raw_url = f"https://www.dmm.co.jp/dc/doujin/-/list/narrow/=/word={kw}/"
+        target_url = build_fanza_link(raw_url)
+        meters = item.get("meters", {"realism": 98, "comfort": 98, "sleep_induce": 98})
+        tags_html = " ".join([
+            f'<span class="text-[11px] px-2 py-0.5 rounded-md bg-indigo-950/90 text-indigo-200 border border-indigo-700/50 font-medium">#{t}</span>'
+            for t in item.get("tags", [])
+        ])
+        cards.append(f"""
+        <div class="group bg-slate-900/95 rounded-3xl border border-indigo-500/40 hover:border-indigo-400 overflow-hidden shadow-xl flex flex-col justify-between">
+          <div>
+            <!-- 音響スペクトラム＆マイクスぺックサムネイル -->
+            <div class="relative h-48 w-full bg-gradient-to-br {item.get('theme_gradient', 'from-indigo-700 via-purple-800 to-slate-950')} p-5 flex flex-col justify-between overflow-hidden">
+              <div class="flex items-center justify-between relative z-10">
+                <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950 shadow">👑 {item.get('rank', '殿堂入り')}</span>
+                <span class="px-2.5 py-0.5 rounded-md bg-slate-950/70 text-indigo-200 text-[11px] font-mono border border-indigo-400/30">★ {item.get('rating', 4.9)} / 5.0</span>
+              </div>
+              <!-- 音響波形ビジュアル -->
+              <div class="flex items-end justify-center gap-1 h-12 opacity-30 pointer-events-none">
+                <div class="w-1.5 bg-white rounded-full h-5"></div>
+                <div class="w-1.5 bg-white rounded-full h-10"></div>
+                <div class="w-1.5 bg-white rounded-full h-7"></div>
+                <div class="w-1.5 bg-white rounded-full h-12"></div>
+                <div class="w-1.5 bg-white rounded-full h-8"></div>
+                <div class="w-1.5 bg-white rounded-full h-11"></div>
+                <div class="w-1.5 bg-white rounded-full h-6"></div>
+                <div class="w-1.5 bg-white rounded-full h-9"></div>
+                <div class="w-1.5 bg-white rounded-full h-4"></div>
+              </div>
+              <div class="relative z-10 space-y-1">
+                <div class="text-[11px] text-indigo-200 font-bold flex items-center gap-2">
+                  <span>🎙️ {item.get('mic_spec')}</span>
+                </div>
+                <h3 class="text-base md:text-lg font-black text-white leading-snug">{item.get('title')}</h3>
+              </div>
+            </div>
+
+            <div class="p-5 space-y-4">
+              <div class="flex items-center justify-between text-xs text-slate-300 bg-slate-950/80 px-3.5 py-2 rounded-xl border border-slate-800">
+                <span>⏱️ {item.get('duration')}</span>
+                <span class="text-amber-300 font-bold">{item.get('price_info')}</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5">{tags_html}</div>
+
+              <div class="bg-slate-950/80 rounded-2xl p-3.5 border border-slate-800 space-y-2 text-[11px]">
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-400">🎙️ 吐息・ゼロ距離リアリティ</span>
+                  <div class="w-32 bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-indigo-400 to-cyan-400 h-full" style="width: {meters.get('realism', 98)}%"></div>
+                  </div>
+                  <span class="font-mono font-bold text-cyan-300">{meters.get('realism', 98)}pt</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-400">🪶 耳かき・マッサージ心地よさ</span>
+                  <div class="w-32 bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-400 to-fuchsia-400 h-full" style="width: {meters.get('comfort', 98)}%"></div>
+                  </div>
+                  <span class="font-mono font-bold text-fuchsia-300">{meters.get('comfort', 98)}pt</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-400">🌙 脳とろ・寝落ち誘導度</span>
+                  <div class="w-32 bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-amber-400 to-rose-400 h-full" style="width: {meters.get('sleep_induce', 98)}%"></div>
+                  </div>
+                  <span class="font-mono font-bold text-amber-300">{meters.get('sleep_induce', 98)}pt</span>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-2.5 text-xs text-slate-300 bg-indigo-950/30 p-3 rounded-xl border border-indigo-800/40">
+                <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-8 h-8 rounded-full object-cover border border-indigo-400 shrink-0 mt-0.5">
+                <p class="leading-relaxed">{item.get('onigon_review')}</p>
+              </div>
+            </div>
+          </div>
+          <div class="px-5 pb-5">
+            <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-600 hover:from-indigo-500 hover:to-fuchsia-500 text-white text-center rounded-xl font-black text-xs shadow-lg transition flex items-center justify-center gap-2">
+              <span>🎧 FANZA同人で無料体験版（試聴）＆詳細を見る</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+        """)
+
+    page_html = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング | オニゴンの夜更かしラボ</title>
+  <meta name="description" content="100万円超のダミーヘッドマイクNEUMANN KU100・3Dio Pro IIで収録された超高音質な同人ASMR・耳かき・添い寝ボイス作品をオニゴンが厳選比較！">
+  <link rel="canonical" href="{SITE_URL}/asmr-ranking.html">
+  <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen">
+  {AGE_GATE_MODAL}
+  {get_header("asmr")}
+
+  <section class="relative bg-gradient-to-b from-indigo-950/80 via-slate-950 to-slate-950 py-10 border-b border-indigo-500/30">
+    <div class="max-w-5xl mx-auto px-4 space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-950 text-indigo-300 text-xs font-bold border border-indigo-500/40">
+        <span>🎧</span><span>イヤホン・ヘッドホン着用推奨（立体音響特設）</span>
+      </div>
+      <h1 class="text-2xl md:text-4xl font-black text-white leading-tight">
+        深夜の脳とろ同人ASMR・耳かきボイス<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-fuchsia-400">KU100 / 3Dio 収録の殿堂入りランキング</span>
+      </h1>
+      <p class="text-xs md:text-sm text-slate-300 max-w-3xl leading-relaxed">
+        100万円超えのスタジオ機材「NEUMANN KU100」や「3Dio Free Space Pro II」で収録された、吐息の距離感と耳かきの心地よさが異次元な同人ボイス作品を厳選！まずは10分〜30分の無料体験版で鳥肌級の立体音響を体感してください。
+      </p>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+    {get_adult_ad_unit("top")}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {''.join(cards)}
+    </div>
+
+    {get_hub_banners("asmr")}
+    {get_adult_ad_unit("bottom")}
+  </main>
+
+  {get_footer()}
+</body>
+</html>"""
+
+    out_file = os.path.join(DIST_DIR, "asmr-ranking.html")
+    with open(out_file, "w", encoding="utf-8") as f:
+        f.write(page_html)
+    print(f"Built ASMR ranking page: {out_file}")
+
+
+def build_sale_500yen_page(sale_picks):
+    cards = []
+    for item in sale_picks:
+        target_url = build_fanza_link(item.get("raw_url", "https://www.dmm.co.jp/digital/videoa/"))
+        tags_html = " ".join([
+            f'<span class="text-[11px] px-2 py-0.5 rounded-md bg-rose-950/90 text-rose-200 border border-rose-700/50 font-medium">#{t}</span>'
+            for t in item.get("tags", [])
+        ])
+        cards.append(f"""
+        <div class="bg-slate-900/95 rounded-3xl border border-rose-500/40 hover:border-amber-400 p-6 shadow-xl flex flex-col justify-between space-y-5 transition">
+          <div class="space-y-3.5">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <span class="px-3 py-1 rounded-full text-xs font-black bg-rose-600 text-white">{item.get('category_badge')}</span>
+              <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950">{item.get('discount_rate')}</span>
+            </div>
+            <h3 class="text-base md:text-lg font-black text-white leading-snug">{item.get('title')}</h3>
+            <div class="grid grid-cols-2 gap-2.5 bg-slate-950/90 p-3.5 rounded-2xl border border-slate-800 text-xs">
+              <div>
+                <span class="text-slate-400 block text-[10px]">セール目安価格</span>
+                <span class="text-base font-black text-amber-300 font-mono">{item.get('sale_price')}</span>
+                <span class="text-[10px] text-slate-500 line-through block">{item.get('normal_price')}</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block text-[10px]">ボリューム / 評価</span>
+                <span class="text-xs font-bold text-white block">{item.get('runtime')}</span>
+                <span class="text-[11px] text-fuchsia-300 font-bold block mt-0.5">{item.get('cost_perf_score')}</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5">{tags_html}</div>
+            <div class="flex items-start gap-2.5 text-xs text-slate-300 bg-rose-950/30 p-3 rounded-xl border border-rose-800/40">
+              <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-8 h-8 rounded-full object-cover border border-rose-400 shrink-0 mt-0.5">
+              <p class="leading-relaxed">{item.get('onigon_tip')}</p>
+            </div>
+          </div>
+          <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="w-full py-3 px-4 bg-gradient-to-r from-rose-600 via-fuchsia-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white text-center rounded-xl font-black text-xs shadow-lg transition flex items-center justify-center gap-2">
+            <span>🔥 公式セール対象ラインナップを確認する</span>
+            <span>↗</span>
+          </a>
+        </div>
+        """)
+
+    page_html = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ | オニゴンの夜更かしラボ</title>
+  <meta name="description" content="480分超えの単体ベスト総集編がワンコイン500円！FANZA同人の10円セールや週末割引クーポンを重ね掛けして最安値で名作を揃える特設ガイド。">
+  <link rel="canonical" href="{SITE_URL}/sale-500yen.html">
+  <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen">
+  {AGE_GATE_MODAL}
+  {get_header("sale")}
+
+  <section class="relative bg-gradient-to-b from-rose-950/80 via-slate-950 to-slate-950 py-10 border-b border-rose-500/30">
+    <div class="max-w-5xl mx-auto px-4 space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-950 text-amber-300 text-xs font-bold border border-rose-500/40">
+        <span>💰</span><span>定価買い厳禁！オニゴン厳選・最安値セール特設</span>
+      </div>
+      <h1 class="text-2xl md:text-4xl font-black text-white leading-tight">
+        500円均一＆最大90%OFFセール<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-400 to-fuchsia-400">コスパ最強の神作ジャンルまとめ</span>
+      </h1>
+      <p class="text-xs md:text-sm text-slate-300 max-w-3xl leading-relaxed">
+        1分あたり約1円で楽しめる「4時間〜8時間収録の単体ベスト盤（500円均一対象）」から、うまい棒以下の「FANZA同人10円キャンペーン」まで、今すぐ使える最安値ルートを整理しました！
+      </p>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+    {get_adult_ad_unit("top")}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {''.join(cards)}
+    </div>
+
+    {get_hub_banners("sale")}
+    {get_adult_ad_unit("bottom")}
+  </main>
+
+  {get_footer()}
+</body>
+</html>"""
+
+    out_file = os.path.join(DIST_DIR, "sale-500yen.html")
+    with open(out_file, "w", encoding="utf-8") as f:
+        f.write(page_html)
+    print(f"Built 500yen sale page: {out_file}")
 
 
 def build_home_page(articles, newcomers):
@@ -759,13 +1048,16 @@ def build_home_page(articles, newcomers):
         <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
           深夜の案内人「オニゴン」が、FANZAの500円均一セール・大型新人デビュー作・KU100バイノーラル同人ASMRを忖度なしレビュー！ジャケット詐欺を回避して神作だけを発掘します。
         </p>
-        <div class="flex flex-wrap justify-center md:justify-start gap-3 pt-1">
-          <a href="/newcomers.html" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white text-xs font-black shadow-lg shadow-fuchsia-600/30 transition flex items-center gap-1.5">
-            <span>🌟 今月の大型新人・サムネ図鑑を見る</span>
+        <div class="flex flex-wrap justify-center md:justify-start gap-2.5 pt-1">
+          <a href="/newcomers.html" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white text-xs font-black shadow-lg shadow-fuchsia-600/30 transition flex items-center gap-1.5">
+            <span>🌟 大型新人・サムネ図鑑</span>
             <span>→</span>
           </a>
-          <a href="/articles/fanza-500yen-sale-guide.html" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-fuchsia-300 border border-purple-500/40 text-xs font-bold transition">
-            🔥 500円セール攻略法
+          <a href="/asmr-ranking.html" class="px-4 py-2.5 rounded-xl bg-indigo-950 hover:bg-indigo-900 text-indigo-200 border border-indigo-500/40 text-xs font-bold transition">
+            🎧 同人ASMR殿堂ランキング
+          </a>
+          <a href="/sale-500yen.html" class="px-4 py-2.5 rounded-xl bg-rose-950 hover:bg-rose-900 text-amber-300 border border-rose-500/40 text-xs font-bold transition">
+            💰 500円セール神作
           </a>
         </div>
       </div>
@@ -781,6 +1073,8 @@ def build_home_page(articles, newcomers):
   <!-- メインコンテンツ -->
   <main class="max-w-5xl mx-auto px-4 py-8 space-y-10">
     {get_adult_ad_unit("top")}
+
+    {get_hub_banners("home")}
 
     <!-- 🌟 新人女優・注目ルーキー サムネイル特集セクション -->
     <section class="space-y-4">
@@ -918,7 +1212,9 @@ def build_privacy_page():
 def build_seo_files(articles):
     urls = [
         f"  <url><loc>{SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>",
-        f"  <url><loc>{SITE_URL}/newcomers.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>"
+        f"  <url><loc>{SITE_URL}/newcomers.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>",
+        f"  <url><loc>{SITE_URL}/asmr-ranking.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>",
+        f"  <url><loc>{SITE_URL}/sale-500yen.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>"
     ]
     for art in articles:
         urls.append(
@@ -965,16 +1261,30 @@ def main():
         with open(NEWCOMERS_JSON, "r", encoding="utf-8") as f:
             newcomers = json.load(f)
 
+    asmr_json_path = os.path.join(ARTICLES_DIR, "asmr_works.json")
+    asmr_works = []
+    if os.path.exists(asmr_json_path):
+        with open(asmr_json_path, "r", encoding="utf-8") as f:
+            asmr_works = json.load(f)
+
+    sale_json_path = os.path.join(ARTICLES_DIR, "sale_picks.json")
+    sale_picks = []
+    if os.path.exists(sale_json_path):
+        with open(sale_json_path, "r", encoding="utf-8") as f:
+            sale_picks = json.load(f)
+
     for art in articles:
         build_article_page(art, articles)
 
     build_newcomers_page(newcomers)
+    build_asmr_ranking_page(asmr_works)
+    build_sale_500yen_page(sale_picks)
     build_home_page(articles, newcomers)
     build_about_page()
     build_privacy_page()
     build_seo_files(articles)
 
-    print("✨ Successfully built Store 3 (Onigon Night Lab) static site with Newcomer Spotlight in dist/!")
+    print("✨ Successfully built Store 3 (Onigon Night Lab) static site with 3 Special Hubs in dist/!")
 
 
 if __name__ == "__main__":

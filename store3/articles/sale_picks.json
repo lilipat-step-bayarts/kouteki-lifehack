@@ -1,0 +1,58 @@
+[
+  {
+    "id": "sale-best-omnibus-480min",
+    "title": "【480分超え総集編】専属単体エースの歴代ベスト盤がワンコイン対象！1分あたり約1円のバグ級コスパ枠",
+    "category_badge": "500円均一セール目玉",
+    "discount_rate": "最大80%OFF",
+    "sale_price": "500円（税込）〜",
+    "normal_price": "通常 2,480円〜",
+    "runtime": "収録時間：240分〜480分（4〜8時間）",
+    "cost_perf_score": "コスパS+（1分あたり約1.0円）",
+    "tags": ["単体ベスト総集編", "4時間〜8時間収録", "HD/4K高画質", "ワンコイン対象"],
+    "onigon_tip": "単品で1本ずつ買うと1万円以上する人気シリーズのハイライトが1本に凝縮！500円均一セールが来たら真っ先にカートに入れるべき鉄板ジャンルです👿🔥",
+    "raw_url": "https://www.dmm.co.jp/digital/videoa/",
+    "fanza_floor": "videoa"
+  },
+  {
+    "id": "sale-doujin-10yen-campaign",
+    "title": "【10円〜半額セール】FANZA同人の歴代メガヒットCG集・コミック・ASMRが期間限定の衝撃価格",
+    "category_badge": "同人10円〜半額枠",
+    "discount_rate": "最大90%OFF",
+    "sale_price": "10円〜550円",
+    "normal_price": "通常 990円〜1,650円",
+    "runtime": "大ボリューム100P超え / 音声120分超え",
+    "cost_perf_score": "コスパSSR（うまい棒以下の10円枠あり）",
+    "tags": ["10円キャンペーン", "ブラウザ即閲覧", "初回クーポン併用可", "無料試し読み増量"],
+    "onigon_tip": "新作発売記念でサークル過去作が『10円』や『100円』になるゲリラセールが毎週開催されています。お気に入り登録しておくと通知が来て取り逃しません📚✨",
+    "raw_url": "https://www.dmm.co.jp/dc/doujin/",
+    "fanza_floor": "doujin"
+  },
+  {
+    "id": "sale-8k-vr-trial-pack",
+    "title": "【VR入門に最適】8K VR超高精細タイトルの『30〜50%OFFセール』＆おためしVRピックアップ",
+    "category_badge": "8K VR割引セール",
+    "discount_rate": "30%〜50%OFF",
+    "sale_price": "セール時 980円〜",
+    "normal_price": "通常 1,980円〜2,980円",
+    "runtime": "8K 60fps 立体視収録",
+    "cost_perf_score": "没入度No.1（スマホVR・Quest対応）",
+    "tags": ["8K VR対応", "ゼロ距離主観", "高ビットレート", "週末クーポン対象"],
+    "onigon_tip": "通常価格だと少し高めの8K VR作品こそ、週末の30〜50%OFFセール＋まとめ買いクーポンの重ね掛けで揃えるのが賢い夜更かし民の鉄則です🥽💜",
+    "raw_url": "https://www.dmm.co.jp/digital/videoa/-/list/=/article=keyword/id=6791/",
+    "fanza_floor": "vr"
+  },
+  {
+    "id": "sale-dmm-premium-550yen",
+    "title": "【1本分以下で2,000本見放題】月額550円のDMMプレミアム（FANZA TV）×ポイント還元キャンペーン",
+    "category_badge": "見放題サブスク最強枠",
+    "discount_rate": "1本あたり実質0.2円",
+    "sale_price": "月額 550円（税込）",
+    "normal_price": "対象 2,000作品以上が見放題",
+    "runtime": "24時間いつでもストリーミング再生",
+    "cost_perf_score": "月1本見るだけで100%元が取れる",
+    "tags": ["FANZA TV見放題", "DMM TVアニメ見放題", "いつでも解約OK", "ポイント特典"],
+    "onigon_tip": "「今夜すぐ色々見たいけど出費は抑えたい」ならこれ一択！見放題で推しの女優さんを発掘してから、本命の最新作だけセールで単品買いするのが最強ルートです💎",
+    "raw_url": "https://premium.dmm.com/",
+    "fanza_floor": "premium"
+  }
+]
