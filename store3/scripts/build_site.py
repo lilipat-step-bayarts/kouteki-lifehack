@@ -1255,6 +1255,11 @@ def build_seo_files(articles):
     with open(os.path.join(DIST_DIR, "rss.xml"), "w", encoding="utf-8") as f:
         f.write(rss_xml)
 
+    # Google Search Console 所有権確認ファイル（1号店・2号店と共通のGoogleアカウント用）
+    gsc_file = "google38f9457e5c7ef474.html"
+    with open(os.path.join(DIST_DIR, gsc_file), "w", encoding="utf-8") as f:
+        f.write(f"google-site-verification: {gsc_file}")
+
 
 def main():
     os.makedirs(DIST_DIR, exist_ok=True)
