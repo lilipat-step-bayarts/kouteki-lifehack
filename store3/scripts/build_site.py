@@ -584,6 +584,7 @@ def build_article_page(article_meta, all_articles):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
   <title>{article_meta['title']} | オニゴンの夜更かしラボ</title>
   <meta name="description" content="{article_meta['summary']}">
   <link rel="canonical" href="{article_url}">
@@ -680,6 +681,7 @@ def build_newcomers_page(newcomers):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
   <title>【2026年最新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧 | オニゴンの夜更かしラボ</title>
   <meta name="description" content="毎月デビューする大型専属新人女優や同人ASMRの新星サークルをオニゴンが徹底評価！ビジュアル・スタイル・没入感の3軸ステータスとサンプル導線まとめ。">
   <link rel="canonical" href="{SITE_URL}/newcomers.html">
@@ -851,6 +853,7 @@ def build_asmr_ranking_page(asmr_works):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
   <title>【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング | オニゴンの夜更かしラボ</title>
   <meta name="description" content="100万円超のダミーヘッドマイクNEUMANN KU100・3Dio Pro IIで収録された超高音質な同人ASMR・耳かき・添い寝ボイス作品をオニゴンが厳選比較！">
   <link rel="canonical" href="{SITE_URL}/asmr-ranking.html">
@@ -943,6 +946,7 @@ def build_sale_500yen_page(sale_picks):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
   <title>【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ | オニゴンの夜更かしラボ</title>
   <meta name="description" content="480分超えの単体ベスト総集編がワンコイン500円！FANZA同人の10円セールや週末割引クーポンを重ね掛けして最安値で名作を揃える特設ガイド。">
   <link rel="canonical" href="{SITE_URL}/sale-500yen.html">
@@ -1023,6 +1027,7 @@ def build_home_page(articles, newcomers):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
   <title>{SITE_TITLE}</title>
   <meta name="description" content="{SITE_DESCRIPTION}">
   <link rel="canonical" href="{SITE_URL}/">
@@ -1139,6 +1144,7 @@ def build_about_page():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
   <title>オニゴンについて（運営者情報） | オニゴンの夜更かしラボ</title>
   <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -1185,6 +1191,7 @@ def build_privacy_page():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
   <title>プライバシーポリシー・広告開示・免責事項 | オニゴンの夜更かしラボ</title>
   <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -1254,11 +1261,6 @@ def build_seo_files(articles):
     )
     with open(os.path.join(DIST_DIR, "rss.xml"), "w", encoding="utf-8") as f:
         f.write(rss_xml)
-
-    # Google Search Console 所有権確認ファイル（1号店・2号店と共通のGoogleアカウント用）
-    gsc_file = "google38f9457e5c7ef474.html"
-    with open(os.path.join(DIST_DIR, gsc_file), "w", encoding="utf-8") as f:
-        f.write(f"google-site-verification: {gsc_file}")
 
 
 def main():
