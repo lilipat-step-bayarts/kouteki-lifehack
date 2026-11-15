@@ -34,6 +34,7 @@ jobs:
         env:
           DMM_API_ID: ${{ secrets.DMM_API_ID }}
           DMM_AFFILIATE_ID: ${{ secrets.DMM_AFFILIATE_ID }}
+          ADULT_ADMAX_TAG_ID: ${{ secrets.ADULT_ADMAX_TAG_ID }}
         run: |
           python3 scripts/generate_articles.py
           python3 store2/scripts/generate_articles.py

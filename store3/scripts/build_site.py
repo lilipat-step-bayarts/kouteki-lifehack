@@ -26,14 +26,77 @@ SITE_DESCRIPTION = "深夜の案内人『オニゴン』が、FANZAの500円セ�
 SITE_URL = "https://onigon-night-lab.pages.dev"
 
 DMM_AFFILIATE_ID = os.environ.get("DMM_AFFILIATE_ID", "").strip()
+# 忍者AdMax等で「アダルト属性（18禁サイト用）」として新規発行した広告枠IDを入れる環境変数（一般枠との混在防止）
+ADULT_ADMAX_TAG_ID = os.environ.get("ADULT_ADMAX_TAG_ID", "").strip()
 
-NINJA_AD_SCRIPT = """
-<!-- 忍者AdMax ビュー報酬ユニット -->
-<div class="my-6 p-3 bg-slate-900/90 rounded-2xl border border-purple-500/30 flex flex-col items-center justify-center min-h-[120px] text-center shadow-inner">
-  <span class="text-[10px] text-purple-300/70 font-medium mb-1 tracking-wider uppercase">Sponsored Link</span>
-  <script src="https://adm.shinobi.jp/s/b133ea03dc5417daa8dc029d6b6b4816"></script>
-</div>
-"""
+
+def get_adult_ad_unit(slot_type="top"):
+    """
+    3号店（18禁・深夜エンタメ）専用の大人向け広告ユニット。
+    ・1号店/2号店の「一般向けAdMax枠」を剥がし、規約違反リスクとミスマッチ広告を完全排除。
+    ・ADULT_ADMAX_TAG_ID が設定されればアダルト専用SSP枠を配信し、同時に高CTRなR18特化バナーを表示。
+    """
+    admax_script_html = ""
+    if ADULT_ADMAX_TAG_ID:
+        admax_script_html = f"""
+        <div class="mb-3 flex justify-center">
+          <script src="https://adm.shinobi.jp/s/{ADULT_ADMAX_TAG_ID}"></script>
+        </div>
+        """
+
+    if slot_type == "top":
+        raw_url = "https://www.dmm.co.jp/dc/doujin/"
+        target_url = build_fanza_link(raw_url)
+        return f"""
+        <!-- 18+ 大人向け特化リッチ広告枠 (TOP) -->
+        <div class="my-6 p-4 md:p-5 bg-gradient-to-r from-fuchsia-950/90 via-purple-950/95 to-slate-900 rounded-2xl border border-fuchsia-500/50 shadow-xl relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] px-2 py-0.5 rounded bg-rose-600 text-white font-black tracking-wider uppercase">AD / R18 SPECIAL PR</span>
+            <span class="text-[11px] text-fuchsia-300 font-mono font-bold">🎧 無料試聴・ブラウザ試し読み対応</span>
+          </div>
+          {admax_script_html}
+          <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="text-sm md:text-base font-black text-white group-hover:text-fuchsia-300 transition flex items-center gap-1.5 flex-wrap">
+                <span>🔥 【深夜限定セール】FANZA同人「バイノーラルASMR・専用CG・長編コミック」最大90%OFF！</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                10円セール＆初回購入クーポン配布中！ダウンロード不要でスマホのブラウザから今すぐ高画質ビューア＆無料体験版を楽しめる大人専用ストア
+              </p>
+            </div>
+            <span class="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-rose-600 group-hover:from-fuchsia-500 group-hover:to-rose-500 text-white font-black text-xs shadow-lg shadow-fuchsia-950 transition">
+              R18公式セールを見る ↗
+            </span>
+          </a>
+        </div>
+        """
+    else:
+        raw_url = "https://premium.dmm.com/"
+        target_url = build_fanza_link(raw_url)
+        return f"""
+        <!-- 18+ 大人向け特化リッチ広告枠 (BOTTOM) -->
+        <div class="my-6 p-4 md:p-5 bg-gradient-to-r from-indigo-950/95 via-purple-950/90 to-rose-950/90 rounded-2xl border border-purple-400/50 shadow-xl relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] px-2 py-0.5 rounded bg-purple-600 text-white font-black tracking-wider uppercase">AD / 18+ STREAMING PR</span>
+            <span class="text-[11px] text-amber-300 font-mono font-bold">💎 月額550円（税込）で対象作見放題</span>
+          </div>
+          {admax_script_html}
+          <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="text-sm md:text-base font-black text-white group-hover:text-amber-300 transition">
+                <span>🎬 【大人向け見放題】DMMプレミアム加入で「FANZA TV」厳選2,000作品以上が追加料金ゼロ！</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                単品1本分以下のワンコイン価格で、人気専属女優の名作からバラエティまでスマホ・PC・TVアプリで深夜に見放題！
+              </p>
+            </div>
+            <span class="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 group-hover:from-amber-400 group-hover:to-rose-500 text-white font-black text-xs shadow-lg transition">
+              見放題ラインナップを見る ↗
+            </span>
+          </a>
+        </div>
+        """
+
 
 AGE_GATE_MODAL = """
 <!-- 18歳以上年齢確認モーダル (DMM/FANZA審査対応) -->
@@ -499,7 +562,7 @@ def build_article_page(article_meta, all_articles):
         </div>
       </div>
 
-      {NINJA_AD_SCRIPT}
+      {get_adult_ad_unit("top")}
 
       <div class="prose max-w-none">
         {body_html}
@@ -507,7 +570,7 @@ def build_article_page(article_meta, all_articles):
 
       {cta_card}
 
-      {NINJA_AD_SCRIPT}
+      {get_adult_ad_unit("bottom")}
 
       <div class="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
         <a href="/" class="text-xs font-bold text-fuchsia-400 hover:text-fuchsia-300">← トップページへ戻る</a>
@@ -588,7 +651,7 @@ def build_newcomers_page(newcomers):
   </section>
 
   <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
-    {NINJA_AD_SCRIPT}
+    {get_adult_ad_unit("top")}
 
     <!-- 新人サムネイルカードグリッド -->
     <section class="space-y-4">
@@ -616,7 +679,7 @@ def build_newcomers_page(newcomers):
       </a>
     </section>
 
-    {NINJA_AD_SCRIPT}
+    {get_adult_ad_unit("bottom")}
   </main>
 
   {get_footer()}
@@ -716,7 +779,7 @@ def build_home_page(articles, newcomers):
 
   <!-- メインコンテンツ -->
   <main class="max-w-5xl mx-auto px-4 py-8 space-y-10">
-    {NINJA_AD_SCRIPT}
+    {get_adult_ad_unit("top")}
 
     <!-- 🌟 新人女優・注目ルーキー サムネイル特集セクション -->
     <section class="space-y-4">
@@ -754,7 +817,7 @@ def build_home_page(articles, newcomers):
       </div>
     </section>
 
-    {NINJA_AD_SCRIPT}
+    {get_adult_ad_unit("bottom")}
   </main>
 
   {get_footer()}
