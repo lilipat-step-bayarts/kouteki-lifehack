@@ -26,22 +26,23 @@ SITE_DESCRIPTION = "深夜の案内人『オニゴン』が、FANZAの500円セ�
 SITE_URL = "https://onigon-night-lab.pages.dev"
 
 DMM_AFFILIATE_ID = os.environ.get("DMM_AFFILIATE_ID", "").strip()
-# 忍者AdMax等で「アダルト属性（18禁サイト用）」として新規発行した広告枠IDを入れる環境変数（一般枠との混在防止）
-ADULT_ADMAX_TAG_ID = os.environ.get("ADULT_ADMAX_TAG_ID", "").strip()
+# 忍者AdMaxで「成人（アダルト属性・18禁サイト用）」として発行した3号店専用広告枠ID
+ADULT_ADMAX_TAG_ID = os.environ.get("ADULT_ADMAX_TAG_ID", "").strip() or "510c352d44b5c4c8109a0972bbd6c310"
 
 
 def get_adult_ad_unit(slot_type="top"):
     """
     3号店（18禁・深夜エンタメ）専用の大人向け広告ユニット。
-    ・1号店/2号店の「一般向けAdMax枠」を剥がし、規約違反リスクとミスマッチ広告を完全排除。
-    ・ADULT_ADMAX_TAG_ID が設定されればアダルト専用SSP枠を配信し、同時に高CTRなR18特化バナーを表示。
+    ・成人属性の忍者AdMaxタグ (510c352d44b5c4c8109a0972bbd6c310) ＋ 高CTRなR18特化バナーを表示。
     """
     admax_script_html = ""
     if ADULT_ADMAX_TAG_ID:
         admax_script_html = f"""
-        <div class="mb-3 flex justify-center">
+        <!-- admax -->
+        <div class="mb-4 flex flex-col items-center justify-center min-h-[250px] bg-slate-950/60 rounded-xl p-2 border border-purple-500/20">
           <script src="https://adm.shinobi.jp/s/{ADULT_ADMAX_TAG_ID}"></script>
         </div>
+        <!-- admax -->
         """
 
     if slot_type == "top":
