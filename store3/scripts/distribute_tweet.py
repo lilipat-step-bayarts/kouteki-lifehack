@@ -24,13 +24,15 @@ CRED_FILE = os.path.join(PROJECT_ROOT, ".twitter_credentials.json")
 
 SITE_URL = "https://onigon-night-lab.pages.dev"
 
-# X API 認証情報（環境変数または .twitter_credentials.json から読み込み）
+# X API 認証情報 (@Onigon_yfks / 3号店)
 API_KEY = os.environ.get("X_API_KEY", "TaLCNgeiDz1M1eAea2WJUYEFf").strip()
 API_SECRET = os.environ.get("X_API_SECRET", "DWEQkGCOo0Hw1T10f6CbpqOpaXEL1apZrfnhSErwZcX2YTsSds").strip()
+DEFAULT_TOKEN = "2121799594535501824-DK2cUBHpXZJqgdu4mAxcn3tRpm1MNW"
+DEFAULT_SECRET = "oLVKVekc3mnQkGZIBUdKXzPOSEHZuLwSiZ3QjYAVDfDSx"
 
 def load_access_tokens():
-    token = os.environ.get("X_STORE3_ACCESS_TOKEN", "").strip()
-    secret = os.environ.get("X_STORE3_ACCESS_TOKEN_SECRET", "").strip()
+    token = os.environ.get("X_STORE3_ACCESS_TOKEN", DEFAULT_TOKEN).strip()
+    secret = os.environ.get("X_STORE3_ACCESS_TOKEN_SECRET", DEFAULT_SECRET).strip()
     if token and secret:
         return token, secret
     if os.path.exists(CRED_FILE):
