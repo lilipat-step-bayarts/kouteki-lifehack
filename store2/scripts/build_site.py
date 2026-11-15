@@ -480,7 +480,7 @@ def build_article_page(article_meta):
             Xでシェア
           </a>
           <a href="https://x.com/ikero_lab" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-sm transition">
-            🦉 @ikero_lab をフォロー
+            🦊 @ikero_lab をフォロー
           </a>
         </div>
       </div>
@@ -671,14 +671,14 @@ def build_about_page():
     <div class="bg-white rounded-3xl p-6 md:p-10 border border-rose-100 shadow-sm space-y-6">
       <div class="text-center space-y-3">
         <img src="/assets/ikero_avatar.jpg" alt="イケロ" class="w-28 h-28 rounded-full border-4 border-emerald-400 mx-auto shadow-md object-cover">
-        <h1 class="text-xl font-bold text-slate-900">知恵の白フクロウ研究員「イケロ」</h1>
+        <h1 class="text-xl font-bold text-slate-900">知恵の白キツネ研究員「イケロ」</h1>
         <p class="text-xs text-emerald-700 font-semibold">コスメ成分アナリスト / 科学的スキンケアアドバイザー</p>
       </div>
 
       <div class="prose text-xs md:text-sm text-slate-600 leading-relaxed space-y-4 pt-4 border-t border-slate-100">
         <p>
-          はじめまして！知恵とコスメ成分の案内人、白フクロウの「イケロ」です。<br>
-          私の名前は、知恵と知力を象徴する森の哲学者「フクロウ」と、古代ギリシャの知恵と医学の賢者「ケイロン」に由来し、科学的洞察とエビデンスを重んじています。
+          はじめまして！知恵とコスメ成分の案内人、白キツネの「イケロ」です。<br>
+          私の名前は、知恵と知力を象徴する神秘と知恵の象徴「白狐（キツネ）」と、古代ギリシャの知恵と医学の賢者「ケイロン」に由来し、科学的洞察とエビデンスを重んじています。
         </p>
         <p>
           世の中には「高いから効きそう」「SNSで有名人が紹介していたから」という理由だけで、高額な化粧品を買い続けている方が大勢います。<br>

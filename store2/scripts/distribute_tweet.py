@@ -108,17 +108,17 @@ def generate_tweet_text(article):
     hour = now.hour
 
     if 6 <= hour < 10:
-        time_hook = "【朝のコスメ成分速報🦉】"
-        lead = "白フクロウ研究員イケロです🧪高いデパコスを買う前に知ってほしい成分の真実✨"
+        time_hook = "【朝のコスメ成分速報🦊】"
+        lead = "白キツネ研究員イケロです🧪高いデパコスを買う前に知ってほしい成分の真実✨"
     elif 11 <= hour < 14:
         time_hook = "【お昼のコスメ比較🔬】"
-        lead = "白フクロウ研究員イケロの知恵袋🦉1,000円台で同じ有効成分が入ってる名品まとめ👇"
+        lead = "白キツネ研究員イケロの知恵袋🦊1,000円台で同じ有効成分が入ってる名品まとめ👇"
     elif 17 <= hour < 20:
-        time_hook = "【夕方の美容成分ラボ🦉】"
+        time_hook = "【夕方の美容成分ラボ🦊】"
         lead = "お仕事帰りのドラッグストアで買えるデパコス級スキンケアを徹底比較🧪"
     else:
         time_hook = "【夜のスキンケア速報🌙】"
-        lead = "知恵の白フクロウ・イケロが忖度なしで解説する成分の真実👇"
+        lead = "知恵の白キツネ・イケロが忖度なしで解説する成分の真実👇"
 
     title = article.get("title", "")
     short_title = title[:36] + "…" if len(title) > 37 else title

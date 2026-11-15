@@ -50,7 +50,7 @@ HEADER_NAV = """
       </a>
       <nav class="flex items-center gap-3 md:gap-4 text-xs font-semibold text-slate-600">
         <a href="/" class="hover:text-blue-600">最新記事</a>
-        <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">🦉 姉妹店:コスメ成分ラボ</a>
+        <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">🦊 姉妹店:コスメ成分ラボ</a>
         <a href="/about.html" class="hover:text-blue-600">運営者:ほぽりん</a>
         <a href="/privacy.html" class="hover:text-blue-600">プライバシー</a>
       </nav>
@@ -287,7 +287,7 @@ def build_index(articles):
       <section class="p-5 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="space-y-1">
           <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">姉妹メディアのご案内</span>
-          <h3 class="text-sm md:text-base font-bold text-slate-900">🦉 イケロのコスメ成分ラボ・プチプラ速報</h3>
+          <h3 class="text-sm md:text-base font-bold text-slate-900">🦊 イケロのコスメ成分ラボ・プチプラ速報</h3>
           <p class="text-xs text-slate-600">1万円のデパコスと同じ有効成分が入った1,000円台の神プチプラを科学的根拠で徹底比較！</p>
         </div>
         <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="shrink-0 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-sm transition">
@@ -550,11 +550,11 @@ def build_article_page(art, all_articles=None):
           </div>
         </section>
 
-        <!-- 🦉 姉妹サイト相互送客カード -->
+        <!-- 🦊 姉妹サイト相互送客カード -->
         <div class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
           <div class="text-xs space-y-1">
             <span class="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[10px]">姉妹メディア人気記事</span>
-            <div class="font-bold text-slate-900 text-sm">🦉 デパコス級なのに1,000円台！イケロのコスメ成分ラボ</div>
+            <div class="font-bold text-slate-900 text-sm">🦊 デパコス級なのに1,000円台！イケロのコスメ成分ラボ</div>
             <div class="text-slate-600">レチノール・ナイアシンアミド・セラミドなど科学的根拠で日用品・美容費を賢く節約！</div>
           </div>
           <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="shrink-0 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition">
