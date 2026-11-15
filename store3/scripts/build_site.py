@@ -187,6 +187,9 @@ def get_header(current_page="home"):
         <a href="/sale-500yen.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-rose-600 text-white border-rose-400 shadow-md shadow-rose-950' if current_page == 'sale' else 'bg-rose-950/70 text-amber-300 border-rose-500/30 hover:bg-rose-900'}">
           <span>💰</span><span>500円セール神作</span>
         </a>
+        <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-fuchsia-300 border border-purple-500/40 transition flex items-center gap-1">
+          <span>𝕏</span><span>@Onigon_yfks</span>
+        </a>
       </nav>
     </div>
     <!-- スマホ用 横スクロール特設タブバー（回遊率アップ用） -->
@@ -195,6 +198,7 @@ def get_header(current_page="home"):
       <a href="/newcomers.html" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'newcomers' else 'bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30'}">🌟 新人図鑑・サムネ</a>
       <a href="/asmr-ranking.html" class="px-3 py-1 rounded-full {'bg-indigo-600 text-white' if current_page == 'asmr' else 'bg-indigo-950 text-indigo-300 border border-indigo-500/30'}">🎧 同人ASMRランキング</a>
       <a href="/sale-500yen.html" class="px-3 py-1 rounded-full {'bg-rose-600 text-white' if current_page == 'sale' else 'bg-rose-950 text-amber-300 border border-rose-500/30'}">💰 500円セール神作</a>
+      <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded-full bg-slate-800 text-fuchsia-300 border border-purple-500/30">𝕏 @Onigon_yfks</a>
     </div>
   </header>
 """
@@ -262,6 +266,8 @@ def get_footer():
         <span>•</span>
         <a href="/sale-500yen.html" class="hover:text-amber-400 font-bold text-amber-300">💰 500円セール神作</a>
         <span>•</span>
+        <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">𝕏 公式X (@Onigon_yfks)</a>
+        <span>•</span>
         <a href="/about.html" class="hover:text-fuchsia-400">運営者情報（オニゴン）</a>
         <span>•</span>
         <a href="/privacy.html" class="hover:text-fuchsia-400">プライバシーポリシー・広告開示</a>
@@ -269,7 +275,7 @@ def get_footer():
         <a href="/sitemap.xml" class="hover:text-fuchsia-400">サイトマップ</a>
       </div>
       <div class="text-[11px] text-slate-600 font-mono">
-        © 2026 Onigon Night Lab. All Rights Reserved. (18+ Adult Only)
+        © 2026 Onigon Night Lab (@Onigon_yfks). All Rights Reserved. (18+ Adult Only)
       </div>
     </div>
   </footer>
@@ -587,8 +593,9 @@ def build_article_page(article_meta, all_articles):
   <meta property="og:title" content="{article_meta['title']}">
   <meta property="og:description" content="{article_meta['summary']}">
   <meta property="og:url" content="{article_url}">
-  <meta property="og:image" content="{SITE_URL}/assets/onigon_avatar.jpg">
+  <meta property="og:image" content="{SITE_URL}/assets/onigon_banner.jpg">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Onigon_yfks">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen">
@@ -1026,8 +1033,9 @@ def build_home_page(articles, newcomers):
   <meta property="og:title" content="{SITE_TITLE}">
   <meta property="og:description" content="{SITE_DESCRIPTION}">
   <meta property="og:url" content="{SITE_URL}/">
-  <meta property="og:image" content="{SITE_URL}/assets/onigon_avatar.jpg">
+  <meta property="og:image" content="{SITE_URL}/assets/onigon_banner.jpg">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@Onigon_yfks">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen">
