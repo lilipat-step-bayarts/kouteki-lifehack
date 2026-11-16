@@ -36,6 +36,21 @@ BASE_HTML_HEAD = """
     body { font-family: 'Noto Sans JP', sans-serif; }
     .table-container { position: relative; }
   </style>
+  <script>
+    (function() {
+      var ua = navigator.userAgent || '';
+      var isTwitter = /Twitter/i.test(ua) || /FBAN|FBAV|Instagram/i.test(ua);
+      if (isTwitter) {
+        document.addEventListener('DOMContentLoaded', function() {
+          var guide = document.createElement('div');
+          guide.id = 'x-inapp-guide';
+          guide.className = 'bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white text-xs px-3 py-2.5 flex items-center justify-between shadow-md sticky top-0 z-50';
+          guide.innerHTML = '<div class="flex items-center gap-1.5 font-medium leading-tight"><span>📱</span><span><b>全画面で開く</b>：中央の「⁝」から「Safariで開く」または画面を上にスワイプ</span></div><button onclick="this.parentElement.remove()" class="ml-2 font-bold px-2 py-0.5 bg-white/20 hover:bg-white/30 rounded text-[11px] shrink-0">閉じる ✕</button>';
+          document.body.insertBefore(guide, document.body.firstChild);
+        });
+      }
+    })();
+  </script>
 """
 
 HEADER_NAV = """

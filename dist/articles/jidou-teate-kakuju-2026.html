@@ -16,6 +16,21 @@
     body { font-family: 'Noto Sans JP', sans-serif; }
     .table-container { position: relative; }
   </style>
+  <script>
+    (function() {
+      var ua = navigator.userAgent || '';
+      var isTwitter = /Twitter/i.test(ua) || /FBAN|FBAV|Instagram/i.test(ua);
+      if (isTwitter) {
+        document.addEventListener('DOMContentLoaded', function() {
+          var guide = document.createElement('div');
+          guide.id = 'x-inapp-guide';
+          guide.className = 'bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white text-xs px-3 py-2.5 flex items-center justify-between shadow-md sticky top-0 z-50';
+          guide.innerHTML = '<div class="flex items-center gap-1.5 font-medium leading-tight"><span>📱</span><span><b>全画面で開く</b>：中央の「⁝」から「Safariで開く」または画面を上にスワイプ</span></div><button onclick="this.parentElement.remove()" class="ml-2 font-bold px-2 py-0.5 bg-white/20 hover:bg-white/30 rounded text-[11px] shrink-0">閉じる ✕</button>';
+          document.body.insertBefore(guide, document.body.firstChild);
+        });
+      }
+    })();
+  </script>
 
   <title>子ども3人いる家庭は年36万円もらえる！高校生も対象になった新・児童手当『申請しないと1円も出ない』落とし穴 - 公的ライフハック速報 by ほぽりん</title>
   <meta name="description" content="高校生年代まで支給期間が延長され、所得制限が完全撤廃。第3子以降は月3万円（年36万円）へ大増額された新制度ですが、高校生のみの世帯は『自分で申請しないと放置される』注意点があります。">

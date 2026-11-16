@@ -16,6 +16,21 @@
     body { font-family: 'Noto Sans JP', sans-serif; }
     .table-container { position: relative; }
   </style>
+  <script>
+    (function() {
+      var ua = navigator.userAgent || '';
+      var isTwitter = /Twitter/i.test(ua) || /FBAN|FBAV|Instagram/i.test(ua);
+      if (isTwitter) {
+        document.addEventListener('DOMContentLoaded', function() {
+          var guide = document.createElement('div');
+          guide.id = 'x-inapp-guide';
+          guide.className = 'bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white text-xs px-3 py-2.5 flex items-center justify-between shadow-md sticky top-0 z-50';
+          guide.innerHTML = '<div class="flex items-center gap-1.5 font-medium leading-tight"><span>📱</span><span><b>全画面で開く</b>：中央の「⁝」から「Safariで開く」または画面を上にスワイプ</span></div><button onclick="this.parentElement.remove()" class="ml-2 font-bold px-2 py-0.5 bg-white/20 hover:bg-white/30 rounded text-[11px] shrink-0">閉じる ✕</button>';
+          document.body.insertBefore(guide, document.body.firstChild);
+        });
+      }
+    })();
+  </script>
 
   <title>年金『70歳まで我慢して42%増額』の甘い罠！税金と社会保険料・医療費負担が増えて手取りが減る損益分岐点を完全公開 - 公的ライフハック速報 by ほぽりん</title>
   <meta name="description" content="年金を65歳から受け取らず70歳・75歳まで遅らせると最大84%増える『繰り下げ受給』。しかし額面が増えることで税金・国民健康保険料・介護保険料が跳ね上がり、加給年金（年約40万円）が消滅する落とし穴を暴きます。">

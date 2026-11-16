@@ -16,6 +16,21 @@
     body { font-family: 'Noto Sans JP', sans-serif; }
     .table-container { position: relative; }
   </style>
+  <script>
+    (function() {
+      var ua = navigator.userAgent || '';
+      var isTwitter = /Twitter/i.test(ua) || /FBAN|FBAV|Instagram/i.test(ua);
+      if (isTwitter) {
+        document.addEventListener('DOMContentLoaded', function() {
+          var guide = document.createElement('div');
+          guide.id = 'x-inapp-guide';
+          guide.className = 'bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white text-xs px-3 py-2.5 flex items-center justify-between shadow-md sticky top-0 z-50';
+          guide.innerHTML = '<div class="flex items-center gap-1.5 font-medium leading-tight"><span>📱</span><span><b>全画面で開く</b>：中央の「⁝」から「Safariで開く」または画面を上にスワイプ</span></div><button onclick="this.parentElement.remove()" class="ml-2 font-bold px-2 py-0.5 bg-white/20 hover:bg-white/30 rounded text-[11px] shrink-0">閉じる ✕</button>';
+          document.body.insertBefore(guide, document.body.firstChild);
+        });
+      }
+    })();
+  </script>
 
   <title>【親の介護で自己破産する前に】仕事を辞めたら手遅れ！『介護休業給付金（給料の67%）』と知らなきゃ破滅する自己負担リミット - 公的ライフハック速報 by ほぽりん</title>
   <meta name="description" content="突然やってくる親の介護。真面目な人ほど『自分が仕事を辞めて親の面倒を見なければ』と抱え込み、結果として収入がゼロになり親子共倒れ・自己破産に追い込まれる悲劇が後を絶ちません。国は『介護と仕事を両立させるための有給休業』として数十万円を保障しています。">
