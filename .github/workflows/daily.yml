@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 新着記事の自動生成＆静的サイトビルド（1号店＋2号店＋3号店）
+      - name: 新着記事の自動生成＆静的サイトビルド（1号店＋2号店＋3号店＋4号店）
         env:
           DMM_API_ID: ${{ secrets.DMM_API_ID }}
           DMM_AFFILIATE_ID: ${{ secrets.DMM_AFFILIATE_ID }}
@@ -43,10 +43,12 @@ jobs:
           python3 store2/scripts/generate_articles.py
           python3 store3/scripts/generate_articles.py
           python3 store3/scripts/fetch_dmm_newcomers.py
+          python3 store4/scripts/generate_articles.py
           python3 scripts/build_site.py --build-only
           python3 store3/scripts/build_site.py
+          python3 store4/scripts/build_site.py
 
-      - name: Cloudflare Pagesへ本番自動デプロイ（1号店＋2号店＋3号店）
+      - name: Cloudflare Pagesへ本番自動デプロイ（1号店＋2号店＋3号店＋4号店）
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -78,11 +80,15 @@ jobs:
             (cd store3 && npx wrangler pages deploy dist --project-name=onigon-night-lab --branch=main --commit-dirty=true) || true
           fi
 
+          # 4号店 (buzzhack-zeus) の本番ブランチを取得してデプロイ
+          (cd store4 && npx wrangler pages project create buzzhack-zeus --production-branch=main 2>/dev/null || true)
+          (cd store4 && npx wrangler pages deploy dist --project-name=buzzhack-zeus --branch=main --commit-dirty=true || true)
+
       # X（旧Twitter）への投稿・フォロー・片思い解除は別PCのローカルブラウザ自動運用（local_pc_x_automation/）へ完全移行済（API課金 $0.00）
 
       - name: 生成した記事・ビルド成果物・投稿履歴をGitHubに自動コミット＆保存
         run: |
           git config --global user.name "Hoporin AutoBot"
           git config --global user.email "bot@kouteki-lifehack.pages.dev"
-          git add -A articles/ dist/ store2/articles/ store2/dist/ store3/articles/ store3/dist/ 2>/dev/null || true
-          git diff --staged --quiet || (git commit -m "chore(auto): 1号店・2号店・3号店の記事更新＆本番デプロイ同期 [skip ci]" && git push)
+          git add -A articles/ dist/ store2/articles/ store2/dist/ store3/articles/ store3/dist/ store4/articles/ store4/dist/ 2>/dev/null || true
+          git diff --staged --quiet || (git commit -m "chore(auto): 1〜4号店の記事更新＆本番デプロイ同期 [skip ci]" && git push)
