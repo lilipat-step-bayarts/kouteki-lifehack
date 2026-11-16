@@ -148,7 +148,7 @@ def generate_tweet_text(article, now_jst):
         page_path = slug.replace("special:", "")
         url = f"{SITE_URL}/{page_path}"
     else:
-        url = f"{SITE_URL}/articles/{slug}.html"
+        url = f"{SITE_URL}/articles/{slug}"
 
     hashtags = "#オニゴンの夜更かしラボ #同人ASMR #ワンコインセール #深夜エンタメ"
     return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n{hashtags}"
@@ -176,15 +176,15 @@ def main():
     # 3大特設ページもローテーション対象に追加
     special_hubs = [
         {
-            "slug": "special:newcomers.html",
+            "slug": "special:newcomers",
             "title": "【毎月更新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧"
         },
         {
-            "slug": "special:asmr-ranking.html",
+            "slug": "special:asmr-ranking",
             "title": "【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング"
         },
         {
-            "slug": "special:sale-500yen.html",
+            "slug": "special:sale-500yen",
             "title": "【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ"
         }
     ]

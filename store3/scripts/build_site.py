@@ -2,7 +2,7 @@
 """
 オニゴンの夜更かしラボ (3号店) 静的Webサイトビルダースクリプト
 ・18歳以上年齢確認モーダル（DMM / FANZAアフィリエイト審査必須要件）完備
-・新人紹介＆サムネイル図鑑ページ (/newcomers.html) 搭載
+・新人紹介＆サムネイル図鑑ページ (/newcomers) 搭載
   - 審査通過前：著作権100%クリアな「オニゴン特製ビジュアルサムネイル＆ステータス図解カード」を表示
   - 審査通過後：newcomers.json に package_image_url / DMM API を設定するだけで公式パッケージサムネイル画像に自動切替
 ・忍者AdMax（ビュー報酬）＋ DMM / FANZA アフィリエイト導線の二刀流構造
@@ -178,13 +178,13 @@ def get_header(current_page="home"):
       </a>
       <nav class="hidden md:flex items-center gap-2.5 text-xs font-bold text-slate-300">
         <a href="/" class="px-3 py-1.5 rounded-full transition {'bg-slate-800 text-fuchsia-400 border border-fuchsia-500/40' if current_page == 'home' else 'hover:text-fuchsia-400'}">🔥 新着速報</a>
-        <a href="/newcomers.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-fuchsia-600 text-white border-fuchsia-400 shadow-md shadow-fuchsia-950' if current_page == 'newcomers' else 'bg-purple-950/70 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900'}">
+        <a href="/newcomers" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-fuchsia-600 text-white border-fuchsia-400 shadow-md shadow-fuchsia-950' if current_page == 'newcomers' else 'bg-purple-950/70 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900'}">
           <span>🌟</span><span>新人図鑑・サムネ</span>
         </a>
-        <a href="/asmr-ranking.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-950' if current_page == 'asmr' else 'bg-indigo-950/70 text-indigo-300 border-indigo-500/30 hover:bg-indigo-900'}">
+        <a href="/asmr-ranking" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-950' if current_page == 'asmr' else 'bg-indigo-950/70 text-indigo-300 border-indigo-500/30 hover:bg-indigo-900'}">
           <span>🎧</span><span>同人ASMR殿堂</span>
         </a>
-        <a href="/sale-500yen.html" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-rose-600 text-white border-rose-400 shadow-md shadow-rose-950' if current_page == 'sale' else 'bg-rose-950/70 text-amber-300 border-rose-500/30 hover:bg-rose-900'}">
+        <a href="/sale-500yen" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-rose-600 text-white border-rose-400 shadow-md shadow-rose-950' if current_page == 'sale' else 'bg-rose-950/70 text-amber-300 border-rose-500/30 hover:bg-rose-900'}">
           <span>💰</span><span>500円セール神作</span>
         </a>
         <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-fuchsia-300 border border-purple-500/40 transition flex items-center gap-1">
@@ -195,9 +195,9 @@ def get_header(current_page="home"):
     <!-- スマホ用 横スクロール特設タブバー（回遊率アップ用） -->
     <div class="md:hidden border-t border-slate-800/80 bg-slate-900/90 px-3 py-2 flex items-center gap-2 overflow-x-auto text-[11px] font-bold whitespace-nowrap">
       <a href="/" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'home' else 'bg-slate-800 text-slate-300'}">🔥 トップ速報</a>
-      <a href="/newcomers.html" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'newcomers' else 'bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30'}">🌟 新人図鑑・サムネ</a>
-      <a href="/asmr-ranking.html" class="px-3 py-1 rounded-full {'bg-indigo-600 text-white' if current_page == 'asmr' else 'bg-indigo-950 text-indigo-300 border border-indigo-500/30'}">🎧 同人ASMRランキング</a>
-      <a href="/sale-500yen.html" class="px-3 py-1 rounded-full {'bg-rose-600 text-white' if current_page == 'sale' else 'bg-rose-950 text-amber-300 border border-rose-500/30'}">💰 500円セール神作</a>
+      <a href="/newcomers" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'newcomers' else 'bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30'}">🌟 新人図鑑・サムネ</a>
+      <a href="/asmr-ranking" class="px-3 py-1 rounded-full {'bg-indigo-600 text-white' if current_page == 'asmr' else 'bg-indigo-950 text-indigo-300 border border-indigo-500/30'}">🎧 同人ASMRランキング</a>
+      <a href="/sale-500yen" class="px-3 py-1 rounded-full {'bg-rose-600 text-white' if current_page == 'sale' else 'bg-rose-950 text-amber-300 border border-rose-500/30'}">💰 500円セール神作</a>
       <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded-full bg-slate-800 text-fuchsia-300 border border-purple-500/30">𝕏 @Onigon_yfks</a>
     </div>
   </header>
@@ -215,7 +215,7 @@ def get_hub_banners(current_page="home"):
         <span class="text-[11px] text-fuchsia-400 font-bold">回遊ピックアップ</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-        <a href="/newcomers.html" class="group p-4 rounded-2xl bg-gradient-to-br from-fuchsia-950/90 to-slate-900 border border-fuchsia-500/40 hover:border-fuchsia-400 transition flex flex-col justify-between shadow-lg">
+        <a href="/newcomers" class="group p-4 rounded-2xl bg-gradient-to-br from-fuchsia-950/90 to-slate-900 border border-fuchsia-500/40 hover:border-fuchsia-400 transition flex flex-col justify-between shadow-lg">
           <div class="space-y-1.5">
             <span class="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-600 text-white font-black">🌟 特設コーナー①</span>
             <h4 class="text-sm font-black text-white group-hover:text-fuchsia-300">大型新人女優＆注目ルーキー図鑑</h4>
@@ -224,7 +224,7 @@ def get_hub_banners(current_page="home"):
           <span class="mt-3 text-[11px] font-bold text-fuchsia-300 group-hover:translate-x-1 transition inline-block">新人図鑑を見る →</span>
         </a>
 
-        <a href="/asmr-ranking.html" class="group p-4 rounded-2xl bg-gradient-to-br from-indigo-950/90 to-slate-900 border border-indigo-500/40 hover:border-indigo-400 transition flex flex-col justify-between shadow-lg">
+        <a href="/asmr-ranking" class="group p-4 rounded-2xl bg-gradient-to-br from-indigo-950/90 to-slate-900 border border-indigo-500/40 hover:border-indigo-400 transition flex flex-col justify-between shadow-lg">
           <div class="space-y-1.5">
             <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-black">🎧 特設コーナー②</span>
             <h4 class="text-sm font-black text-white group-hover:text-indigo-300">同人ASMR・耳かきボイス殿堂ランキング</h4>
@@ -233,7 +233,7 @@ def get_hub_banners(current_page="home"):
           <span class="mt-3 text-[11px] font-bold text-indigo-300 group-hover:translate-x-1 transition inline-block">ASMRランキングを見る →</span>
         </a>
 
-        <a href="/sale-500yen.html" class="group p-4 rounded-2xl bg-gradient-to-br from-rose-950/90 to-slate-900 border border-rose-500/40 hover:border-amber-400 transition flex flex-col justify-between shadow-lg">
+        <a href="/sale-500yen" class="group p-4 rounded-2xl bg-gradient-to-br from-rose-950/90 to-slate-900 border border-rose-500/40 hover:border-amber-400 transition flex flex-col justify-between shadow-lg">
           <div class="space-y-1.5">
             <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-600 text-white font-black">💰 特設コーナー③</span>
             <h4 class="text-sm font-black text-white group-hover:text-amber-300">500円均一＆同人10円セール神作まとめ</h4>
@@ -260,17 +260,17 @@ def get_footer():
       <div class="text-[11px] text-slate-400 flex flex-wrap justify-center gap-4 pt-2">
         <a href="/" class="hover:text-fuchsia-400">トップページ</a>
         <span>•</span>
-        <a href="/newcomers.html" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">🌟 新人図鑑・サムネ</a>
+        <a href="/newcomers" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">🌟 新人図鑑・サムネ</a>
         <span>•</span>
-        <a href="/asmr-ranking.html" class="hover:text-indigo-400 font-bold text-indigo-300">🎧 同人ASMRランキング</a>
+        <a href="/asmr-ranking" class="hover:text-indigo-400 font-bold text-indigo-300">🎧 同人ASMRランキング</a>
         <span>•</span>
-        <a href="/sale-500yen.html" class="hover:text-amber-400 font-bold text-amber-300">💰 500円セール神作</a>
+        <a href="/sale-500yen" class="hover:text-amber-400 font-bold text-amber-300">💰 500円セール神作</a>
         <span>•</span>
         <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">𝕏 公式X (@Onigon_yfks)</a>
         <span>•</span>
-        <a href="/about.html" class="hover:text-fuchsia-400">運営者情報（オニゴン）</a>
+        <a href="/about" class="hover:text-fuchsia-400">運営者情報（オニゴン）</a>
         <span>•</span>
-        <a href="/privacy.html" class="hover:text-fuchsia-400">プライバシーポリシー・広告開示</a>
+        <a href="/privacy" class="hover:text-fuchsia-400">プライバシーポリシー・広告開示</a>
         <span>•</span>
         <a href="/sitemap.xml" class="hover:text-fuchsia-400">サイトマップ</a>
       </div>
@@ -458,7 +458,7 @@ def get_fanza_cta_card(slug, title):
           <span>{btn_label}</span>
           <span>↗</span>
         </a>
-        <a href="/newcomers.html" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 border border-purple-500/40 text-fuchsia-300 text-center rounded-xl font-bold text-xs transition flex items-center justify-center gap-1.5">
+        <a href="/newcomers" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 border border-purple-500/40 text-fuchsia-300 text-center rounded-xl font-bold text-xs transition flex items-center justify-center gap-1.5">
           <span>🌟 当サイトの新人女優・ルーキー図鑑を見る</span>
           <span>→</span>
         </a>
@@ -566,7 +566,7 @@ def build_article_page(article_meta, all_articles):
     related_html = ""
     for r_art in related:
         related_html += f"""
-        <a href="/articles/{r_art['slug']}.html" class="block p-4 bg-slate-900 hover:bg-purple-950/60 border border-purple-800/40 hover:border-fuchsia-500/60 rounded-2xl transition group">
+        <a href="/articles/{r_art['slug']}" class="block p-4 bg-slate-900 hover:bg-purple-950/60 border border-purple-800/40 hover:border-fuchsia-500/60 rounded-2xl transition group">
           <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
             <span class="px-2 py-0.5 rounded bg-purple-950 text-fuchsia-300 font-bold border border-purple-700/50">{r_art.get('category', '深夜レビュー')}</span>
             <span>{r_art['date']}</span>
@@ -575,7 +575,7 @@ def build_article_page(article_meta, all_articles):
         </a>
         """
 
-    article_url = f"{SITE_URL}/articles/{slug}.html"
+    article_url = f"{SITE_URL}/articles/{slug}"
     encoded_title = urllib.parse.quote(f"{article_meta['title']} #オニゴンの夜更かしラボ #FANZA #深夜の癒やし")
     encoded_share_url = urllib.parse.quote(article_url)
 
@@ -641,7 +641,7 @@ def build_article_page(article_meta, all_articles):
       <div class="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
         <a href="/" class="text-xs font-bold text-fuchsia-400 hover:text-fuchsia-300">← トップページへ戻る</a>
         <div class="flex items-center gap-2.5">
-          <a href="/newcomers.html" class="px-4 py-2 bg-purple-900/80 hover:bg-purple-800 text-fuchsia-200 border border-fuchsia-500/40 rounded-xl text-xs font-bold transition">
+          <a href="/newcomers" class="px-4 py-2 bg-purple-900/80 hover:bg-purple-800 text-fuchsia-200 border border-fuchsia-500/40 rounded-xl text-xs font-bold transition">
             🌟 新人図鑑を見る
           </a>
           <a href="https://twitter.com/intent/tweet?text={encoded_title}&url={encoded_share_url}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white rounded-xl text-xs font-bold transition">
@@ -670,7 +670,7 @@ def build_article_page(article_meta, all_articles):
     out_file = os.path.join(DIST_ARTICLES_DIR, f"{slug}.html")
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(page_html)
-    print(f"Built article: /home/antigravity/lilipat-step-bayarts/kouteki-lifehack/store3/dist/articles/{slug}.html")
+    print(f"Built article: /home/antigravity/lilipat-step-bayarts/kouteki-lifehack/store3/dist/articles/{slug}")
 
 
 def build_newcomers_page(newcomers):
@@ -684,7 +684,7 @@ def build_newcomers_page(newcomers):
   <meta name="rating" content="adult">
   <title>【2026年最新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧 | オニゴンの夜更かしラボ</title>
   <meta name="description" content="毎月デビューする大型専属新人女優や同人ASMRの新星サークルをオニゴンが徹底評価！ビジュアル・スタイル・没入感の3軸ステータスとサンプル導線まとめ。">
-  <link rel="canonical" href="{SITE_URL}/newcomers.html">
+  <link rel="canonical" href="{SITE_URL}/newcomers">
   <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -743,7 +743,7 @@ def build_newcomers_page(newcomers):
         <h3 class="text-base md:text-lg font-black text-white">【2026年最新】大型新人デビュー＆注目ルーキー徹底解剖！失敗しない予約特典・4K/VR版の見極め方</h3>
         <p class="text-xs text-slate-300">発売前の予約数やサンプル動画のどこを見れば「当たり新人」が分かるのか、3つのチェック指標を解説！</p>
       </div>
-      <a href="/articles/newcomer-debut-spotlight-2026.html" class="shrink-0 px-5 py-3 bg-fuchsia-600 hover:bg-fuchsia-500 text-white rounded-xl text-xs font-black shadow-lg transition">
+      <a href="/articles/newcomer-debut-spotlight-2026" class="shrink-0 px-5 py-3 bg-fuchsia-600 hover:bg-fuchsia-500 text-white rounded-xl text-xs font-black shadow-lg transition">
         攻略記事を読む →
       </a>
     </section>
@@ -856,7 +856,7 @@ def build_asmr_ranking_page(asmr_works):
   <meta name="rating" content="adult">
   <title>【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング | オニゴンの夜更かしラボ</title>
   <meta name="description" content="100万円超のダミーヘッドマイクNEUMANN KU100・3Dio Pro IIで収録された超高音質な同人ASMR・耳かき・添い寝ボイス作品をオニゴンが厳選比較！">
-  <link rel="canonical" href="{SITE_URL}/asmr-ranking.html">
+  <link rel="canonical" href="{SITE_URL}/asmr-ranking">
   <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -949,7 +949,7 @@ def build_sale_500yen_page(sale_picks):
   <meta name="rating" content="adult">
   <title>【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ | オニゴンの夜更かしラボ</title>
   <meta name="description" content="480分超えの単体ベスト総集編がワンコイン500円！FANZA同人の10円セールや週末割引クーポンを重ね掛けして最安値で名作を揃える特設ガイド。">
-  <link rel="canonical" href="{SITE_URL}/sale-500yen.html">
+  <link rel="canonical" href="{SITE_URL}/sale-500yen">
   <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -1000,7 +1000,7 @@ def build_home_page(articles, newcomers):
     article_cards = []
     for art in articles:
         article_cards.append(f"""
-        <a href="/articles/{art['slug']}.html" class="group bg-slate-900/90 rounded-2xl p-5 border border-purple-500/30 hover:border-fuchsia-400/70 shadow-lg hover:shadow-fuchsia-950/40 transition-all flex flex-col justify-between">
+        <a href="/articles/{art['slug']}" class="group bg-slate-900/90 rounded-2xl p-5 border border-purple-500/30 hover:border-fuchsia-400/70 shadow-lg hover:shadow-fuchsia-950/40 transition-all flex flex-col justify-between">
           <div class="space-y-2.5">
             <div class="flex items-center justify-between text-xs text-slate-400">
               <span class="px-2.5 py-0.5 rounded-full bg-purple-950 text-fuchsia-300 border border-purple-700/60 font-bold">
@@ -1062,14 +1062,14 @@ def build_home_page(articles, newcomers):
           深夜の案内人「オニゴン」が、FANZAの500円均一セール・大型新人デビュー作・KU100バイノーラル同人ASMRを忖度なしレビュー！ジャケット詐欺を回避して神作だけを発掘します。
         </p>
         <div class="flex flex-wrap justify-center md:justify-start gap-2.5 pt-1">
-          <a href="/newcomers.html" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white text-xs font-black shadow-lg shadow-fuchsia-600/30 transition flex items-center gap-1.5">
+          <a href="/newcomers" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white text-xs font-black shadow-lg shadow-fuchsia-600/30 transition flex items-center gap-1.5">
             <span>🌟 大型新人・サムネ図鑑</span>
             <span>→</span>
           </a>
-          <a href="/asmr-ranking.html" class="px-4 py-2.5 rounded-xl bg-indigo-950 hover:bg-indigo-900 text-indigo-200 border border-indigo-500/40 text-xs font-bold transition">
+          <a href="/asmr-ranking" class="px-4 py-2.5 rounded-xl bg-indigo-950 hover:bg-indigo-900 text-indigo-200 border border-indigo-500/40 text-xs font-bold transition">
             🎧 同人ASMR殿堂ランキング
           </a>
-          <a href="/sale-500yen.html" class="px-4 py-2.5 rounded-xl bg-rose-950 hover:bg-rose-900 text-amber-300 border border-rose-500/40 text-xs font-bold transition">
+          <a href="/sale-500yen" class="px-4 py-2.5 rounded-xl bg-rose-950 hover:bg-rose-900 text-amber-300 border border-rose-500/40 text-xs font-bold transition">
             💰 500円セール神作
           </a>
         </div>
@@ -1098,7 +1098,7 @@ def build_home_page(articles, newcomers):
             <span>🌟</span><span>今月の大型新人デビュー＆注目ルーキー特集</span>
           </h2>
         </div>
-        <a href="/newcomers.html" class="px-3.5 py-1.5 rounded-xl bg-purple-950 hover:bg-purple-900 text-fuchsia-300 border border-fuchsia-500/40 text-xs font-bold transition">
+        <a href="/newcomers" class="px-3.5 py-1.5 rounded-xl bg-purple-950 hover:bg-purple-900 text-fuchsia-300 border border-fuchsia-500/40 text-xs font-bold transition">
           全{len(newcomers)}名のサムネ図鑑を見る →
         </a>
       </div>
@@ -1182,7 +1182,7 @@ def build_about_page():
 </html>"""
     with open(os.path.join(DIST_DIR, "about.html"), "w", encoding="utf-8") as f:
         f.write(about_html)
-    print("Built about: dist/about.html")
+    print("Built about: dist/about")
 
 
 def build_privacy_page():
@@ -1221,19 +1221,19 @@ def build_privacy_page():
 </html>"""
     with open(os.path.join(DIST_DIR, "privacy.html"), "w", encoding="utf-8") as f:
         f.write(privacy_html)
-    print("Built privacy: dist/privacy.html")
+    print("Built privacy: dist/privacy")
 
 
 def build_seo_files(articles):
     urls = [
         f"  <url><loc>{SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>",
-        f"  <url><loc>{SITE_URL}/newcomers.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>",
-        f"  <url><loc>{SITE_URL}/asmr-ranking.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>",
-        f"  <url><loc>{SITE_URL}/sale-500yen.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>"
+        f"  <url><loc>{SITE_URL}/newcomers</loc><changefreq>daily</changefreq><priority>0.9</priority></url>",
+        f"  <url><loc>{SITE_URL}/asmr-ranking</loc><changefreq>daily</changefreq><priority>0.9</priority></url>",
+        f"  <url><loc>{SITE_URL}/sale-500yen</loc><changefreq>daily</changefreq><priority>0.9</priority></url>"
     ]
     for art in articles:
         urls.append(
-            f"  <url><loc>{SITE_URL}/articles/{art['slug']}.html</loc><lastmod>{art['date']}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>"
+            f"  <url><loc>{SITE_URL}/articles/{art['slug']}</loc><lastmod>{art['date']}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>"
         )
     sitemap_xml = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -1251,7 +1251,7 @@ def build_seo_files(articles):
     items = []
     for art in articles[:15]:
         items.append(
-            f"    <item><title>{art['title']}</title><link>{SITE_URL}/articles/{art['slug']}.html</link><description>{art['summary']}</description><pubDate>{art['date']}</pubDate></item>"
+            f"    <item><title>{art['title']}</title><link>{SITE_URL}/articles/{art['slug']}</link><description>{art['summary']}</description><pubDate>{art['date']}</pubDate></item>"
         )
     rss_xml = (
         f'<?xml version="1.0" encoding="UTF-8"?>\n'

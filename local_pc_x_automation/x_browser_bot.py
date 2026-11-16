@@ -202,9 +202,9 @@ def fetch_articles_for_account(key, acc_cfg):
 
     if key == "store3_onigon":
         special_hubs = [
-            {"slug": "special:newcomers.html", "title": "【毎月更新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧"},
-            {"slug": "special:asmr-ranking.html", "title": "【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング"},
-            {"slug": "special:sale-500yen.html", "title": "【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ"}
+            {"slug": "special:newcomers", "title": "【毎月更新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧"},
+            {"slug": "special:asmr-ranking", "title": "【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング"},
+            {"slug": "special:sale-500yen", "title": "【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ"}
         ]
         articles = special_hubs + articles
     return articles
@@ -225,7 +225,7 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
             time_hook = "【帰宅時の生活防衛ハック🚃】"
         else:
             time_hook = "【夜の家計見直し速報🌙】"
-        url = f"{acc_cfg['site_url']}/articles/{id_val}.html"
+        url = f"{acc_cfg['site_url']}/articles/{id_val}"
         patterns = [
             f"{time_hook}\n『{short_title}』\n\n国は自動で振り込んでくれません！知っておきたい要点と申請手順をまとめました🐧✨\n👇詳細はこちら\n{url}\n#公的ライフハック #給付金 #ほぽりん",
             f"【申請しないと損する公的制度】\n『{short_title}』\n\n「自分には関係ない」と放置していませんか？\n対象者や手取りへの影響額を3秒図解で解説🐧✨\n👇詳細・申請方法\n{url}\n#公的ライフハック #節約 #ほぽりん",
@@ -246,7 +246,7 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
         else:
             time_hook = "【夜のスキンケア速報🌙】"
             lead = "知恵の白キツネ・イケロが忖度なしで解説する成分の真実👇"
-        url = f"{acc_cfg['site_url']}/articles/{id_val}.html"
+        url = f"{acc_cfg['site_url']}/articles/{id_val}"
         return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n#コスメ成分 #プチプラコスメ #スキンケア #イケロ"
 
     else:  # store3_onigon
@@ -262,7 +262,7 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
         if id_val.startswith("special:"):
             url = f"{acc_cfg['site_url']}/{id_val.replace('special:', '')}"
         else:
-            url = f"{acc_cfg['site_url']}/articles/{id_val}.html"
+            url = f"{acc_cfg['site_url']}/articles/{id_val}"
         return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n#オニゴンの夜更かしラボ #同人ASMR #ワンコインセール #深夜エンタメ"
 
 

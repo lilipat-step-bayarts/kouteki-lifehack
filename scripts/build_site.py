@@ -51,8 +51,8 @@ HEADER_NAV = """
       <nav class="flex items-center gap-3 md:gap-4 text-xs font-semibold text-slate-600">
         <a href="/" class="hover:text-blue-600">最新記事</a>
         <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">🦊 姉妹店:コスメ成分ラボ</a>
-        <a href="/about.html" class="hover:text-blue-600">運営者:ほぽりん</a>
-        <a href="/privacy.html" class="hover:text-blue-600">プライバシー</a>
+        <a href="/about" class="hover:text-blue-600">運営者:ほぽりん</a>
+        <a href="/privacy" class="hover:text-blue-600">プライバシー</a>
       </nav>
     </div>
   </header>
@@ -63,8 +63,8 @@ FOOTER = """
     <div class="max-w-4xl mx-auto px-4 space-y-6 text-center">
       <div class="flex flex-wrap justify-center gap-6">
         <a href="/" class="hover:text-white">トップページ</a>
-        <a href="/about.html" class="hover:text-white">運営者情報・編集方針（ほぽりん）</a>
-        <a href="/privacy.html" class="hover:text-white">プライバシーポリシー・免責事項</a>
+        <a href="/about" class="hover:text-white">運営者情報・編集方針（ほぽりん）</a>
+        <a href="/privacy" class="hover:text-white">プライバシーポリシー・免責事項</a>
         <a href="/sitemap.xml" class="hover:text-white">サイトマップ</a>
         <a href="https://ikero.lilipat-cosme-bayarts.com" target="_blank" rel="noopener" class="text-emerald-400 hover:text-emerald-300">姉妹サイト：イケロのコスメ成分ラボ</a>
       </div>
@@ -213,7 +213,7 @@ def build_index(articles):
               <time class="text-xs text-slate-400">{art['date']}</time>
             </div>
             <h2 class="text-base md:text-lg font-bold text-slate-900 hover:text-blue-600 transition-colors leading-snug">
-              <a href="/articles/{art['id']}.html">{art['title']}</a>
+              <a href="/articles/{art['id']}">{art['title']}</a>
             </h2>
             <p class="text-xs text-slate-600 mt-2.5 leading-relaxed line-clamp-3">{art['summary']}</p>
           </div>
@@ -221,7 +221,7 @@ def build_index(articles):
             <span class="text-[11px] text-slate-400 flex items-center gap-1">
               <span>✍ ほぽりん要約</span>
             </span>
-            <a href="/articles/{art['id']}.html" class="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+            <a href="/articles/{art['id']}" class="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
               詳しく見る →
             </a>
           </div>
@@ -351,7 +351,7 @@ def build_article_page(art, all_articles=None):
     related_html = ""
     for r_art in related:
         related_html += f"""
-        <a href="/articles/{r_art['id']}.html" class="block p-4 bg-slate-50 hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 rounded-2xl transition group">
+        <a href="/articles/{r_art['id']}" class="block p-4 bg-slate-50 hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 rounded-2xl transition group">
           <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
             <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">{r_art['category']}</span>
             <span>{r_art['date']}</span>
@@ -360,7 +360,7 @@ def build_article_page(art, all_articles=None):
         </a>
         """
     next_art = related[0] if related else art
-    article_url = f"{SITE_URL}/articles/{art['id']}.html"
+    article_url = f"{SITE_URL}/articles/{art['id']}"
     encoded_title = urllib.parse.quote(f"【保存版】{art['title']} #公的ライフハック #給付金 #ほぽりん")
     encoded_url = urllib.parse.quote(article_url)
 
@@ -373,7 +373,7 @@ def build_article_page(art, all_articles=None):
             "image": [f"{SITE_URL}/assets/hoporin_banner.jpg"],
             "datePublished": art['date'],
             "dateModified": art['date'],
-            "author": [{"@type": "Person", "name": "ほぽりん", "url": f"{SITE_URL}/about.html"}]
+            "author": [{"@type": "Person", "name": "ほぽりん", "url": f"{SITE_URL}/about"}]
         },
         {
             "@context": "https://schema.org",
@@ -570,9 +570,9 @@ def build_article_page(art, all_articles=None):
   <div class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 px-4 py-2.5 shadow-lg flex items-center justify-between gap-2 md:hidden">
     <div class="truncate text-xs">
       <span class="text-[10px] font-bold text-blue-600 block">NEXT › 次に読まれている記事</span>
-      <a href="/articles/{next_art['id']}.html" class="font-bold text-slate-900 truncate block">{next_art['title']}</a>
+      <a href="/articles/{next_art['id']}" class="font-bold text-slate-900 truncate block">{next_art['title']}</a>
     </div>
-    <a href="/articles/{next_art['id']}.html" class="shrink-0 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold">読む →</a>
+    <a href="/articles/{next_art['id']}" class="shrink-0 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold">読む →</a>
   </div>
   {FOOTER}
 </body>
@@ -666,7 +666,7 @@ def build_seo_files(articles):
     # sitemap.xml
     urls = [f"  <url><loc>{SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>"]
     for art in articles:
-        urls.append(f"  <url><loc>{SITE_URL}/articles/{art['id']}.html</loc><lastmod>{art['date']}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>")
+        urls.append(f"  <url><loc>{SITE_URL}/articles/{art['id']}</loc><lastmod>{art['date']}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>")
     sitemap_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
     with open(os.path.join(DIST_DIR, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write(sitemap_xml)
@@ -679,7 +679,7 @@ def build_seo_files(articles):
     # rss.xml
     items = []
     for art in articles[:15]:
-        items.append(f"    <item><title>{art['title']}</title><link>{SITE_URL}/articles/{art['id']}.html</link><description>{art['summary']}</description><pubDate>{art['date']}</pubDate></item>")
+        items.append(f"    <item><title>{art['title']}</title><link>{SITE_URL}/articles/{art['id']}</link><description>{art['summary']}</description><pubDate>{art['date']}</pubDate></item>")
     rss_xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>公的ライフハック速報 by ほぽりん</title><link>{SITE_URL}/</link><description>知らないと損する公的制度・給付金・減税まとめ</description>\n' + "\n".join(items) + "\n</channel></rss>\n"
     with open(os.path.join(DIST_DIR, "rss.xml"), "w", encoding="utf-8") as f:
         f.write(rss_xml)

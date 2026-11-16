@@ -113,8 +113,8 @@ def get_header(current_page="home"):
       </a>
       <nav class="flex items-center gap-4 text-xs font-semibold text-slate-600">
         <a href="/" class="hover:text-emerald-600 transition {'text-emerald-600' if current_page == 'home' else ''}">新着記事</a>
-        <a href="/about.html" class="hover:text-emerald-600 transition {'text-emerald-600' if current_page == 'about' else ''}">イケロとは？</a>
-        <a href="/privacy.html" class="hover:text-emerald-600 transition {'text-emerald-600' if current_page == 'privacy' else ''}">免責・プライバシー</a>
+        <a href="/about" class="hover:text-emerald-600 transition {'text-emerald-600' if current_page == 'about' else ''}">イケロとは？</a>
+        <a href="/privacy" class="hover:text-emerald-600 transition {'text-emerald-600' if current_page == 'privacy' else ''}">免責・プライバシー</a>
       </nav>
     </div>
   </header>
@@ -134,9 +134,9 @@ def get_footer():
       <div class="text-[11px] text-slate-600 space-x-3 pt-2">
         <a href="/" class="hover:text-slate-300">トップ</a>
         <span>•</span>
-        <a href="/about.html" class="hover:text-slate-300">サイトについて</a>
+        <a href="/about" class="hover:text-slate-300">サイトについて</a>
         <span>•</span>
-        <a href="/privacy.html" class="hover:text-slate-300">プライバシーポリシー・広告開示</a>
+        <a href="/privacy" class="hover:text-slate-300">プライバシーポリシー・広告開示</a>
       </div>
       <div class="text-[11px] text-slate-600 font-mono">
         © 2026 Ikero Cosme Lab. All Rights Reserved.
@@ -356,7 +356,7 @@ def build_article_page(article_meta):
     related_html = ""
     for r_art in related:
         related_html += f"""
-        <a href="/articles/{r_art['slug']}.html" class="block p-4 bg-rose-50/40 hover:bg-emerald-50/60 border border-rose-100 hover:border-emerald-300 rounded-2xl transition group">
+        <a href="/articles/{r_art['slug']}" class="block p-4 bg-rose-50/40 hover:bg-emerald-50/60 border border-rose-100 hover:border-emerald-300 rounded-2xl transition group">
           <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
             <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">{r_art.get('category', '成分解析')}</span>
             <span>{r_art['date']}</span>
@@ -366,7 +366,7 @@ def build_article_page(article_meta):
         """
     next_art = related[0] if related else article_meta
 
-    article_url = f"{SITE_URL}/articles/{slug}.html"
+    article_url = f"{SITE_URL}/articles/{slug}"
     encoded_title = urllib.parse.quote(f"{article_meta['title']} #コスメ成分 #プチプラコスメ #イケロ")
     encoded_share_url = urllib.parse.quote(article_url)
 
@@ -378,7 +378,7 @@ def build_article_page(article_meta):
         "image": [f"{SITE_URL}/assets/ikero_banner.jpg"],
         "datePublished": article_meta['date'],
         "dateModified": article_meta['date'],
-        "author": [{"@type": "Person", "name": "イケロ (コスメ成分ラボ)", "url": f"{SITE_URL}/about.html"}]
+        "author": [{"@type": "Person", "name": "イケロ (コスメ成分ラボ)", "url": f"{SITE_URL}/about"}]
     }, ensure_ascii=False)
 
     page_html = f"""<!DOCTYPE html>
@@ -514,9 +514,9 @@ def build_article_page(article_meta):
   <div class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-rose-200 px-4 py-2.5 shadow-lg flex items-center justify-between gap-2 md:hidden">
     <div class="truncate text-xs">
       <span class="text-[10px] font-bold text-emerald-600 block">NEXT › 次に読まれている成分解析</span>
-      <a href="/articles/{next_art['slug']}.html" class="font-bold text-slate-900 truncate block">{next_art['title']}</a>
+      <a href="/articles/{next_art['slug']}" class="font-bold text-slate-900 truncate block">{next_art['title']}</a>
     </div>
-    <a href="/articles/{next_art['slug']}.html" class="shrink-0 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold">読む →</a>
+    <a href="/articles/{next_art['slug']}" class="shrink-0 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold">読む →</a>
   </div>
 
   {get_footer()}
@@ -526,13 +526,13 @@ def build_article_page(article_meta):
     out_file = os.path.join(DIST_ARTICLES_DIR, f"{slug}.html")
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(page_html)
-    print(f"Built article: dist/articles/{slug}.html")
+    print(f"Built article: dist/articles/{slug}")
 
 def build_home_page(articles):
     cards_html = []
     for art in articles:
         cards_html.append(f"""
-        <a href="/articles/{art['slug']}.html" class="group bg-white rounded-2xl p-5 border border-rose-100 hover:border-emerald-300 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <a href="/articles/{art['slug']}" class="group bg-white rounded-2xl p-5 border border-rose-100 hover:border-emerald-300 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
           <div class="space-y-2">
             <div class="flex items-center justify-between text-xs text-slate-400">
               <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
@@ -696,7 +696,7 @@ def build_about_page():
 </html>"""
     with open(os.path.join(DIST_DIR, "about.html"), "w", encoding="utf-8") as f:
         f.write(about_html)
-    print("Built about: dist/about.html")
+    print("Built about: dist/about")
 
 def build_privacy_page():
     privacy_html = f"""<!DOCTYPE html>
@@ -736,12 +736,12 @@ def build_privacy_page():
 </html>"""
     with open(os.path.join(DIST_DIR, "privacy.html"), "w", encoding="utf-8") as f:
         f.write(privacy_html)
-    print("Built privacy: dist/privacy.html")
+    print("Built privacy: dist/privacy")
 
 def build_seo_files(articles):
     urls = [f"  <url><loc>{SITE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>"]
     for art in articles:
-        urls.append(f"  <url><loc>{SITE_URL}/articles/{art['slug']}.html</loc><lastmod>{art['date']}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>")
+        urls.append(f"  <url><loc>{SITE_URL}/articles/{art['slug']}</loc><lastmod>{art['date']}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>")
     sitemap_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
     with open(os.path.join(DIST_DIR, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write(sitemap_xml)
@@ -752,7 +752,7 @@ def build_seo_files(articles):
 
     items = []
     for art in articles[:15]:
-        items.append(f"    <item><title>{art['title']}</title><link>{SITE_URL}/articles/{art['slug']}.html</link><description>{art['summary']}</description><pubDate>{art['date']}</pubDate></item>")
+        items.append(f"    <item><title>{art['title']}</title><link>{SITE_URL}/articles/{art['slug']}</link><description>{art['summary']}</description><pubDate>{art['date']}</pubDate></item>")
     rss_xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>{SITE_TITLE}</title><link>{SITE_URL}/</link><description>{SITE_DESCRIPTION}</description>\n' + "\n".join(items) + "\n</channel></rss>\n"
     with open(os.path.join(DIST_DIR, "rss.xml"), "w", encoding="utf-8") as f:
         f.write(rss_xml)
