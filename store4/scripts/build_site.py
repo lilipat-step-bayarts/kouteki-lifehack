@@ -6,12 +6,14 @@ Cloudflare Pages公開用の静的HTMLサイトジェネレーター
 
 import json
 import os
+import shutil
 import urllib.parse
 from datetime import datetime
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 STORE4_DIR = os.path.dirname(SCRIPT_DIR)
 ARTICLES_JSON = os.path.join(STORE4_DIR, "articles", "articles.json")
+ASSETS_DIR = os.path.join(STORE4_DIR, "assets")
 DIST_DIR = os.path.join(STORE4_DIR, "dist")
 DIST_ARTICLES_DIR = os.path.join(DIST_DIR, "articles")
 DIST_ASSETS_DIR = os.path.join(DIST_DIR, "assets")
@@ -71,26 +73,49 @@ def get_god_item_card(art):
     rakuten_pc = urllib.parse.quote(rakuten_search_url, safe="")
     rakuten_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={rakuten_pc}&link_type=text"
 
+    official_url = art.get('official_url', '')
+    sns_photo_url = art.get('sns_photo_url', '')
+    img_src = art.get('image', '/assets/zeus_banner.jpg')
+    prod_name = art.get('product_name', '')
+
+    visual_check_links = ""
+    if official_url or sns_photo_url:
+        visual_check_links = f"""
+        <div class="p-3 bg-amber-100/70 rounded-2xl border border-amber-300 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span class="font-black text-amber-950 flex items-center gap-1">
+            <span>💡</span> 買う前に実物の写真・着用感を確認！
+          </span>
+          <div class="flex items-center gap-2 flex-wrap">
+            {f'<a href="{official_url}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 bg-white hover:bg-amber-50 text-amber-900 border border-amber-400 rounded-xl font-bold text-[11px] transition shadow-2xs">📸 公式通販で写真・カラーを見る ↗</a>' if official_url else ''}
+            {f'<a href="{sns_photo_url}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-[11px] transition shadow-2xs">🔍 Xで実物着用写真を見る ↗</a>' if sns_photo_url else ''}
+          </div>
+        </div>
+        """
+
     return f"""
     <!-- ⚡ ゼウス公認・神アイテム衝動買いカード ⚡ -->
-    <div class="my-6 p-5 bg-gradient-to-br from-amber-50 via-yellow-50/60 to-amber-100/50 rounded-3xl border-2 border-amber-300 shadow-md space-y-3">
+    <div class="my-8 p-5 md:p-6 bg-gradient-to-br from-amber-50 via-yellow-50/70 to-amber-100/60 rounded-3xl border-2 border-amber-400 shadow-md space-y-4">
       <div class="flex items-center justify-between flex-wrap gap-2">
         <span class="px-3 py-1 rounded-full text-xs font-black bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-sm flex items-center gap-1">
           <span>⚡</span> ゼウス公認・神アイテム
         </span>
-        <span class="text-xs font-black text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">
+        <span class="text-xs font-black text-amber-900 bg-amber-100 px-3 py-0.5 rounded-full border border-amber-300">
           {art.get('god_level', '神コスパ度: ★★★★★')}
         </span>
       </div>
 
-      <div>
-        <h4 class="text-base md:text-lg font-black text-slate-900 leading-snug">{art.get('product_name', '')}</h4>
-        <div class="text-xs font-bold text-amber-700 font-mono mt-0.5">参考相場: {art.get('price', '売り切れ注意')}</div>
+      <div class="flex flex-col sm:flex-row gap-4 items-center">
+        <img src="{img_src}" alt="{prod_name}" class="w-full sm:w-40 h-40 object-cover rounded-2xl border-2 border-amber-300 shadow-sm shrink-0">
+        <div class="flex-1 space-y-2 w-full">
+          <h4 class="text-base md:text-lg font-black text-slate-900 leading-snug">{prod_name}</h4>
+          <div class="text-xs font-bold text-amber-700 font-mono">参考相場: {art.get('price', '売り切れ注意')}</div>
+          <div class="p-3 bg-white/95 rounded-2xl border border-amber-200 text-xs text-slate-700 leading-relaxed font-medium">
+            <span class="font-bold text-amber-900">👑 ゼウスの神託：</span>{art.get('merit', '')}
+          </div>
+        </div>
       </div>
 
-      <div class="p-3 bg-white/90 rounded-2xl border border-amber-200 text-xs text-slate-700 leading-relaxed font-medium">
-        <span class="font-bold text-amber-900">👑 ゼウスの神託：</span>{art.get('merit', '')}
-      </div>
+      {visual_check_links}
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
         <a href="{amazon_url}" target="_blank" rel="noopener noreferrer sponsored" class="py-3 px-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white text-center rounded-2xl font-black text-xs shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
@@ -157,61 +182,103 @@ def get_footer():
 """
 
 def markdown_to_html(md_text):
-    lines = md_text.strip().split("\\n")
+    import re
+    # Normalize newlines and escaped newlines
+    normalized = md_text.replace("\r\n", "\n").replace("\\n", "\n").strip()
+    lines = normalized.split("\n")
     html_parts = []
     in_table = False
     table_rows = []
+    in_list = False
+    list_items = []
+
+    def flush_list():
+        nonlocal in_list, list_items
+        if in_list and list_items:
+            html_parts.append('<ul class="list-disc pl-5 my-4 space-y-2 text-slate-700 text-sm md:text-base leading-relaxed">' + ''.join(list_items) + '</ul>')
+            in_list = False
+            list_items = []
 
     for line in lines:
-        if line.startswith("# "):
+        stripped = line.strip()
+        if not stripped:
+            flush_list()
             continue
-        elif line.startswith("## "):
-            heading = line[3:].strip()
-            html_parts.append(f'<h2 class="text-lg md:text-xl font-black text-slate-900 mt-8 mb-3 pb-2 border-b-2 border-amber-400 flex items-center gap-2"><span class="text-amber-500">⚡</span>{heading}</h2>')
-        elif line.startswith("### "):
-            heading = line[4:].strip()
-            html_parts.append(f'<h3 class="text-base md:text-lg font-bold text-slate-800 mt-6 mb-2 flex items-center gap-1.5"><span class="text-amber-500 font-black">▶</span>{heading}</h3>')
-        elif line.startswith("|") and line.endswith("|"):
+
+        if stripped.startswith("# "):
+            flush_list()
+            continue
+        elif stripped.startswith("## "):
+            flush_list()
+            heading = stripped[3:].strip()
+            html_parts.append(f'<h2 class="text-lg md:text-xl font-black text-slate-900 mt-8 mb-4 pb-2 border-b-2 border-amber-400 flex items-center gap-2"><span class="text-amber-500 text-xl">⚡</span>{heading}</h2>')
+        elif stripped.startswith("### "):
+            flush_list()
+            heading = stripped[4:].strip()
+            html_parts.append(f'<h3 class="text-base md:text-lg font-bold text-slate-800 mt-6 mb-2.5 flex items-center gap-2"><span class="text-amber-500 font-black">▶</span>{heading}</h3>')
+        elif stripped.startswith("|") and stripped.endswith("|"):
+            flush_list()
             if not in_table:
                 in_table = True
-                table_rows = [line]
+                table_rows = [stripped]
             else:
-                table_rows.append(line)
-        else:
+                table_rows.append(stripped)
+        elif stripped.startswith("- ") or stripped.startswith("* "):
             if in_table:
                 html_parts.append(render_table(table_rows))
                 in_table = False
                 table_rows = []
-            if line.strip() == "---":
+            in_list = True
+            item_text = stripped[2:].strip()
+            item_text = re.sub(r'\*\*(.*?)\*\*', r'<strong class="font-bold text-slate-900 bg-amber-100/80 px-1 py-0.5 rounded">\1</strong>', item_text)
+            list_items.append(f'<li class="pl-1">{item_text}</li>')
+        elif stripped.startswith("> "):
+            flush_list()
+            if in_table:
+                html_parts.append(render_table(table_rows))
+                in_table = False
+                table_rows = []
+            quote_text = stripped[2:].strip()
+            quote_text = re.sub(r'\*\*(.*?)\*\*', r'<strong class="font-bold text-slate-900 bg-amber-100/80 px-1 py-0.5 rounded">\1</strong>', quote_text)
+            html_parts.append(f'<blockquote class="p-4 my-4 bg-amber-50/80 border-l-4 border-amber-400 rounded-r-2xl text-xs md:text-sm text-slate-800 italic leading-relaxed">{quote_text}</blockquote>')
+        else:
+            flush_list()
+            if in_table:
+                html_parts.append(render_table(table_rows))
+                in_table = False
+                table_rows = []
+            if stripped == "---":
                 html_parts.append('<hr class="my-6 border-amber-200">')
-            elif line.strip():
-                formatted_p = line
-                # bold
-                import re
-                formatted_p = re.sub(r'\\*\\*(.*?)\\*\\*', r'<strong class="font-bold text-slate-900 bg-amber-100/70 px-1 py-0.5 rounded">\\1</strong>', formatted_p)
-                html_parts.append(f'<p class="text-sm md:text-base leading-relaxed text-slate-700 my-3 font-normal">{formatted_p}</p>')
+            else:
+                formatted_p = stripped
+                formatted_p = re.sub(r'\*\*(.*?)\*\*', r'<strong class="font-bold text-slate-900 bg-amber-100/80 px-1 py-0.5 rounded">\1</strong>', formatted_p)
+                html_parts.append(f'<p class="text-sm md:text-base leading-relaxed text-slate-700 my-4 font-normal">{formatted_p}</p>')
 
+    flush_list()
     if in_table:
         html_parts.append(render_table(table_rows))
 
-    return "\\n".join(html_parts)
+    return "\n".join(html_parts)
 
 def render_table(rows):
     if len(rows) < 2:
         return ""
+    import re
     header_cols = [c.strip() for c in rows[0].strip("|").split("|")]
     data_rows = rows[2:] if len(rows) > 2 and "---" in rows[1] else rows[1:]
 
-    html = '<div class="overflow-x-auto my-4 rounded-2xl border border-amber-200 shadow-sm"><table class="w-full text-xs md:text-sm text-left">'
+    html = '<div class="overflow-x-auto my-5 rounded-2xl border border-amber-200 shadow-sm"><table class="w-full text-xs md:text-sm text-left">'
     html += '<thead class="bg-amber-100/80 text-amber-950 font-black"><tr>'
     for col in header_cols:
-        html += f'<th class="px-4 py-2.5">{col}</th>'
+        col_fmt = re.sub(r'\*\*(.*?)\*\*', r'<strong class="font-bold text-amber-950">\1</strong>', col)
+        html += f'<th class="px-4 py-3">{col_fmt}</th>'
     html += '</tr></thead><tbody>'
     for r in data_rows:
         cols = [c.strip() for c in r.strip("|").split("|")]
         html += '<tr class="border-t border-amber-100 hover:bg-amber-50/50 transition">'
         for c in cols:
-            html += f'<td class="px-4 py-2 text-slate-700 font-medium">{c}</td>'
+            c_fmt = re.sub(r'\*\*(.*?)\*\*', r'<strong class="font-bold text-slate-900 bg-amber-100/80 px-1 py-0.5 rounded">\1</strong>', c)
+            html += f'<td class="px-4 py-2.5 text-slate-700 font-medium">{c_fmt}</td>'
         html += '</tr>'
     html += '</tbody></table></div>'
     return html
@@ -238,12 +305,39 @@ def build_article_page(art, all_articles):
     content_html = markdown_to_html(art['content'])
     god_card_html = get_god_item_card(art)
 
+    product_hero_visual_html = ""
+    if art.get("image"):
+        official_btn = f'<a href="{art.get("official_url")}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-sm transition"><span>📸 公式通販で見る ↗</span></a>' if art.get("official_url") else ""
+        sns_btn = f'<a href="{art.get("sns_photo_url")}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-sm transition"><span>🔍 Xで着用・実写を見る ↗</span></a>' if art.get("sns_photo_url") else ""
+
+        product_hero_visual_html = f"""
+        <!-- 📷 実物写真・SNS検証ビジュアル -->
+        <div class="my-6 rounded-3xl overflow-hidden border-2 border-amber-300 shadow-md bg-white">
+          <div class="relative bg-slate-900 flex items-center justify-center">
+            <img src="{art.get('image')}" alt="{art.get('product_name', art['title'])}" class="w-full h-auto max-h-[460px] object-cover">
+            <div class="absolute top-3 left-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-white text-[11px] font-black px-3 py-1 rounded-full shadow flex items-center gap-1">
+              <span>⚡</span> 実物検証フォト
+            </div>
+          </div>
+          <div class="p-4 bg-gradient-to-r from-amber-50 via-yellow-50/70 to-amber-100/50 border-t border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div class="text-slate-800 font-bold flex items-center gap-1.5">
+              <span class="text-amber-600 text-sm">📸</span>
+              <span>{art.get('image_caption', 'SNSで話題の神アイテム実物イメージ')}</span>
+            </div>
+            <div class="flex items-center gap-2 shrink-0 flex-wrap">
+              {sns_btn}
+              {official_btn}
+            </div>
+          </div>
+        </div>
+        """
+
     json_ld = json.dumps({
         "@context": "https://schema.org",
         "@type": "Article",
         "headline": art['title'],
         "description": art['summary'],
-        "image": [f"{SITE_URL}/assets/zeus_banner.jpg"],
+        "image": [f"{SITE_URL}{art.get('image', '/assets/zeus_banner.jpg')}"],
         "datePublished": art['date'],
         "dateModified": art['date'],
         "author": [{"@type": "Person", "name": "神ゼウス (バズハック速報)", "url": f"{SITE_URL}/about"}]
@@ -262,12 +356,12 @@ def build_article_page(art, all_articles):
   <meta property="og:title" content="{art['title']}">
   <meta property="og:description" content="{art['summary']}">
   <meta property="og:url" content="{article_url}">
-  <meta property="og:image" content="{SITE_URL}/assets/zeus_banner.jpg">
+  <meta property="og:image" content="{SITE_URL}{art.get('image', '/assets/zeus_banner.jpg')}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@ramune_lilipat">
   <meta name="twitter:title" content="{art['title']}">
   <meta name="twitter:description" content="{art['summary']}">
-  <meta name="twitter:image" content="{SITE_URL}/assets/zeus_banner.jpg">
+  <meta name="twitter:image" content="{SITE_URL}{art.get('image', '/assets/zeus_banner.jpg')}">
   <script type="application/ld+json">{json_ld}</script>
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3133098627249534" crossorigin="anonymous"></script>
@@ -304,6 +398,8 @@ def build_article_page(art, all_articles):
         <div class="p-4 bg-gradient-to-r from-amber-100/90 via-yellow-100/70 to-amber-100/90 border-l-4 border-amber-500 rounded-r-2xl text-xs md:text-sm text-amber-950 font-bold leading-relaxed shadow-2xs">
           ⚡ 【ゼウスの緊急神託】{art['summary']}
         </div>
+
+        {product_hero_visual_html}
 
         {NINJA_AD_SCRIPT}
 
@@ -369,23 +465,37 @@ def build_article_page(art, all_articles):
 def build_home_page(articles):
     cards_html = []
     for art in articles:
-        cards_html.append(f"""
-        <a href="/articles/{art['slug']}" class="block bg-white rounded-3xl p-5 border border-amber-200 hover:border-amber-400 hover:shadow-md transition group flex flex-col justify-between">
-          <div class="space-y-2">
-            <div class="flex items-center justify-between text-xs text-slate-400">
-              <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold text-[11px] border border-amber-300">{art['category']}</span>
-              <span>{art['date']}</span>
+        img_html = ""
+        if art.get("image"):
+            img_html = f"""
+            <div class="relative h-44 overflow-hidden bg-amber-50 border-b border-amber-100">
+              <img src="{art['image']}" alt="{art.get('product_name', art['title'])}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-full bg-slate-900/80 text-white font-bold text-[10px] backdrop-blur-xs flex items-center gap-1">
+                <span>📸</span> 実物写真あり
+              </span>
             </div>
-            <h3 class="text-base font-black text-slate-900 group-hover:text-amber-600 transition leading-snug">
-              {art['title']}
-            </h3>
-            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed font-medium">
-              {art['summary']}
-            </p>
-          </div>
-          <div class="mt-4 pt-3 border-t border-amber-100 flex items-center justify-between text-[11px] text-amber-700 font-black">
-            <span>⚡ 神の審判を読む →</span>
-            <span class="text-slate-400 font-normal">{art.get('reading_time', 3)}分で読める</span>
+            """
+
+        cards_html.append(f"""
+        <a href="/articles/{art['slug']}" class="block bg-white rounded-3xl overflow-hidden border border-amber-200 hover:border-amber-400 hover:shadow-md transition group flex flex-col justify-between">
+          {img_html}
+          <div class="p-5 space-y-2 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+                <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold text-[11px] border border-amber-300">{art['category']}</span>
+                <span>{art['date']}</span>
+              </div>
+              <h3 class="text-base font-black text-slate-900 group-hover:text-amber-600 transition leading-snug">
+                {art['title']}
+              </h3>
+              <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed font-medium mt-1">
+                {art['summary']}
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-amber-100 flex items-center justify-between text-[11px] text-amber-700 font-black">
+              <span>⚡ 神の審判を読む →</span>
+              <span class="text-slate-400 font-normal">{art.get('reading_time', 3)}分で読める</span>
+            </div>
           </div>
         </a>
         """)
@@ -590,6 +700,15 @@ def main():
     os.makedirs(DIST_DIR, exist_ok=True)
     os.makedirs(DIST_ARTICLES_DIR, exist_ok=True)
     os.makedirs(DIST_ASSETS_DIR, exist_ok=True)
+
+    # Copy all assets from assets to dist/assets
+    if os.path.exists(ASSETS_DIR):
+        for item in os.listdir(ASSETS_DIR):
+            s = os.path.join(ASSETS_DIR, item)
+            d = os.path.join(DIST_ASSETS_DIR, item)
+            if os.path.isfile(s):
+                shutil.copy2(s, d)
+        print("Copied all assets to dist/assets")
 
     with open(ARTICLES_JSON, "r", encoding="utf-8") as f:
         articles = json.load(f)
