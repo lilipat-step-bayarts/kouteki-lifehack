@@ -643,11 +643,11 @@ def build_article_page(article_meta, all_articles):
         </div>
       </div>
 
-      {get_adult_ad_unit("top")}
-
       <div class="prose max-w-none">
         {body_html}
       </div>
+
+      {get_adult_ad_unit("top")}
 
       {cta_card}
 
@@ -676,16 +676,70 @@ def build_article_page(article_meta, all_articles):
 
       {get_hub_banners("article")}
     </article>
-  <!-- 📱 スマホ・PC常時視認 フローティング固定広告バナー（忍者AdMax表示型・消せない広告枠） -->
-  <div class="fixed bottom-0 inset-x-0 z-50 bg-slate-950/95 backdrop-blur-md border-t border-purple-500/40 shadow-[0_-4px_20px_rgba(0,0,0,0.5)] py-2 px-3 flex flex-col items-center justify-center min-h-[70px]">
-    <div class="w-full max-w-lg flex items-center justify-between gap-2">
-      <span class="text-[9px] font-bold text-fuchsia-400 uppercase tracking-widest">SPONSOR / 18+ PR</span>
-      <span class="text-[10px] text-fuchsia-300 font-bold hidden sm:inline">▼ 深夜限定スポンサー情報</span>
+  <!-- 📱 スマホ・PC常時視認 フローティング固定広告バナー（カウントダウン自動最小化＆閉じる機能付き） -->
+  <div id="sticky-floating-ad" class="fixed bottom-0 inset-x-0 z-50 bg-slate-950/95 backdrop-blur-md border-t border-purple-500/40 shadow-[0_-4px_20px_rgba(0,0,0,0.5)] py-1.5 px-3 flex flex-col items-center justify-center transition-all duration-300">
+    <div class="w-full max-w-lg flex items-center justify-between gap-2 mb-1">
+      <div class="flex items-center gap-1.5">
+        <span class="text-[9px] font-bold text-fuchsia-400 uppercase tracking-widest">SPONSOR / 18+ PR</span>
+        <span id="ad-countdown-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-950 text-fuchsia-300 border border-fuchsia-500/40">⏱️ あと <span id="ad-timer-sec">7</span>秒 で自動最小化</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="toggleStickyAd()" id="ad-toggle-btn" class="text-[10px] font-bold text-slate-400 hover:text-slate-200 underline">小さくする ▼</button>
+        <button type="button" onclick="closeStickyAd()" class="text-[11px] font-bold text-slate-400 hover:text-white px-1.5 py-0.5 bg-slate-800 hover:bg-slate-700 rounded">✕ 閉じる</button>
+      </div>
     </div>
-    <div class="flex items-center justify-center w-full overflow-hidden">
+    <div id="sticky-ad-content" class="flex items-center justify-center w-full overflow-hidden max-h-[100px]">
       <script src="https://adm.shinobi.jp/s/{ADULT_ADMAX_TAG_ID}"></script>
     </div>
   </div>
+
+  <div id="sticky-ad-collapsed" class="fixed bottom-0 right-4 z-50 hidden">
+    <button type="button" onclick="toggleStickyAd()" class="bg-gradient-to-r from-purple-800 to-fuchsia-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-t-lg shadow-lg flex items-center gap-1 transition">
+      <span>▲ 18+ スポンサー広告を表示</span>
+    </button>
+  </div>
+
+  <script>
+    (function() {{
+      var timeLeft = 7;
+      var timerEl = document.getElementById('ad-timer-sec');
+      var badgeEl = document.getElementById('ad-countdown-badge');
+      var interval = setInterval(function() {{
+        timeLeft--;
+        if (timerEl) timerEl.textContent = timeLeft;
+        if (timeLeft <= 0) {{
+          clearInterval(interval);
+          minimizeStickyAd();
+        }}
+      }}, 1000);
+
+      window.minimizeStickyAd = function() {{
+        var ad = document.getElementById('sticky-floating-ad');
+        var collapsed = document.getElementById('sticky-ad-collapsed');
+        if (ad) ad.classList.add('hidden');
+        if (collapsed) collapsed.classList.remove('hidden');
+      }};
+
+      window.closeStickyAd = function() {{
+        var ad = document.getElementById('sticky-floating-ad');
+        var collapsed = document.getElementById('sticky-ad-collapsed');
+        if (ad) ad.remove();
+        if (collapsed) collapsed.remove();
+      }};
+
+      window.toggleStickyAd = function() {{
+        var ad = document.getElementById('sticky-floating-ad');
+        var collapsed = document.getElementById('sticky-ad-collapsed');
+        if (ad.classList.contains('hidden')) {{
+          ad.classList.remove('hidden');
+          collapsed.classList.add('hidden');
+          if (badgeEl) badgeEl.textContent = '広告表示中';
+        }} else {{
+          minimizeStickyAd();
+        }}
+      }};
+    }})();
+  </script>
 
   {get_footer()}
 </body>

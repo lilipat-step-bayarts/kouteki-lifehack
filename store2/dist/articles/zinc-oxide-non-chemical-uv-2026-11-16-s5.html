@@ -92,14 +92,6 @@
         </div>
       </div>
 
-      
-<!-- 忍者AdMax ビュー報酬ユニット -->
-<div class="my-6 p-3 bg-rose-50/50 rounded-xl border border-rose-100 flex flex-col items-center justify-center min-h-[120px] text-center">
-  <span class="text-[10px] text-rose-400 font-medium mb-1">スポンサーリンク</span>
-  <script src="https://adm.shinobi.jp/s/b133ea03dc5417daa8dc029d6b6b4816"></script>
-</div>
-
-
       <!-- 本文 -->
       <div class="prose max-w-none text-slate-700">
         <p class="text-xs md:text-sm text-slate-600 leading-relaxed mb-4">『毎日しっかり日焼け止めを塗っているのに、なぜか白ニキビや毛穴のポツポツが減らない…』その原因、日焼け止めに含まれる『酸化亜鉛』が毛穴の中で固まっているせいかもしれません。白キツネが忖度なしで選び方を指南します。</p>
@@ -124,6 +116,14 @@
 <li class="text-xs md:text-sm text-slate-600 leading-relaxed mb-1.5 ml-4 list-decimal"><strong class="text-slate-900">『これ1本で全て解決』というオールインワンに過度な期待を寄せること:</strong></li>
 <p class="text-xs md:text-sm text-slate-600 leading-relaxed mb-4">成分にはそれぞれpH（酸性・アルカリ性）の相性があります。目的に合わせて必要な有効成分をピンポイントで補うのが最短の近道です🦊✨</p>
       </div>
+
+      
+<!-- 忍者AdMax ビュー報酬ユニット -->
+<div class="my-6 p-3 bg-rose-50/50 rounded-xl border border-rose-100 flex flex-col items-center justify-center min-h-[120px] text-center">
+  <span class="text-[10px] text-rose-400 font-medium mb-1">スポンサーリンク</span>
+  <script src="https://adm.shinobi.jp/s/b133ea03dc5417daa8dc029d6b6b4816"></script>
+</div>
+
 
       <!-- 物販アフィリエイトカード（高成約導線） -->
       
@@ -275,13 +275,19 @@
     </article>
   </main>
 
-  <!-- 📱 スマホ・PC常時視認 フローティング固定広告バナー（忍者AdMax表示型・消せない広告枠） -->
-  <div class="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-t border-rose-200 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] py-2 px-3 flex flex-col items-center justify-center min-h-[70px]">
-    <div class="w-full max-w-lg flex items-center justify-between gap-2">
-      <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest">SPONSOR</span>
-      <span class="text-[10px] text-emerald-700 font-bold hidden sm:inline">▼ 注目の美容・スキンケア情報</span>
+  <!-- 📱 スマホ・PC常時視認 フローティング固定広告バナー（カウントダウン自動最小化＆閉じる機能付き） -->
+  <div id="sticky-floating-ad" class="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-t border-rose-200 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] py-1.5 px-3 flex flex-col items-center justify-center transition-all duration-300">
+    <div class="w-full max-w-lg flex items-center justify-between gap-2 mb-1">
+      <div class="flex items-center gap-1.5">
+        <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest">SPONSOR</span>
+        <span id="ad-countdown-badge" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200">⏱️ あと <span id="ad-timer-sec">7</span>秒 で自動最小化</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="toggleStickyAd()" id="ad-toggle-btn" class="text-[10px] font-bold text-slate-500 hover:text-slate-800 underline">小さくする ▼</button>
+        <button type="button" onclick="closeStickyAd()" class="text-[11px] font-bold text-slate-500 hover:text-slate-800 px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded">✕ 閉じる</button>
+      </div>
     </div>
-    <div class="flex items-center justify-center w-full overflow-hidden">
+    <div id="sticky-ad-content" class="flex items-center justify-center w-full overflow-hidden max-h-[100px]">
       
 <!-- 忍者AdMax ビュー報酬ユニット -->
 <div class="my-6 p-3 bg-rose-50/50 rounded-xl border border-rose-100 flex flex-col items-center justify-center min-h-[120px] text-center">
@@ -291,6 +297,54 @@
 
     </div>
   </div>
+
+  <div id="sticky-ad-collapsed" class="fixed bottom-0 right-4 z-50 hidden">
+    <button type="button" onclick="toggleStickyAd()" class="bg-rose-600/95 hover:bg-rose-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-t-lg shadow-lg flex items-center gap-1 transition">
+      <span>▲ スポンサー広告を表示</span>
+    </button>
+  </div>
+
+  <script>
+    (function() {
+      var timeLeft = 7;
+      var timerEl = document.getElementById('ad-timer-sec');
+      var badgeEl = document.getElementById('ad-countdown-badge');
+      var interval = setInterval(function() {
+        timeLeft--;
+        if (timerEl) timerEl.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          minimizeStickyAd();
+        }
+      }, 1000);
+
+      window.minimizeStickyAd = function() {
+        var ad = document.getElementById('sticky-floating-ad');
+        var collapsed = document.getElementById('sticky-ad-collapsed');
+        if (ad) ad.classList.add('hidden');
+        if (collapsed) collapsed.classList.remove('hidden');
+      };
+
+      window.closeStickyAd = function() {
+        var ad = document.getElementById('sticky-floating-ad');
+        var collapsed = document.getElementById('sticky-ad-collapsed');
+        if (ad) ad.remove();
+        if (collapsed) collapsed.remove();
+      };
+
+      window.toggleStickyAd = function() {
+        var ad = document.getElementById('sticky-floating-ad');
+        var collapsed = document.getElementById('sticky-ad-collapsed');
+        if (ad.classList.contains('hidden')) {
+          ad.classList.remove('hidden');
+          collapsed.classList.add('hidden');
+          if (badgeEl) badgeEl.textContent = '広告表示中';
+        } else {
+          minimizeStickyAd();
+        }
+      };
+    })();
+  </script>
 
   
   <footer class="bg-slate-900 text-slate-400 py-12 mt-16 border-t border-slate-800">
