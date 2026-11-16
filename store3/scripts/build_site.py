@@ -676,8 +676,8 @@ def build_article_page(article_meta, all_articles):
 
       {get_hub_banners("article")}
     </article>
-  <!-- 📱 スマホ・PC常時視認 フローティング固定広告バナー（カウントダウン自動最小化＆閉じる機能付き） -->
-  <div id="sticky-floating-ad" class="fixed bottom-0 inset-x-0 z-50 bg-slate-950/95 backdrop-blur-md border-t border-purple-500/40 shadow-[0_-4px_20px_rgba(0,0,0,0.5)] py-1.5 px-3 flex flex-col items-center justify-center transition-all duration-300">
+  <!-- 📱 スマホ専用 フローティング固定広告バナー（PC非表示・スマホのみカウントダウン自動最小化＆閉じる機能付き） -->
+  <div id="sticky-floating-ad" class="fixed bottom-0 inset-x-0 z-50 bg-slate-950/95 backdrop-blur-md border-t border-purple-500/40 shadow-[0_-4px_20px_rgba(0,0,0,0.5)] py-1.5 px-3 flex flex-col items-center justify-center transition-all duration-300 md:hidden">
     <div class="w-full max-w-lg flex items-center justify-between gap-2 mb-1">
       <div class="flex items-center gap-1.5">
         <span class="text-[9px] font-bold text-fuchsia-400 uppercase tracking-widest">SPONSOR / 18+ PR</span>
@@ -693,7 +693,7 @@ def build_article_page(article_meta, all_articles):
     </div>
   </div>
 
-  <div id="sticky-ad-collapsed" class="fixed bottom-0 right-4 z-50 hidden">
+  <div id="sticky-ad-collapsed" class="fixed bottom-0 right-4 z-50 hidden md:hidden">
     <button type="button" onclick="toggleStickyAd()" class="bg-gradient-to-r from-purple-800 to-fuchsia-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-t-lg shadow-lg flex items-center gap-1 transition">
       <span>▲ 18+ スポンサー広告を表示</span>
     </button>
@@ -701,6 +701,7 @@ def build_article_page(article_meta, all_articles):
 
   <script>
     (function() {{
+      if (window.innerWidth >= 768) return;
       var timeLeft = 7;
       var timerEl = document.getElementById('ad-timer-sec');
       var badgeEl = document.getElementById('ad-countdown-badge');
