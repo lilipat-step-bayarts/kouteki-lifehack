@@ -30,6 +30,56 @@ NINJA_AD_SCRIPT = """
 </div>
 """
 
+# 執筆・監修者プロフィールカード（最高峰E-E-A-T対策）
+IKERO_AUTHOR_CARD = """
+      <!-- 執筆・監修者プロフィール（最高峰E-E-A-T対策） -->
+      <div class="mt-8 p-5 bg-gradient-to-r from-emerald-50/90 via-teal-50/70 to-emerald-50/90 border border-emerald-200 rounded-2xl space-y-3.5 shadow-sm">
+        <div class="flex items-start sm:items-center gap-3.5 flex-col sm:flex-row">
+          <img src="/assets/ikero_avatar.jpg" alt="イケロ" class="w-16 h-16 rounded-full border-2 border-emerald-500 shadow-md object-cover shrink-0">
+          <div class="space-y-1 w-full">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">記事執筆・監修</span>
+                <span class="font-black text-slate-900 text-base">知恵の白キツネ研究員「イケロ」</span>
+              </div>
+              <a href="https://x.com/ikero_lab" target="_blank" rel="noopener noreferrer" class="text-[11px] px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-full transition flex items-center gap-1 shadow-sm">
+                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                @ikero_lab をフォロー
+              </a>
+            </div>
+            <p class="text-xs font-bold text-emerald-900">化粧品業界長年勤務 × 薬機・景表法務＆成分最上位プロフェッショナル</p>
+          </div>
+        </div>
+
+        <div class="bg-white/90 rounded-xl p-3.5 border border-emerald-100 space-y-2.5 text-xs">
+          <div class="font-bold text-slate-800 flex items-center gap-1.5 text-xs">
+            <span>🎓</span> 監修者保有資格＆専門領域
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] text-slate-700">
+            <div class="flex items-center gap-1.5 bg-emerald-50/50 px-2.5 py-1.5 rounded-lg border border-emerald-100">
+              <span class="text-emerald-600 font-bold">✔</span>
+              <span><strong>日本化粧品検定最上位</strong> コスメコンシェルジュインストラクター</span>
+            </div>
+            <div class="flex items-center gap-1.5 bg-emerald-50/50 px-2.5 py-1.5 rounded-lg border border-emerald-100">
+              <span class="text-emerald-600 font-bold">✔</span>
+              <span><strong>化粧品成分検定スペシャリスト</strong>（1級・全成分解析）</span>
+            </div>
+            <div class="flex items-center gap-1.5 bg-emerald-50/50 px-2.5 py-1.5 rounded-lg border border-emerald-100">
+              <span class="text-emerald-600 font-bold">✔</span>
+              <span><strong>コスメ薬機法管理者</strong>（医薬部外品・効能表現監修）</span>
+            </div>
+            <div class="flex items-center gap-1.5 bg-emerald-50/50 px-2.5 py-1.5 rounded-lg border border-emerald-100">
+              <span class="text-emerald-600 font-bold">✔</span>
+              <span><strong>消費者庁 景品表示法務検定資格者</strong>（適正広告評価）</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-600 leading-relaxed pt-1.5 border-t border-emerald-100">
+            化粧品業界で長年培った開発・処方の知見と、薬機法・景品表示法の徹底した法務コンプライアンスに基づき、ブランドの誇大広告やSNSのバズに惑わされない「全成分表示と科学的根拠（エビデンス）」に特化した忖度なしの比較情報をお届けしています。
+          </p>
+        </div>
+      </div>
+"""
+
 AMAZON_TAG = "ikerocosme-22"
 RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"
 
@@ -482,6 +532,8 @@ def build_article_page(article_meta):
         </div>
       </div>
 
+      {IKERO_AUTHOR_CARD}
+
       {NINJA_AD_SCRIPT}
 
       <!-- シェア & フォロー & 戻る -->
@@ -596,20 +648,26 @@ def build_home_page(articles):
     <div class="max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="space-y-3 max-w-xl text-center md:text-left">
         <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-300">
-          <span>🧪</span> 科学的知恵で選ぶ賢いコスメ (@ikero_lab)
+          <span>🔬</span> コスメコンシェルジュインストラクター＆成分スペシャリスト監修
         </div>
         <h1 class="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
           高いデパコスと何が違う？<br>
           <span class="text-emerald-600">成分で選ぶ、本当に効くプチプラ。</span>
         </h1>
-        <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
-          知恵の案内人「イケロ」が、レチノール・ナイアシンアミド・セラミド等の注目成分を科学的根拠に基づいてガチ解説。広告に騙されないコスメ選びをサポートします。
+        <p class="text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
+          化粧品業界で長年勤務する現役専門家が、レチノール・ナイアシンアミド・セラミド等の注目成分を全成分表示と科学的根拠に基づいてガチ解説。広告に騙されないコスメ選びをサポートします。
         </p>
+        <div class="flex flex-wrap gap-1.5 justify-center md:justify-start pt-1 text-[11px] font-semibold text-slate-700">
+          <span class="px-2.5 py-1 rounded-full bg-white border border-emerald-200 shadow-2xs">🎓 コスメコンシェルジュインストラクター</span>
+          <span class="px-2.5 py-1 rounded-full bg-white border border-emerald-200 shadow-2xs">🔬 化粧品成分検定スペシャリスト</span>
+          <span class="px-2.5 py-1 rounded-full bg-white border border-emerald-200 shadow-2xs">⚖️ コスメ薬機法管理者</span>
+          <span class="px-2.5 py-1 rounded-full bg-white border border-emerald-200 shadow-2xs">📜 景品表示法務検定</span>
+        </div>
       </div>
       <div class="shrink-0 relative">
         <img src="/assets/ikero_avatar.jpg" alt="イケロ" class="w-28 h-28 md:w-36 md:h-36 rounded-3xl border-4 border-white shadow-xl object-cover">
         <span class="absolute -bottom-2 -right-2 px-2.5 py-1 bg-emerald-600 text-white rounded-full text-[11px] font-bold shadow">
-          イケロ研究員
+          イケロ研究員 🦊
         </span>
       </div>
     </div>
@@ -661,7 +719,8 @@ def build_about_page():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>イケロについて | イケロのコスメ成分ラボ</title>
+  <title>イケロについて・監修者プロフィール | イケロのコスメ成分ラボ</title>
+  <meta name="description" content="知恵の白キツネ研究員「イケロ」の運営方針と監修者プロフィール。化粧品業界で長年勤務し、コスメコンシェルジュインストラクター・化粧品成分検定スペシャリスト・コスメ薬機法管理者・景品表示法務検定資格者が科学的エビデンスに基づいて忖度なし監修。">
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3133098627249534" crossorigin="anonymous"></script>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -674,26 +733,131 @@ def build_about_page():
   {get_header("about")}
 
   <main class="max-w-3xl mx-auto px-4 py-8">
-    <div class="bg-white rounded-3xl p-6 md:p-10 border border-rose-100 shadow-sm space-y-6">
-      <div class="text-center space-y-3">
+    <div class="bg-white rounded-3xl p-6 md:p-10 border border-rose-100 shadow-sm space-y-8">
+      
+      <!-- メインヘッダー -->
+      <div class="text-center space-y-3 pb-6 border-b border-slate-100">
         <img src="/assets/ikero_avatar.jpg" alt="イケロ" class="w-28 h-28 rounded-full border-4 border-emerald-400 mx-auto shadow-md object-cover">
-        <h1 class="text-xl font-bold text-slate-900">知恵の白キツネ研究員「イケロ」</h1>
-        <p class="text-xs text-emerald-700 font-semibold">コスメ成分アナリスト / 科学的スキンケアアドバイザー</p>
+        <h1 class="text-2xl font-black text-slate-900">知恵の白キツネ研究員「イケロ」</h1>
+        <p class="text-xs md:text-sm text-emerald-800 font-bold">コスメ成分アナリスト / 科学的スキンケアアドバイザー / 薬機法・景表法コンプライアンス監修</p>
+        <div class="pt-2">
+          <a href="https://x.com/ikero_lab" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-full text-xs font-bold shadow transition">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            X (@ikero_lab) をフォロー
+          </a>
+        </div>
       </div>
 
-      <div class="prose text-xs md:text-sm text-slate-600 leading-relaxed space-y-4 pt-4 border-t border-slate-100">
-        <p>
-          はじめまして！知恵とコスメ成分の案内人、白キツネの「イケロ」です。<br>
-          私の名前は、知恵と知力を象徴する神秘と知恵の象徴「白狐（キツネ）」と、古代ギリシャの知恵と医学の賢者「ケイロン」に由来し、科学的洞察とエビデンスを重んじています。
-        </p>
-        <p>
-          世の中には「高いから効きそう」「SNSで有名人が紹介していたから」という理由だけで、高額な化粧品を買い続けている方が大勢います。<br>
-          しかし、化粧品の真実は**「全成分表示」**にすべて書かれています。
-        </p>
-        <p>
-          当ラボの使命は、宣伝文句やブランドのイメージに惑わされず、科学的根拠（エビデンス）と成分濃度に基づいて「本当に肌を変える価値のあるプチプラ名品」を発掘・解説することです。
-        </p>
-      </div>
+      <!-- 監修者・運営者の専門資格・経歴（最高峰の箔・E-E-A-T） -->
+      <section class="space-y-4">
+        <div class="flex items-center gap-2 border-b-2 border-emerald-400 pb-2">
+          <span class="text-lg">🎓</span>
+          <h2 class="text-lg font-black text-slate-900">監修者プロフィール＆保有専門資格</h2>
+        </div>
+        
+        <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200 rounded-2xl p-5 space-y-4">
+          <div>
+            <div class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-1">実務経歴</div>
+            <p class="text-xs md:text-sm text-slate-700 leading-relaxed font-medium">
+              化粧品業界で長年にわたり勤務。化粧品の処方開発現場、商品企画、マーケティング、そして広告法務コンプライアンスの最前線に深く携わってまいりました。現場で培った「全成分表示の裏にある処方意図」「原価とブランド価格の構造」「医薬品・医薬部外品・化粧品の境界線」に関する生きた知見をベースに情報発信を行っています。
+            </p>
+          </div>
+
+          <div>
+            <div class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2">保有資格・認定（公的・業界最高峰資格）</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+              
+              <div class="p-3.5 bg-white rounded-xl border border-emerald-200 shadow-2xs space-y-1">
+                <div class="flex items-center gap-1.5 text-emerald-800 font-bold text-xs">
+                  <span>🥇</span>
+                  <span>コスメコンシェルジュインストラクター</span>
+                </div>
+                <div class="text-[11px] text-slate-500 font-medium leading-relaxed">
+                  日本化粧品検定協会認定の最上位指導者資格。化粧品の成分・効能・安全性に関する高度な専門知識を有し、指導を行うスペシャリスト。
+                </div>
+              </div>
+
+              <div class="p-3.5 bg-white rounded-xl border border-emerald-200 shadow-2xs space-y-1">
+                <div class="flex items-center gap-1.5 text-emerald-800 font-bold text-xs">
+                  <span>🔬</span>
+                  <span>化粧品成分検定スペシャリスト</span>
+                </div>
+                <div class="text-[11px] text-slate-500 font-medium leading-relaxed">
+                  化粧品成分検定協会認定（1級合格者）。パッケージの全成分表示を読み解き、個々の成分の配合目的・効果・科学的エビデンスを客観分析。
+                </div>
+              </div>
+
+              <div class="p-3.5 bg-white rounded-xl border border-emerald-200 shadow-2xs space-y-1">
+                <div class="flex items-center gap-1.5 text-emerald-800 font-bold text-xs">
+                  <span>⚖️</span>
+                  <span>コスメ薬機法管理者</span>
+                </div>
+                <div class="text-[11px] text-slate-500 font-medium leading-relaxed">
+                  医薬品医療機器等法（薬機法）に基づく化粧品・医薬部外品の効能効果表現および適正広告基準を熟知・管理する法務資格。
+                </div>
+              </div>
+
+              <div class="p-3.5 bg-white rounded-xl border border-emerald-200 shadow-2xs space-y-1">
+                <div class="flex items-center gap-1.5 text-emerald-800 font-bold text-xs">
+                  <span>📜</span>
+                  <span>景品表示法務検定資格者</span>
+                </div>
+                <div class="text-[11px] text-slate-500 font-medium leading-relaxed">
+                  消費者庁所管の不当景品類及び不当表示防止法（景表法）の法務知識を有し、優良誤認・有利誤認等の不当表示を排除する専門資格。
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- サイト理念・なぜイケロなのか -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2 border-b-2 border-emerald-400 pb-2">
+          <span class="text-lg">🦊</span>
+          <h2 class="text-lg font-black text-slate-900">「イケロのコスメ成分ラボ」立ち上げの背景</h2>
+        </div>
+        <div class="text-xs md:text-sm text-slate-600 leading-relaxed space-y-3">
+          <p>
+            世の中には「高いから効きそう」「SNSで有名人が紹介していたから」という理由だけで、高額な化粧品を買い続けている方が大勢います。<br>
+            しかし、化粧品の真実は<strong>「パッケージ裏の全成分表示」</strong>にすべて書かれています。
+          </p>
+          <p>
+            「イケロ」という名前は、知恵と知力を象徴する神秘の「白狐（キツネ）」と、古代ギリシャの知恵と医学の賢者「ケイロン」に由来します。<br>
+            ブランドの過剰な宣伝広告やインフルエンサーのステマに惑わされることなく、<strong>「科学的根拠（エビデンス）と成分濃度に基づいて、本当に肌を変える価値のあるプチプラ名品」</strong>を発掘し、生活者の皆様の美容代を賢く最適化することをお約束します。
+          </p>
+        </div>
+      </section>
+
+      <!-- 執筆・比較・コンプライアンス方針 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2 border-b-2 border-emerald-400 pb-2">
+          <span class="text-lg">🛡️</span>
+          <h2 class="text-lg font-black text-slate-900">成分解析＆広告コンプライアンス方針</h2>
+        </div>
+        <div class="bg-slate-50 rounded-2xl p-5 space-y-3 text-xs md:text-sm text-slate-700">
+          <div>
+            <div class="font-bold text-slate-900 mb-0.5">1. 一次情報・学術エビデンスの徹底</div>
+            <p class="text-slate-600 text-xs leading-relaxed">
+              厚生労働省、日本化粧品工業連合会（JCIA）、PubChem、各種皮膚科学論文等の客観的データに基づき、成分の作用機序を正しく解説します。
+            </p>
+          </div>
+          <div>
+            <div class="font-bold text-slate-900 mb-0.5">2. 薬機法・景品表示法の徹底遵守</div>
+            <p class="text-slate-600 text-xs leading-relaxed">
+              コスメ薬機法管理者および景品表示法務検定資格者の知見に基づき、誇大広告・虚偽表現・ステマを一切排除し、消費者の誤認を招かない誠実な表記を徹底します。
+            </p>
+          </div>
+          <div>
+            <div class="font-bold text-slate-900 mb-0.5">3. 広告主への忖度なし・中立な成分比較</div>
+            <p class="text-slate-600 text-xs leading-relaxed">
+              アフィリエイト報酬の多寡によって評価を曲げることは一切ありません。「有効成分の配合濃度」「基剤の処方設計」「コスパ」の3軸で真に優秀な製品のみを推奨します。
+            </p>
+          </div>
+        </div>
+      </section>
+
     </div>
   </main>
 
