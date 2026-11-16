@@ -379,6 +379,91 @@ FANZAやDMMで作品を購入する際、毎回そのままクレジットカー
 ]
 
 
+def create_dynamic_fallback_article(date_str, seq_num):
+    """深夜エンタメで大損・後悔したくない読者に刺さる焦燥感・損失回避型ジェネレーター"""
+    themes = [
+        (
+            "fanza-secret-sale-hack",
+            "セール・最安値攻略",
+            "【定価買いは情弱？！】知らなきゃ年5万円の大損…FANZA「500円セール＆隠しクーポン併用」で名作を底値で買い漁る深夜の防衛術",
+            ["FANZAセール", "500円キャンペーン", "クーポン重ね掛け", "損しない買い方"],
+            "「定価で買ってから翌週に半額セールになっているのを見て絶望した…」そんな大損を繰り返していませんか？深夜の案内人オニゴンが、年間のセール周期・隠しクーポン・DMMポイント三重取りで名作を底値で手に入れる緊急防衛術を暴露します。"
+        ),
+        (
+            "asmr-sleep-earphone-danger",
+            "同人・ASMR音声",
+            "【普通のイヤホンで聴いて大後悔】耳を痛めて夜中に目が覚める人へ！睡眠の質を爆上げする『KU100特化・超薄型寝ホン』の決定版",
+            ["寝ホン", "ASMRイヤホン", "KU100", "睡眠改善"],
+            "「寝転がると耳の穴が圧迫されて痛い」「起きたらコードが絡まって断線していた…」ベッドの中でのASMR視聴でストレスを感じていませんか？横向き寝でも耳への負担ゼロ、脳がとろけるバイノーラル音響を限界まで引き出す神イヤホンをオニゴンが解説。"
+        ),
+        (
+            "vr-8k-cheap-setup",
+            "VR・高画質ガイド",
+            "【画面越しには二度と戻れない】高額ゴーグルは不要？！手持ちスマホと1,500円ギアで8K VRの超至近距離を体感する合法裏ワザ",
+            ["8K VR", "スマホVR", "Meta Quest", "没入体験"],
+            "「VRは数十万円の高級機器がないと見られない」と諦めていませんか？実は手持ちのスマホに1,000円台のゴーグルをセットするだけで、吐息が耳にかかる異次元のゼロ距離体験が今夜すぐ手に入ります。定価購入の前に知るべき最安スタート術。"
+        ),
+        (
+            "dmm-premium-hidden-fanza-tv",
+            "見放題サブスク攻略",
+            "【月550円をドブに捨てるな】加入しただけで満足してない？FANZA TV厳選2,000作品を追加課金ゼロで見倒す深夜の裏コマンド",
+            ["DMMプレミアム", "FANZA TV", "見放題サブスク", "コスパ最大化"],
+            "月額550円のDMMプレミアムに入ったまま、アニメだけ見て放置していませんか？実は成人男性の9割が見落としている『FANZA TV』の無料見放題枠には、単体専属女優の名作が2,000本以上眠っています。追加課金ゼロで深夜を最高にする立ち回り術。"
+        ),
+        (
+            "doujin-comic-browser-secret",
+            "同人コミック・CG",
+            "【スマホの容量パンクを完全回避】ダウンロード保存で後悔する前に！ブラウザ即読み＆神サークルの10円〜半額セール発掘ガイド",
+            ["FANZA同人", "同人コミック", "ブラウザ閲覧", "容量節約"],
+            "「大容量データを落としすぎてスマホのストレージが警告だらけ…」そんな失敗は今すぐやめてください！公式の高画質ブラウザビューアを使えば容量消費ゼロで即読破可能。さらに毎週金曜に突発開催される10円・半額セールの神サークルを炙り出します。"
+        )
+    ]
+    base_slug, cat, base_title, tags, lead_hook = themes[(seq_num - 1) % len(themes)]
+    slug = f"{base_slug}-{date_str}-s{seq_num}"
+    title = f"{base_title}"
+    meta = {
+        "slug": slug,
+        "title": title,
+        "date": date_str,
+        "category": cat,
+        "tags": tags,
+        "summary": lead_hook,
+        "reading_time": 4,
+        "featured": False,
+        "icon": "👿"
+    }
+    md = f"""# {title}
+
+{lead_hook}
+
+---
+
+## 1. なぜ深夜の作品選びで「大損」する人が後を絶たないのか？
+
+定価でそのままポチって満足していませんか？
+実はFANZAやDMMの作品群は、購入する曜日やキャンペーンの組み合わせを知っているだけで、**支払額が3分の1以下**になります。
+知識を持たずに購入ボタンを押す行為は、自ら大切なお金をドブに捨てているのと同じです。
+
+| 買い方のパターン | 1作品あたりの実質単価 | 年間10本買った場合の総額 | 差額と損失リスク |
+| :--- | :--- | :--- | :--- |
+| **定価・通常クレカ決済** | 約2,500円〜3,500円 | 25,000円〜35,000円 | **年間2万円以上の大損！** |
+| **500円セール×クーポン併用** | 400円〜500円 | 4,000円〜5,000円 | **浮いたお金でASMR寝ホンやVRが買える** |
+| **DMMプレミアム見放題活用** | 月額550円（実質1本あたり数十円） | 年間6,600円（見放題） | **圧倒的最安・失敗リスクゼロ** |
+
+---
+
+## 2. オニゴンが警告する「今すぐ見直すべき深夜のNG行動」3選
+
+1. **セール終了直前の迷いでチャンスを逃すこと:**
+   FANZAの限定セールやクーポンは期限が切れた瞬間に定価（数千円）に戻ります。「明日買おう」と先延ばしにして悔しい思いをした経験はありませんか？気になる作品はまずお気に入りに入れて即座に判断しましょう。
+2. **スマホのストレージを気にせず大容量動画を落としまくること:**
+   ダウンロードしすぎて「写真が撮れない」「OSアップデートができない」という悲劇が多発しています。公式の「ストリーミング再生」や「ブラウザビューア」を賢く活用してください。
+3. **普通のスマホ付属イヤホンでASMRを聴くこと:**
+   バイノーラル録音の立体音響は、一般の音楽用イヤホンでは周波数帯が合わず、本当の臨場感の30%も引き出せません。数千円の専用寝ホンを導入するだけで、深夜の没入感が劇的に激変します👿⚡️
+"""
+    return meta, md
+
+
 def main():
     os.makedirs(ARTICLES_DIR, exist_ok=True)
 
@@ -401,7 +486,7 @@ def main():
             f.write(item["markdown"].strip() + "\n")
         existing_slugs[slug] = meta
 
-    # 2. 日次ストックから未追加があれば1件追加
+    # 2. 日次ストックから未追加があれば追加
     for pool_item in DAILY_POOL:
         slug = pool_item["meta"]["slug"]
         if slug not in existing_slugs:
@@ -413,6 +498,18 @@ def main():
             existing_slugs[slug] = meta
             print(f"Added daily pool article for Store 3: {slug}")
             break
+
+    # 3. 今日の記事がなければ損失回避型フォールバック記事を2本生成
+    today_count = sum(1 for a in existing_slugs.values() if a.get("date") == TODAY_STR)
+    if today_count < 2:
+        for slot in range(1, 3):
+            meta, md = create_dynamic_fallback_article(TODAY_STR, slot)
+            if meta["slug"] not in existing_slugs:
+                md_path = os.path.join(ARTICLES_DIR, f"{meta['slug']}.md")
+                with open(md_path, "w", encoding="utf-8") as f:
+                    f.write(md.strip() + "\n")
+                existing_slugs[meta["slug"]] = meta
+                print(f"Generated high-urgency fallback article for Store 3: {meta['slug']}")
 
     # 日付降順でソートして保存
     all_list = sorted(existing_slugs.values(), key=lambda x: x.get("date", ""), reverse=True)

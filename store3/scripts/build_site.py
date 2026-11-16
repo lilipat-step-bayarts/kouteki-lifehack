@@ -661,7 +661,16 @@ def build_article_page(article_meta, all_articles):
 
       {get_hub_banners("article")}
     </article>
-  </main>
+  <!-- 📱 スマホ・PC常時視認 フローティング固定広告バナー（忍者AdMax表示型・消せない広告枠） -->
+  <div class="fixed bottom-0 inset-x-0 z-50 bg-slate-950/95 backdrop-blur-md border-t border-purple-500/40 shadow-[0_-4px_20px_rgba(0,0,0,0.5)] py-2 px-3 flex flex-col items-center justify-center min-h-[70px]">
+    <div class="w-full max-w-lg flex items-center justify-between gap-2">
+      <span class="text-[9px] font-bold text-fuchsia-400 uppercase tracking-widest">SPONSOR / 18+ PR</span>
+      <span class="text-[10px] text-fuchsia-300 font-bold hidden sm:inline">▼ 深夜限定スポンサー情報</span>
+    </div>
+    <div class="flex items-center justify-center w-full overflow-hidden">
+      <script src="https://adm.shinobi.jp/s/{ADULT_ADMAX_TAG_ID}"></script>
+    </div>
+  </div>
 
   {get_footer()}
 </body>

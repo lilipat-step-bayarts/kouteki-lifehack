@@ -566,14 +566,17 @@ def build_article_page(art, all_articles=None):
 
     </main>
   </div>
-  <!-- スマホ下部固定「次の注目記事」回遊バー -->
-  <div class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-slate-200 px-4 py-2.5 shadow-lg flex items-center justify-between gap-2 md:hidden">
-    <div class="truncate text-xs">
-      <span class="text-[10px] font-bold text-blue-600 block">NEXT › 次に読まれている記事</span>
-      <a href="/articles/{next_art['id']}" class="font-bold text-slate-900 truncate block">{next_art['title']}</a>
+  <!-- 📱 スマホ・PC常時視認 フローティング固定広告バナー（忍者AdMax表示型・消せない広告枠） -->
+  <div class="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-300 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] py-2 px-3 flex flex-col items-center justify-center min-h-[70px]">
+    <div class="w-full max-w-lg flex items-center justify-between gap-2">
+      <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">SPONSOR</span>
+      <span class="text-[10px] text-blue-600 font-bold hidden sm:inline">▼ 注目のスポンサー情報</span>
     </div>
-    <a href="/articles/{next_art['id']}" class="shrink-0 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold">読む →</a>
+    <div class="flex items-center justify-center w-full overflow-hidden">
+      {NINJA_AD_TAG}
+    </div>
   </div>
+
   {FOOTER}
 </body>
 </html>
