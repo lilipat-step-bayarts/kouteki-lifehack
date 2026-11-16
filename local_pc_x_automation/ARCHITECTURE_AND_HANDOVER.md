@@ -46,7 +46,7 @@
   - 1号店（`@ramune_lilipat`）とは姉妹店として相互フォロー保護対象にする。
 
 ### ③ 3号店：オニゴンの夜更かしラボ（成人向け・18禁エンタメ）
-* **サイトURL**：`https://onigon.lilipat-cosme-bayarts.com`
+* **サイトURL**：`https://onigon-night-lab.pages.dev`
 * **Xアカウント**：`@Onigon_yfks`
 * **キャラクター**：夜更かしエンタメ案内人 **「オニゴン」👿**
 * **ジャンル**：同人ASMR・耳かきボイス・バイノーラル・FANZA 500円セール・大型新人女優図鑑

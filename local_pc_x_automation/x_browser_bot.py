@@ -90,7 +90,7 @@ ACCOUNTS = {
     "store3_onigon": {
         "name": "3号店（オニゴン @Onigon_yfks）",
         "handle": "Onigon_yfks",
-        "site_url": "https://onigon.lilipat-cosme-bayarts.com",
+        "site_url": "https://onigon-night-lab.pages.dev",
         "remote_articles_url": f"{GITHUB_RAW_BASE}/store3/articles/articles.json",
         "local_articles_fallback": os.path.join(os.path.dirname(BASE_DIR), "store3", "articles", "articles.json"),
         "id_key": "slug",
