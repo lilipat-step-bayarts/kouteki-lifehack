@@ -77,9 +77,61 @@ def create_oauth_header(method, url, params, api_key, api_secret, access_token, 
     return "OAuth " + ", ".join(header_parts)
 
 
-def post_tweet_to_x(text, access_token, access_token_secret):
+def upload_media_to_x(image_url_or_path, access_token, access_token_secret):
+    """画像URLまたはローカル画像ファイルをTwitter API v1.1経由でアップロードし、media_idを返す"""
+    url = "https://upload.twitter.com/1.1/media/upload.json"
+    try:
+        if image_url_or_path.startswith("http://") or image_url_or_path.startswith("https://"):
+            req = urllib.request.Request(image_url_or_path, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                img_data = resp.read()
+        else:
+            with open(image_url_or_path, "rb") as f:
+                img_data = f.read()
+
+        boundary = "====BOUNDARY_" + uuid.uuid4().hex + "===="
+        body = (
+            f"--{boundary}\r\n"
+            f"Content-Disposition: form-data; name=\"media\"; filename=\"thumb.jpg\"\r\n"
+            f"Content-Type: image/jpeg\r\n\r\n"
+        ).encode("utf-8") + img_data + f"\r\n--{boundary}--\r\n".encode("utf-8")
+
+        oauth_params = {
+            "oauth_consumer_key": API_KEY,
+            "oauth_nonce": uuid.uuid4().hex,
+            "oauth_signature_method": "HMAC-SHA1",
+            "oauth_timestamp": str(int(time.time())),
+            "oauth_token": access_token,
+            "oauth_version": "1.0"
+        }
+        param_str = "&".join([f"{percent_encode(k)}={percent_encode(v)}" for k, v in sorted(oauth_params.items())])
+        base_string = f"POST&{percent_encode(url)}&{percent_encode(param_str)}"
+        signing_key = f"{percent_encode(API_SECRET)}&{percent_encode(access_token_secret)}"
+        sig = base64.b64encode(hmac.new(signing_key.encode("utf-8"), base_string.encode("utf-8"), hashlib.sha1).digest()).decode("utf-8")
+        oauth_params["oauth_signature"] = sig
+        auth_header = "OAuth " + ", ".join([f'{percent_encode(k)}="{percent_encode(v)}"' for k, v in sorted(oauth_params.items())])
+
+        upload_req = urllib.request.Request(url, data=body, headers={
+            "Authorization": auth_header,
+            "Content-Type": f"multipart/form-data; boundary={boundary}"
+        }, method="POST")
+
+        with urllib.request.urlopen(upload_req, timeout=15) as resp:
+            res = json.loads(resp.read().decode("utf-8"))
+            mid = res.get("media_id_string")
+            print(f"📸 Image uploaded to X successfully! Media ID: {mid}")
+            return mid
+    except Exception as e:
+        print(f"⚠️ Image upload to X skipped or failed: {e}")
+        return None
+
+
+def post_tweet_to_x(text, access_token, access_token_secret, media_ids=None):
     url = "https://api.twitter.com/2/tweets"
-    payload = json.dumps({"text": text}).encode("utf-8")
+    body_dict = {"text": text}
+    if media_ids:
+        body_dict["media"] = {"media_ids": media_ids}
+    payload = json.dumps(body_dict).encode("utf-8")
 
     oauth_header = create_oauth_header(
         "POST", url, {},
@@ -220,14 +272,34 @@ def main():
     target = unposted[0]
     tweet_text = generate_tweet_text(target, now_jst)
 
-    print("==================================================")
-    print(f"Generated Night Tweet ({tonight_count + 1}/3) for Store 3 (@Onigon_yfks):")
-    print(tweet_text)
-    print("==================================================")
+    # 添付するサムネイル画像（パッケージ画像 or 出演者写真 or バナー）の決定
+    target_img_url = None
+    newcomers_file = os.path.join(PROJECT_ROOT, "articles", "newcomers.json")
+    if os.path.exists(newcomers_file):
+        try:
+            with open(newcomers_file, "r", encoding="utf-8") as f:
+                newcomer_items = json.load(f)
+                if newcomer_items:
+                    # ターゲットに合わせた公式パッケージサムネイルを選定
+                    for n in newcomer_items:
+                        if n.get("package_image_url"):
+                            target_img_url = n["package_image_url"]
+                            break
+        except Exception:
+            pass
 
-    res = post_tweet_to_x(tweet_text, access_token, access_token_secret)
+    if not target_img_url:
+        target_img_url = os.path.join(PROJECT_ROOT, "dist", "assets", "onigon_banner.jpg")
+
+    media_ids = []
+    if target_img_url:
+        mid = upload_media_to_x(target_img_url, access_token, access_token_secret)
+        if mid:
+            media_ids.append(mid)
+
+    res = post_tweet_to_x(tweet_text, access_token, access_token_secret, media_ids=media_ids)
     tweet_id = res.get("data", {}).get("id")
-    print(f"🎉 Successfully posted Store 3 night tweet to X! Tweet ID: {tweet_id}")
+    print(f"🎉 Successfully posted Store 3 night tweet with thumbnail to X! Tweet ID: {tweet_id}")
 
     posted_slugs.add(target["slug"])
     night_counts[night_key] = tonight_count + 1

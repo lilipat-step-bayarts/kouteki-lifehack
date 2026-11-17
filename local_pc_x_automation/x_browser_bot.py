@@ -31,6 +31,7 @@ import time
 import random
 import argparse
 import urllib.request
+import tempfile
 from datetime import datetime, timezone, timedelta
 from urllib.parse import quote
 from playwright.sync_api import sync_playwright
@@ -201,12 +202,47 @@ def fetch_articles_for_account(key, acc_cfg):
                 articles = json.load(f)
 
     if key == "store3_onigon":
+        newcomers = []
+        try:
+            req_nc = urllib.request.Request(
+                f"{GITHUB_RAW_BASE}/store3/articles/newcomers.json",
+                headers={"User-Agent": "LocalXBrowserBot/2.0", "Cache-Control": "no-cache"}
+            )
+            with urllib.request.urlopen(req_nc, timeout=10) as resp:
+                newcomers = json.loads(resp.read().decode("utf-8"))
+        except Exception:
+            fb_nc = os.path.join(os.path.dirname(BASE_DIR), "store3", "articles", "newcomers.json")
+            if os.path.exists(fb_nc):
+                try:
+                    with open(fb_nc, "r", encoding="utf-8") as f:
+                        newcomers = json.load(f)
+                except Exception:
+                    pass
+
+        top_thumb = newcomers[0].get("package_image_url", "") if newcomers else ""
+
         special_hubs = [
-            {"slug": "special:newcomers", "title": "【毎月更新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧"},
+            {"slug": "special:newcomers", "title": "【毎月更新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧", "package_image_url": top_thumb},
             {"slug": "special:asmr-ranking", "title": "【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング"},
             {"slug": "special:sale-500yen", "title": "【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ"}
         ]
-        articles = special_hubs + articles
+
+        newcomer_items = []
+        for nc in newcomers:
+            cid = nc.get("dmm_cid") or nc.get("id", "")
+            stage_name = nc.get("stage_name", "大型新人")
+            catchcopy = nc.get("catchcopy", "")
+            newcomer_items.append({
+                "slug": f"newcomer:{cid}",
+                "title": f"【FANZA注目新人】{stage_name} - {catchcopy[:32]}…",
+                "is_newcomer": True,
+                "stage_name": stage_name,
+                "catchcopy": catchcopy,
+                "package_image_url": nc.get("package_image_url", ""),
+                "affiliate_url": nc.get("affiliate_url", "")
+            })
+
+        articles = newcomer_items + special_hubs + articles
     return articles
 
 
@@ -250,6 +286,16 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
         return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n#コスメ成分 #プチプラコスメ #スキンケア #イケロ"
 
     else:  # store3_onigon
+        if article.get("is_newcomer"):
+            stage_name = article.get("stage_name", "注目ルーキー")
+            catchcopy = article.get("catchcopy", "")
+            aff_url = article.get("affiliate_url") or f"{acc_cfg['site_url']}/newcomers"
+            patterns = [
+                f"【FANZA注目ルーキー速報👿✨】\n『{stage_name}』\n\n{catchcopy[:42]}…\n\n話題沸騰中のデビュー作！公式パッケージ＆サンプル動画はこちら👇\n{aff_url}\n#FANZA #FANZA新人 #オニゴンの夜更かしラボ",
+                f"【今夜の注目新人ピックアップ👿🔥】\n『{stage_name}』\n\nオニゴンが検証！サンプル後半まで必見の大型ルーキー✨\n👇公式サンプル＆詳細\n{aff_url}\n#FANZA #FANZA注目作 #オニゴンの夜更かしラボ"
+            ]
+            return random.choice(patterns)
+
         if 20 <= hour < 22:
             time_hook = "【夜の開幕・セール速報👿🔥】"
             lead = "オニゴンです🌙今夜ハズレを引きたくない人へ！最安値セール＆注目作の結論まとめ👇"
@@ -325,23 +371,61 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
         print(f"    {line}")
     print("    --------------------------------------------------")
 
-    try:
-        # Xの投稿作成画面（intent/tweet または compose/post）を開く
-        intent_url = f"https://x.com/intent/post?text={quote(tweet_text)}"
-        page.goto(intent_url, wait_until="domcontentloaded", timeout=30000)
-        human_sleep(4.5, 6.5)
+    # サムネイル・パッケージ画像のダウンロード準備
+    img_url = target_article.get("package_image_url") or target_article.get("image_url")
+    temp_img_path = None
+    if img_url:
+        try:
+            ext = ".jpg"
+            if ".png" in img_url.lower():
+                ext = ".png"
+            temp_img_path = os.path.join(tempfile.gettempdir(), f"tweet_img_{os.getpid()}_{int(time.time())}{ext}")
+            req = urllib.request.Request(img_url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=15) as resp, open(temp_img_path, "wb") as f_out:
+                f_out.write(resp.read())
+            print(f"    📷 パッケージ・サムネイル画像を取得しました: {img_url}")
+        except Exception as e:
+            print(f"    ⚠️ 画像ダウンロード失敗（テキストのみで続行）: {e}")
+            temp_img_path = None
 
-        # 投稿ボタン（tweetButton）をクリック
-        post_btn = page.locator('[data-testid="tweetButton"]').first
-        if post_btn.count() == 0:
-            # フォールバック：ホーム画面の投稿ボックスに直接入力
+    try:
+        if temp_img_path and os.path.exists(temp_img_path):
             page.goto("https://x.com/compose/post", wait_until="domcontentloaded", timeout=30000)
             human_sleep(3.5, 5.0)
             textbox = page.locator('[data-testid="tweetTextarea_0"]').first
-            textbox.click()
-            human_sleep(1.0, 2.0)
-            textbox.fill(tweet_text)
-            human_sleep(2.5, 4.0)
+            if textbox.count() > 0:
+                textbox.click()
+                human_sleep(0.5, 1.2)
+                textbox.fill(tweet_text)
+                human_sleep(1.5, 2.5)
+
+            file_input = page.locator('input[data-testid="fileInput"]').first
+            if file_input.count() > 0:
+                print("    📎 パッケージ・サムネイル画像を添付中...")
+                file_input.set_input_files(temp_img_path)
+                human_sleep(4.5, 6.5)
+            else:
+                print("    ⚠️ fileInputが見つかりませんでした")
+        else:
+            intent_url = f"https://x.com/intent/post?text={quote(tweet_text)}"
+            page.goto(intent_url, wait_until="domcontentloaded", timeout=30000)
+            human_sleep(4.5, 6.5)
+
+        post_btn = page.locator('[data-testid="tweetButton"]').first
+        if post_btn.count() == 0:
+            page.goto("https://x.com/compose/post", wait_until="domcontentloaded", timeout=30000)
+            human_sleep(3.5, 5.0)
+            textbox = page.locator('[data-testid="tweetTextarea_0"]').first
+            if textbox.count() > 0:
+                textbox.click()
+                human_sleep(0.5, 1.0)
+                textbox.fill(tweet_text)
+                human_sleep(1.5, 2.5)
+            if temp_img_path and os.path.exists(temp_img_path):
+                file_input = page.locator('input[data-testid="fileInput"]').first
+                if file_input.count() > 0:
+                    file_input.set_input_files(temp_img_path)
+                    human_sleep(4.0, 6.0)
             post_btn = page.locator('[data-testid="tweetButton"]').first
 
         if post_btn.count() > 0:
@@ -350,11 +434,18 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
             posted_ids.append(article_id)
             daily_counts[cycle_key] = today_count + 1
             acc_state["last_posted_at"] = datetime.now(timezone.utc).isoformat()
-            print(f"    🎉 ブラウザから記事ポストを送信しました！ ({today_count + 1}/{max_posts})")
+            img_status = "（パッケージ写真添付済）" if temp_img_path else ""
+            print(f"    🎉 ブラウザから記事ポスト{img_status}を送信しました！ ({today_count + 1}/{max_posts})")
         else:
             print("    ⚠️ 投稿ボタンが見つかりませんでした（ログイン状態を確認してください）。")
     except Exception as e:
         print(f"    ⚠️ ブラウザ投稿中にエラーが発生しました: {e}")
+    finally:
+        if temp_img_path and os.path.exists(temp_img_path):
+            try:
+                os.remove(temp_img_path)
+            except Exception:
+                pass
 
 
 def step1_auto_followback(page, acc_cfg, acc_state):
