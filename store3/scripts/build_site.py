@@ -303,7 +303,7 @@ def render_newcomer_card(item):
     search_kw = urllib.parse.quote(item.get("search_keyword", stage_name))
 
     if item.get("affiliate_url"):
-        target_url = item["affiliate_url"]
+        target_url = item["affiliate_url"].replace("Onigon-990", "Onigon-001")
     elif item.get("fanza_category") == "doujin":
         raw_url = f"https://www.dmm.co.jp/dc/doujin/-/list/narrow/=/word={search_kw}/"
         target_url = build_fanza_link(raw_url)
@@ -311,12 +311,12 @@ def render_newcomer_card(item):
         raw_url = f"https://www.dmm.co.jp/digital/videoa/-/list/search/=/?searchstr={search_kw}"
         target_url = build_fanza_link(raw_url)
 
-    # サムネイルヘッダー部分（公式画像 or 審査クリア用オリジナルアートサムネイル）
+    # サムネイルヘッダー部分（タップでリンク先に移動できるように <a> タグ化）
     if pkg_url:
         thumb_html = f"""
-        <div class="relative h-56 w-full overflow-hidden bg-slate-950">
-          <img src="{pkg_url}" alt="{stage_name}" loading="lazy" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
+        <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="block relative h-60 w-full overflow-hidden bg-slate-950 cursor-pointer group/thumb">
+          <img src="{pkg_url}" alt="{stage_name}" loading="lazy" class="w-full h-full object-cover object-top group-hover/thumb:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
           <div class="absolute top-3 left-3 flex items-center gap-1.5">
             <span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-fuchsia-600 text-white shadow-lg">{badge_text}</span>
             <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-400 text-slate-950">RANK {rank}</span>
@@ -324,16 +324,19 @@ def render_newcomer_card(item):
           <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between">
             <div>
               <span class="text-[11px] text-fuchsia-300 font-bold block">{debut_month} / {label_genre}</span>
-              <h3 class="text-lg font-black text-white drop-shadow">{stage_name}</h3>
+              <h3 class="text-lg font-black text-white drop-shadow group-hover/thumb:text-fuchsia-300 transition-colors">{stage_name}</h3>
             </div>
             <span class="px-2 py-1 rounded-lg bg-slate-900/90 border border-amber-400/50 text-amber-300 text-xs font-mono font-bold">★ {rating}</span>
           </div>
-        </div>
+          <div class="absolute top-3 right-3 px-2 py-1 rounded-lg bg-black/60 backdrop-blur text-[10px] text-white/90 font-bold flex items-center gap-1 border border-white/20">
+            <span>タップで再生</span><span>↗</span>
+          </div>
+        </a>
         """
     else:
-        # 審査前でも華やかで著作権100%クリアなビジュアルサムネイルカード
+        # プレースホルダー図鑑カード（タップでリンク先に移動）
         thumb_html = f"""
-        <div class="relative h-52 w-full overflow-hidden bg-gradient-to-br {gradient} p-4 flex flex-col justify-between">
+        <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="block relative h-52 w-full overflow-hidden bg-gradient-to-br {gradient} p-4 flex flex-col justify-between cursor-pointer group/thumb">
           <!-- 背景装飾シルエット＆ネオンエフェクト -->
           <div class="absolute -right-6 -bottom-6 w-40 h-40 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
           <svg class="absolute right-3 bottom-0 w-32 h-44 text-white/15 pointer-events-none" viewBox="0 0 200 260" fill="currentColor">
@@ -346,7 +349,7 @@ def render_newcomer_card(item):
               <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-400 text-slate-950 shadow">RANK {rank}</span>
             </div>
             <span class="px-2 py-0.5 rounded-md bg-slate-950/60 backdrop-blur text-[10px] text-fuchsia-200 border border-fuchsia-400/30 font-mono">
-              📸 公式サムネ枠（審査通過後に自動解禁）
+              ★ {rating} / 5.0
             </span>
           </div>
           <div class="relative z-10 space-y-1">
@@ -355,13 +358,9 @@ def render_newcomer_card(item):
               <span>•</span>
               <span>{label_genre}</span>
             </div>
-            <h3 class="text-lg md:text-xl font-black text-white leading-tight drop-shadow">{stage_name}</h3>
-            <div class="flex items-center gap-2 pt-0.5">
-              <span class="text-xs font-mono font-bold text-amber-300">★ {rating} / 5.0</span>
-              <span class="text-[11px] text-white/80">｜ オニゴン期待度 99%</span>
-            </div>
+            <h3 class="text-lg md:text-xl font-black text-white leading-tight drop-shadow group-hover/thumb:text-fuchsia-300 transition-colors">{stage_name}</h3>
           </div>
-        </div>
+        </a>
         """
 
     tags_html = " ".join([
@@ -369,17 +368,38 @@ def render_newcomer_card(item):
         for t in tags
     ])
 
+    # サンプル画像ギャラリー（各サムネイルもタップでリンク先に移動可能）
+    sample_images = item.get("sample_images", [])
+    samples_html = ""
+    if sample_images:
+        sample_thumbs = []
+        for s_url in sample_images[:4]:
+            sample_thumbs.append(f"""
+            <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="block h-14 rounded-lg overflow-hidden border border-slate-800 hover:border-fuchsia-400 transition hover:scale-105">
+              <img src="{s_url}" alt="サンプル" loading="lazy" class="w-full h-full object-cover">
+            </a>
+            """)
+        samples_html = f"""
+        <div class="space-y-1.5">
+          <span class="text-[10px] font-bold text-slate-400">📸 サンプル画像（タップで高画質プレビュー）</span>
+          <div class="grid grid-cols-4 gap-1.5">
+            {''.join(sample_thumbs)}
+          </div>
+        </div>
+        """
+
     return f"""
     <div class="group bg-slate-900/95 rounded-3xl border border-purple-500/30 hover:border-fuchsia-400/70 overflow-hidden shadow-xl transition-all flex flex-col justify-between">
       <div>
         {thumb_html}
         <div class="p-5 space-y-4">
-          <p class="text-xs md:text-sm font-bold text-fuchsia-200 leading-snug">
+          <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="block text-xs md:text-sm font-bold text-fuchsia-200 hover:text-white transition leading-snug">
             「{catchcopy}」
-          </p>
+          </a>
           <div class="flex flex-wrap gap-1.5">
             {tags_html}
           </div>
+          {samples_html}
           <!-- ステータスバー -->
           <div class="bg-slate-950/80 rounded-2xl p-3.5 border border-slate-800 space-y-2 text-[11px]">
             <div class="flex items-center justify-between">
@@ -789,8 +809,8 @@ def build_asmr_ranking_page(asmr_works):
         cards.append(f"""
         <div class="group bg-slate-900/95 rounded-3xl border border-indigo-500/40 hover:border-indigo-400 overflow-hidden shadow-xl flex flex-col justify-between">
           <div>
-            <!-- 音響スペクトラム＆マイクスぺックサムネイル -->
-            <div class="relative h-48 w-full bg-gradient-to-br {item.get('theme_gradient', 'from-indigo-700 via-purple-800 to-slate-950')} p-5 flex flex-col justify-between overflow-hidden">
+            <!-- 音響スペクトラム＆マイクスぺックサムネイル（タップで試聴・公式ページへ） -->
+            <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="block relative h-48 w-full bg-gradient-to-br {item.get('theme_gradient', 'from-indigo-700 via-purple-800 to-slate-950')} p-5 flex flex-col justify-between overflow-hidden cursor-pointer group/thumb">
               <div class="flex items-center justify-between relative z-10">
                 <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950 shadow">👑 {item.get('rank', '殿堂入り')}</span>
                 <span class="px-2.5 py-0.5 rounded-md bg-slate-950/70 text-indigo-200 text-[11px] font-mono border border-indigo-400/30">★ {item.get('rating', 4.9)} / 5.0</span>
@@ -811,9 +831,12 @@ def build_asmr_ranking_page(asmr_works):
                 <div class="text-[11px] text-indigo-200 font-bold flex items-center gap-2">
                   <span>🎙️ {item.get('mic_spec')}</span>
                 </div>
-                <h3 class="text-base md:text-lg font-black text-white leading-snug">{item.get('title')}</h3>
+                <h3 class="text-base md:text-lg font-black text-white leading-snug group-hover/thumb:text-cyan-300 transition-colors">{item.get('title')}</h3>
               </div>
-            </div>
+              <div class="absolute top-3 right-3 px-2 py-1 rounded-lg bg-black/60 backdrop-blur text-[10px] text-white/90 font-bold flex items-center gap-1 border border-white/20">
+                <span>タップで無料試聴</span><span>↗</span>
+              </div>
+            </a>
 
             <div class="p-5 space-y-4">
               <div class="flex items-center justify-between text-xs text-slate-300 bg-slate-950/80 px-3.5 py-2 rounded-xl border border-slate-800">
@@ -928,7 +951,9 @@ def build_sale_500yen_page(sale_picks):
               <span class="px-3 py-1 rounded-full text-xs font-black bg-rose-600 text-white">{item.get('category_badge')}</span>
               <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950">{item.get('discount_rate')}</span>
             </div>
-            <h3 class="text-base md:text-lg font-black text-white leading-snug">{item.get('title')}</h3>
+            <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="block text-base md:text-lg font-black text-white hover:text-amber-300 transition-colors leading-snug">
+              {item.get('title')} ↗
+            </a>
             <div class="grid grid-cols-2 gap-2.5 bg-slate-950/90 p-3.5 rounded-2xl border border-slate-800 text-xs">
               <div>
                 <span class="text-slate-400 block text-[10px]">セール目安価格</span>
@@ -950,7 +975,6 @@ def build_sale_500yen_page(sale_picks):
           <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="w-full py-3 px-4 bg-gradient-to-r from-rose-600 via-fuchsia-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white text-center rounded-xl font-black text-xs shadow-lg transition flex items-center justify-center gap-2">
             <span>🔥 公式セール対象ラインナップを確認する</span>
             <span>↗</span>
-          </a>
         </div>
         """)
 

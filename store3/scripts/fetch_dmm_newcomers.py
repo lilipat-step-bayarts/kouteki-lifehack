@@ -68,7 +68,12 @@ def fetch_from_dmm_api():
                 .get("image", [])
             )
             genres = [g.get("name") for g in item.get("iteminfo", {}).get("genre", [])[:4] if g.get("name")]
-            aff_url = item.get("affiliateURL", "")
+            raw_url = item.get("URL", "")
+            if raw_url:
+                quoted_raw = urllib.parse.quote(raw_url, safe="")
+                aff_url = f"https://al.dmm.co.jp/?lurl={quoted_raw}&af_id=Onigon-001&ch=link_tool&ch_id=link"
+            else:
+                aff_url = item.get("affiliateURL", "").replace("Onigon-990", "Onigon-001")
             date_str = item.get("date", "2026年最新")[:10]
 
             newcomers.append({
