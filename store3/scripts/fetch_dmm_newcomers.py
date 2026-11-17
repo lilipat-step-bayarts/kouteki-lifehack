@@ -19,9 +19,9 @@ NEWCOMERS_JSON = os.path.join(PROJECT_ROOT, "articles", "newcomers.json")
 
 def fetch_from_dmm_api():
     api_id = os.environ.get("DMM_API_ID", "").strip()
-    affiliate_id = os.environ.get("DMM_AFFILIATE_ID", "").strip()
+    affiliate_id = os.environ.get("DMM_AFFILIATE_ID", "").strip() or "Onigon-001"
     if not (api_id and affiliate_id):
-        print("ℹ️ DMM_API_ID / DMM_AFFILIATE_ID 未設定（審査前モード）: 著作権クリアなオリジナル新人図鑑カードを使用します。")
+        print("ℹ️ DMM_API_ID 未設定（手動管理モード）: 著作権クリアなオリジナル新人図鑑カード（または公式リンク）を使用します。")
         return
 
     params = {

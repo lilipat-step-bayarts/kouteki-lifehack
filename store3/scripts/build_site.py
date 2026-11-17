@@ -25,7 +25,7 @@ SITE_TITLE = "オニゴンの夜更かしラボ | 深夜のFANZAセール・大�
 SITE_DESCRIPTION = "深夜の案内人『オニゴン』が、FANZAの500円セール・大型新人デビュー作・KU100収録の同人ASMR・DMMプレミアムのコスパを徹底解剖する深夜エンタメ特化型レビューメディア。"
 SITE_URL = "https://onigon-night-lab.pages.dev"
 
-DMM_AFFILIATE_ID = os.environ.get("DMM_AFFILIATE_ID", "").strip()
+DMM_AFFILIATE_ID = os.environ.get("DMM_AFFILIATE_ID", "").strip() or "Onigon-001"
 # 忍者AdMaxで「成人（アダルト属性・18禁サイト用）」として発行した3号店専用広告枠ID
 ADULT_ADMAX_TAG_ID = os.environ.get("ADULT_ADMAX_TAG_ID", "").strip() or "510c352d44b5c4c8109a0972bbd6c310"
 
