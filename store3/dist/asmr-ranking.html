@@ -77,16 +77,22 @@
           <span class="text-base font-black text-white tracking-tight block">オニゴンの夜更かしラボ</span>
         </div>
       </a>
-      <nav class="hidden md:flex items-center gap-2.5 text-xs font-bold text-slate-300">
+      <nav class="hidden md:flex items-center gap-2 text-xs font-bold text-slate-300">
         <a href="/" class="px-3 py-1.5 rounded-full transition hover:text-fuchsia-400">🔥 新着速報</a>
-        <a href="/newcomers" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-purple-950/70 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900">
-          <span>🌟</span><span>新人図鑑・サムネ</span>
+        <a href="/sale-10yen" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-amber-950/60 text-amber-300 border-amber-500/30 hover:bg-amber-900/80">
+          <span>💰</span><span>10円・爆安セール</span>
         </a>
-        <a href="/asmr-ranking" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-950">
-          <span>🎧</span><span>同人ASMR殿堂</span>
+        <a href="/free-videos" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-emerald-950/60 text-emerald-300 border-emerald-500/30 hover:bg-emerald-900/80">
+          <span>🎬</span><span>完全無料動画</span>
         </a>
-        <a href="/sale-500yen" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-rose-950/70 text-amber-300 border-rose-500/30 hover:bg-rose-900">
-          <span>💰</span><span>500円セール神作</span>
+        <a href="/manga-books" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-sky-950/60 text-sky-300 border-sky-500/30 hover:bg-sky-900/80">
+          <span>📚</span><span>電子コミック</span>
+        </a>
+        <a href="/asmr-ranking" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-indigo-600 text-white border-indigo-400 shadow-md font-black">
+          <span>🎧</span><span>同人ASMR</span>
+        </a>
+        <a href="/newcomers" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-purple-950/60 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900/80">
+          <span>🌟</span><span>新人図鑑</span>
         </a>
         <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-fuchsia-300 border border-purple-500/40 transition flex items-center gap-1">
           <span>𝕏</span><span>@Onigon_yfks</span>
@@ -96,9 +102,11 @@
     <!-- スマホ用 横スクロール特設タブバー（回遊率アップ用） -->
     <div class="md:hidden border-t border-slate-800/80 bg-slate-900/90 px-3 py-2 flex items-center gap-2 overflow-x-auto text-[11px] font-bold whitespace-nowrap">
       <a href="/" class="px-3 py-1 rounded-full bg-slate-800 text-slate-300">🔥 トップ速報</a>
-      <a href="/newcomers" class="px-3 py-1 rounded-full bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30">🌟 新人図鑑・サムネ</a>
-      <a href="/asmr-ranking" class="px-3 py-1 rounded-full bg-indigo-600 text-white">🎧 同人ASMRランキング</a>
-      <a href="/sale-500yen" class="px-3 py-1 rounded-full bg-rose-950 text-amber-300 border border-rose-500/30">💰 500円セール神作</a>
+      <a href="/sale-10yen" class="px-3 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/30">💰 10円・爆安</a>
+      <a href="/free-videos" class="px-3 py-1 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30">🎬 完全無料</a>
+      <a href="/manga-books" class="px-3 py-1 rounded-full bg-sky-950/80 text-sky-300 border border-sky-500/30">📚 電子コミック</a>
+      <a href="/asmr-ranking" class="px-3 py-1 rounded-full bg-indigo-600 text-white">🎧 同人ASMR</a>
+      <a href="/newcomers" class="px-3 py-1 rounded-full bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30">🌟 新人図鑑</a>
       <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded-full bg-slate-800 text-fuchsia-300 border border-purple-500/30">𝕏 @Onigon_yfks</a>
     </div>
   </header>
@@ -462,36 +470,45 @@
     <section class="my-8 space-y-3">
       <div class="flex items-center justify-between">
         <h3 class="text-sm md:text-base font-black text-white flex items-center gap-2">
-          <span>👿</span><span>オニゴン特設コーナー（深夜の3大人気ランキング）</span>
+          <span>👿</span><span>オニゴンの4大特設コーナー（日替わり厳選ハブ）</span>
         </h3>
-        <span class="text-[11px] text-fuchsia-400 font-bold">回遊ピックアップ</span>
+        <span class="text-[11px] text-fuchsia-400 font-bold">4大ジャンル回遊</span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-        <a href="/newcomers" class="group p-4 rounded-2xl bg-gradient-to-br from-fuchsia-950/90 to-slate-900 border border-fuchsia-500/40 hover:border-fuchsia-400 transition flex flex-col justify-between shadow-lg">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <a href="/sale-10yen" class="group p-4 rounded-2xl bg-gradient-to-br from-amber-950/80 to-slate-900 border border-amber-500/40 hover:border-amber-400 transition flex flex-col justify-between shadow-lg">
           <div class="space-y-1.5">
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-600 text-white font-black">🌟 特設コーナー①</span>
-            <h4 class="text-sm font-black text-white group-hover:text-fuchsia-300">大型新人女優＆注目ルーキー図鑑</h4>
-            <p class="text-[11px] text-slate-300 leading-relaxed">ビジュアル・スタイル・没入感の3軸ステータス＆サムネイル一覧</p>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black">💰 Day 1 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-amber-300">10円動画＆爆安セール</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">缶コーヒー未満の10円動画・同人10円・ワンコイン500円名作</p>
           </div>
-          <span class="mt-3 text-[11px] font-bold text-fuchsia-300 group-hover:translate-x-1 transition inline-block">新人図鑑を見る →</span>
+          <span class="mt-3 text-[11px] font-bold text-amber-300 group-hover:translate-x-1 transition inline-block">爆安セールを見る →</span>
         </a>
 
-        <a href="/asmr-ranking" class="group p-4 rounded-2xl bg-gradient-to-br from-indigo-950/90 to-slate-900 border border-indigo-500/40 hover:border-indigo-400 transition flex flex-col justify-between shadow-lg">
+        <a href="/free-videos" class="group p-4 rounded-2xl bg-gradient-to-br from-emerald-950/80 to-slate-900 border border-emerald-500/40 hover:border-emerald-400 transition flex flex-col justify-between shadow-lg">
           <div class="space-y-1.5">
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-black">🎧 特設コーナー②</span>
-            <h4 class="text-sm font-black text-white group-hover:text-indigo-300">同人ASMR・耳かきボイス殿堂ランキング</h4>
-            <p class="text-[11px] text-slate-300 leading-relaxed">100万円級マイクKU100収録！寝落ち確定の神サークル厳選比較</p>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-600 text-white font-black">🎬 Day 2 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-emerald-300">完全無料動画＆サンプル</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">登録不要・クレカ不要！0円で今すぐ観られる公式長尺動画</p>
           </div>
-          <span class="mt-3 text-[11px] font-bold text-indigo-300 group-hover:translate-x-1 transition inline-block">ASMRランキングを見る →</span>
+          <span class="mt-3 text-[11px] font-bold text-emerald-300 group-hover:translate-x-1 transition inline-block">無料動画を見る →</span>
         </a>
 
-        <a href="/sale-500yen" class="group p-4 rounded-2xl bg-gradient-to-br from-rose-950/90 to-slate-900 border border-rose-500/40 hover:border-amber-400 transition flex flex-col justify-between shadow-lg">
+        <a href="/manga-books" class="group p-4 rounded-2xl bg-gradient-to-br from-sky-950/80 to-slate-900 border border-sky-500/40 hover:border-sky-400 transition flex flex-col justify-between shadow-lg">
           <div class="space-y-1.5">
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-600 text-white font-black">💰 特設コーナー③</span>
-            <h4 class="text-sm font-black text-white group-hover:text-amber-300">500円均一＆同人10円セール神作まとめ</h4>
-            <p class="text-[11px] text-slate-300 leading-relaxed">480分超え総集編や最大90%OFF対象作を最安値で揃える特設リスト</p>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-600 text-white font-black">📚 Day 3 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-sky-300">電子コミック・無料試し読み</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">1巻まるごと無料！深夜ベッドでスマホ即読み＆90%OFFクーポン</p>
           </div>
-          <span class="mt-3 text-[11px] font-bold text-amber-300 group-hover:translate-x-1 transition inline-block">セール神作まとめを見る →</span>
+          <span class="mt-3 text-[11px] font-bold text-sky-300 group-hover:translate-x-1 transition inline-block">電子コミックを見る →</span>
+        </a>
+
+        <a href="/asmr-ranking" class="group p-4 rounded-2xl bg-gradient-to-br from-indigo-950/80 to-slate-900 border border-indigo-500/40 hover:border-indigo-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-1.5">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-black">🎧 Day 4 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-indigo-300">同人ASMR＆大型新人図鑑</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">100万円マイクKU100寝落ち音声＆今月のSSR注目ルーキー</p>
+          </div>
+          <span class="mt-3 text-[11px] font-bold text-indigo-300 group-hover:translate-x-1 transition inline-block">ASMR・新人を見る →</span>
         </a>
       </div>
     </section>

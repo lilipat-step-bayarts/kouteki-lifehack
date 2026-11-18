@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
+  <title>【登録不要・0円視聴】FANZA公式 完全無料動画＆長尺プレビュー徹底ナビ | オニゴンの夜更かしラボ</title>
+  <meta name="description" content="クレカ登録ゼロ・完全無料で今すぐスマホから視聴できるFANZA公式無料動画コーナーと、失敗しない長尺サンプルの見極め方をオニゴンが解説。">
+  <link rel="canonical" href="https://onigon-night-lab.pages.dev/free-videos">
+  <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen">
+  
+<!-- 18歳以上年齢確認モーダル (DMM/FANZA審査対応) -->
+<div id="onigon-age-gate" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/95 backdrop-blur-md p-4">
+  <div class="max-w-md w-full bg-slate-900 border-2 border-purple-500/60 rounded-3xl p-6 md:p-8 text-center shadow-2xl shadow-purple-950/80 space-y-5">
+    <div class="relative mx-auto w-20 h-20">
+      <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-20 h-20 rounded-full object-cover border-2 border-fuchsia-400 shadow-lg">
+      <span class="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white border border-white">18+</span>
+    </div>
+    <div class="space-y-2">
+      <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-950 text-purple-300 border border-purple-700/60">
+        年齢確認 / Age Verification
+      </span>
+      <h2 class="text-xl font-black text-white leading-snug">
+        ここから先は成人向け（18歳以上対象）のレビュー情報を含みます
+      </h2>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        当サイト「オニゴンの夜更かしラボ」は、成人向けエンタメ作品（FANZA / DMM / 同人ASMR等）のセール情報・レビューを掲載しています。18歳未満の方の閲覧は固くお断りいたします。
+      </p>
+    </div>
+    <div class="space-y-2.5 pt-2">
+      <button onclick="confirmAgeGate()" class="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white font-black text-sm shadow-lg shadow-fuchsia-600/30 transition cursor-pointer">
+        はい、私は18歳以上です（ENTER）
+      </button>
+      <a href="https://www.google.co.jp/" rel="nofollow" class="block w-full py-2.5 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 font-bold text-xs transition">
+        いいえ、18歳未満です（EXIT）
+      </a>
+    </div>
+  </div>
+</div>
+<script>
+  (function() {
+    try {
+      if (localStorage.getItem('onigon_age_verified_v1') !== 'true') {
+        var modal = document.getElementById('onigon-age-gate');
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }
+      }
+    } catch (e) {}
+  })();
+  function confirmAgeGate() {
+    try {
+      localStorage.setItem('onigon_age_verified_v1', 'true');
+    } catch (e) {}
+    var modal = document.getElementById('onigon-age-gate');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+</script>
+
+  
+  <header class="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-md border-b border-purple-500/30 shadow-lg">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2.5 group shrink-0">
+        <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-10 h-10 rounded-full border-2 border-fuchsia-400 shadow-md object-cover group-hover:scale-105 transition-transform">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-bold text-fuchsia-400 tracking-wider">MIDNIGHT CURATION LAB</span>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-600/90 text-white font-black">R18</span>
+          </div>
+          <span class="text-base font-black text-white tracking-tight block">オニゴンの夜更かしラボ</span>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-2 text-xs font-bold text-slate-300">
+        <a href="/" class="px-3 py-1.5 rounded-full transition hover:text-fuchsia-400">🔥 新着速報</a>
+        <a href="/sale-10yen" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-amber-950/60 text-amber-300 border-amber-500/30 hover:bg-amber-900/80">
+          <span>💰</span><span>10円・爆安セール</span>
+        </a>
+        <a href="/free-videos" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-emerald-600 text-white border-emerald-400 shadow-md font-black">
+          <span>🎬</span><span>完全無料動画</span>
+        </a>
+        <a href="/manga-books" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-sky-950/60 text-sky-300 border-sky-500/30 hover:bg-sky-900/80">
+          <span>📚</span><span>電子コミック</span>
+        </a>
+        <a href="/asmr-ranking" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-indigo-950/60 text-indigo-300 border-indigo-500/30 hover:bg-indigo-900/80">
+          <span>🎧</span><span>同人ASMR</span>
+        </a>
+        <a href="/newcomers" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 bg-purple-950/60 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900/80">
+          <span>🌟</span><span>新人図鑑</span>
+        </a>
+        <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-fuchsia-300 border border-purple-500/40 transition flex items-center gap-1">
+          <span>𝕏</span><span>@Onigon_yfks</span>
+        </a>
+      </nav>
+    </div>
+    <!-- スマホ用 横スクロール特設タブバー（回遊率アップ用） -->
+    <div class="md:hidden border-t border-slate-800/80 bg-slate-900/90 px-3 py-2 flex items-center gap-2 overflow-x-auto text-[11px] font-bold whitespace-nowrap">
+      <a href="/" class="px-3 py-1 rounded-full bg-slate-800 text-slate-300">🔥 トップ速報</a>
+      <a href="/sale-10yen" class="px-3 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/30">💰 10円・爆安</a>
+      <a href="/free-videos" class="px-3 py-1 rounded-full bg-emerald-600 text-white font-black">🎬 完全無料</a>
+      <a href="/manga-books" class="px-3 py-1 rounded-full bg-sky-950/80 text-sky-300 border border-sky-500/30">📚 電子コミック</a>
+      <a href="/asmr-ranking" class="px-3 py-1 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-500/30">🎧 同人ASMR</a>
+      <a href="/newcomers" class="px-3 py-1 rounded-full bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30">🌟 新人図鑑</a>
+      <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded-full bg-slate-800 text-fuchsia-300 border border-purple-500/30">𝕏 @Onigon_yfks</a>
+    </div>
+  </header>
+
+
+  <section class="relative bg-gradient-to-b from-emerald-950/80 via-slate-950 to-slate-950 py-10 border-b border-emerald-500/30">
+    <div class="max-w-5xl mx-auto px-4 space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 text-xs font-bold border border-emerald-500/40">
+        <span>🎬</span><span>1円も払わずに楽しめる！Day 2 オニゴン厳選・完全無料動画特設</span>
+      </div>
+      <h1 class="text-2xl md:text-4xl font-black text-white leading-tight">
+        登録不要＆クレカ登録ゼロ<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-400">FANZA公式 完全無料動画コーナー</span>
+      </h1>
+      <p class="text-xs md:text-sm text-slate-300 max-w-3xl leading-relaxed">
+        「今夜はお金を使いたくない」「まず無料でどんな作品があるか楽しみたい」夜更かし勢必見！怪しい海外の違法海賊版サイトにアクセスしてウイルス感染するリスクはゼロ。公式プレイヤーのHD高画質で安全に0円視聴する方法をまとめました。
+      </p>
+      <div class="pt-2 flex flex-wrap gap-3">
+        <a href="https://al.dmm.co.jp/?lurl=https%3A%2F%2Fvideo.dmm.co.jp%2Ffree%2F&af_id=Onigon-001&ch=link_tool&ch_id=link" target="_blank" rel="noopener noreferrer sponsored" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-xs shadow-lg transition flex items-center gap-1.5">
+          <span>🎬 FANZA公式 完全無料動画コーナーを今すぐ視聴</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+    
+        <!-- 18+ 大人向け特化リッチ広告枠 (TOP) -->
+        <div class="my-6 p-4 md:p-5 bg-gradient-to-r from-fuchsia-950/90 via-purple-950/95 to-slate-900 rounded-2xl border border-fuchsia-500/50 shadow-xl relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] px-2 py-0.5 rounded bg-rose-600 text-white font-black tracking-wider uppercase">AD / R18 SPECIAL PR</span>
+            <span class="text-[11px] text-fuchsia-300 font-mono font-bold">🎧 無料試聴・ブラウザ試し読み対応</span>
+          </div>
+          
+        <!-- admax -->
+        <div class="mb-4 flex flex-col items-center justify-center min-h-[250px] bg-slate-950/60 rounded-xl p-2 border border-purple-500/20">
+          <script src="https://adm.shinobi.jp/s/510c352d44b5c4c8109a0972bbd6c310"></script>
+        </div>
+        <!-- admax -->
+        
+          <a href="https://al.dmm.co.jp/?lurl=https%3A%2F%2Fwww.dmm.co.jp%2Fdc%2Fdoujin%2F&af_id=Onigon-001&ch=link_tool&ch_id=link" target="_blank" rel="noopener noreferrer sponsored" class="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="text-sm md:text-base font-black text-white group-hover:text-fuchsia-300 transition flex items-center gap-1.5 flex-wrap">
+                <span>🔥 【深夜限定セール】FANZA同人「バイノーラルASMR・専用CG・長編コミック」最大90%OFF！</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                10円セール＆初回購入クーポン配布中！ダウンロード不要でスマホのブラウザから今すぐ高画質ビューア＆無料体験版を楽しめる大人専用ストア
+              </p>
+            </div>
+            <span class="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-rose-600 group-hover:from-fuchsia-500 group-hover:to-rose-500 text-white font-black text-xs shadow-lg shadow-fuchsia-950 transition">
+              R18公式セールを見る ↗
+            </span>
+          </a>
+        </div>
+        
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="p-5 rounded-2xl bg-slate-900/90 border border-emerald-500/30 space-y-2">
+        <span class="text-2xl">⚡️</span>
+        <h3 class="text-sm font-black text-white">会員登録・クレカ番号不要</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">面倒な個人情報入力は一切なし。スマホのSafariやChromeから1タップですぐ動画が再生されます。</p>
+      </div>
+      <div class="p-5 rounded-2xl bg-slate-900/90 border border-emerald-500/30 space-y-2">
+        <span class="text-2xl">🛡️</span>
+        <h3 class="text-sm font-black text-white">公式だから100%安全・高画質</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">怪しい広告ポップアップやウイルス請求の心配ゼロ。国内最大手の正規サーバーから安心の高画質ストリーミング。</p>
+      </div>
+      <div class="p-5 rounded-2xl bg-slate-900/90 border border-emerald-500/30 space-y-2">
+        <span class="text-2xl">👀</span>
+        <h3 class="text-sm font-black text-white">3〜5分以上の長尺サンプル</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">静止画パッケージだけでなく、出演者の声質やライティングの質を事前に納得するまで無料で確認可能。</p>
+      </div>
+    </div>
+
+    
+
+    
+    <section class="my-8 space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm md:text-base font-black text-white flex items-center gap-2">
+          <span>👿</span><span>オニゴンの4大特設コーナー（日替わり厳選ハブ）</span>
+        </h3>
+        <span class="text-[11px] text-fuchsia-400 font-bold">4大ジャンル回遊</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <a href="/sale-10yen" class="group p-4 rounded-2xl bg-gradient-to-br from-amber-950/80 to-slate-900 border border-amber-500/40 hover:border-amber-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-1.5">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black">💰 Day 1 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-amber-300">10円動画＆爆安セール</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">缶コーヒー未満の10円動画・同人10円・ワンコイン500円名作</p>
+          </div>
+          <span class="mt-3 text-[11px] font-bold text-amber-300 group-hover:translate-x-1 transition inline-block">爆安セールを見る →</span>
+        </a>
+
+        <a href="/free-videos" class="group p-4 rounded-2xl bg-gradient-to-br from-emerald-950/80 to-slate-900 border border-emerald-500/40 hover:border-emerald-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-1.5">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-600 text-white font-black">🎬 Day 2 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-emerald-300">完全無料動画＆サンプル</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">登録不要・クレカ不要！0円で今すぐ観られる公式長尺動画</p>
+          </div>
+          <span class="mt-3 text-[11px] font-bold text-emerald-300 group-hover:translate-x-1 transition inline-block">無料動画を見る →</span>
+        </a>
+
+        <a href="/manga-books" class="group p-4 rounded-2xl bg-gradient-to-br from-sky-950/80 to-slate-900 border border-sky-500/40 hover:border-sky-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-1.5">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-600 text-white font-black">📚 Day 3 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-sky-300">電子コミック・無料試し読み</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">1巻まるごと無料！深夜ベッドでスマホ即読み＆90%OFFクーポン</p>
+          </div>
+          <span class="mt-3 text-[11px] font-bold text-sky-300 group-hover:translate-x-1 transition inline-block">電子コミックを見る →</span>
+        </a>
+
+        <a href="/asmr-ranking" class="group p-4 rounded-2xl bg-gradient-to-br from-indigo-950/80 to-slate-900 border border-indigo-500/40 hover:border-indigo-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-1.5">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-black">🎧 Day 4 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-indigo-300">同人ASMR＆大型新人図鑑</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">100万円マイクKU100寝落ち音声＆今月のSSR注目ルーキー</p>
+          </div>
+          <span class="mt-3 text-[11px] font-bold text-indigo-300 group-hover:translate-x-1 transition inline-block">ASMR・新人を見る →</span>
+        </a>
+      </div>
+    </section>
+    
+    
+        <!-- 18+ 大人向け特化リッチ広告枠 (BOTTOM) -->
+        <div class="my-6 p-4 md:p-5 bg-gradient-to-r from-indigo-950/95 via-purple-950/90 to-rose-950/90 rounded-2xl border border-purple-400/50 shadow-xl relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] px-2 py-0.5 rounded bg-purple-600 text-white font-black tracking-wider uppercase">AD / 18+ STREAMING PR</span>
+            <span class="text-[11px] text-amber-300 font-mono font-bold">💎 月額550円（税込）で対象作見放題</span>
+          </div>
+          
+        <!-- admax -->
+        <div class="mb-4 flex flex-col items-center justify-center min-h-[250px] bg-slate-950/60 rounded-xl p-2 border border-purple-500/20">
+          <script src="https://adm.shinobi.jp/s/510c352d44b5c4c8109a0972bbd6c310"></script>
+        </div>
+        <!-- admax -->
+        
+          <a href="https://al.dmm.co.jp/?lurl=https%3A%2F%2Fpremium.dmm.com%2F&af_id=Onigon-001&ch=link_tool&ch_id=link" target="_blank" rel="noopener noreferrer sponsored" class="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="text-sm md:text-base font-black text-white group-hover:text-amber-300 transition">
+                <span>🎬 【大人向け見放題】DMMプレミアム加入で「FANZA TV」厳選2,000作品以上が追加料金ゼロ！</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                単品1本分以下のワンコイン価格で、人気専属女優の名作からバラエティまでスマホ・PC・TVアプリで深夜に見放題！
+              </p>
+            </div>
+            <span class="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 group-hover:from-amber-400 group-hover:to-rose-500 text-white font-black text-xs shadow-lg transition">
+              見放題ラインナップを見る ↗
+            </span>
+          </a>
+        </div>
+        
+  </main>
+
+  
+  <footer class="bg-slate-950 text-slate-400 py-12 mt-16 border-t border-purple-900/50">
+    <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
+      <div class="flex items-center justify-center gap-2.5">
+        <img src="/assets/onigon_avatar.jpg" alt="オニゴン" class="w-8 h-8 rounded-full border border-fuchsia-400 object-cover">
+        <span class="font-bold text-white text-sm">オニゴンの夜更かしラボ（Onigon Night Lab）</span>
+      </div>
+      <p class="text-xs text-slate-400 max-w-lg mx-auto leading-relaxed">
+        当サイトは18歳以上を対象とした深夜エンタメ・FANZAセール・大型新人レビュー・同人ASMR音声のキュレーションメディアです。著作権および各配信プラットフォームの規約を遵守して運営しています。
+      </p>
+      <div class="text-[11px] text-slate-400 flex flex-wrap justify-center gap-4 pt-2">
+        <a href="/" class="hover:text-fuchsia-400">トップページ</a>
+        <span>•</span>
+        <a href="/newcomers" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">🌟 新人図鑑・サムネ</a>
+        <span>•</span>
+        <a href="/asmr-ranking" class="hover:text-indigo-400 font-bold text-indigo-300">🎧 同人ASMRランキング</a>
+        <span>•</span>
+        <a href="/sale-500yen" class="hover:text-amber-400 font-bold text-amber-300">💰 500円セール神作</a>
+        <span>•</span>
+        <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="hover:text-fuchsia-400 font-bold text-fuchsia-300">𝕏 公式X (@Onigon_yfks)</a>
+        <span>•</span>
+        <a href="/about" class="hover:text-fuchsia-400">運営者情報（オニゴン）</a>
+        <span>•</span>
+        <a href="/privacy" class="hover:text-fuchsia-400">プライバシーポリシー・広告開示</a>
+        <span>•</span>
+        <a href="/sitemap.xml" class="hover:text-fuchsia-400">サイトマップ</a>
+      </div>
+      <div class="text-[11px] text-slate-600 font-mono">
+        © 2026 Onigon Night Lab (@Onigon_yfks). All Rights Reserved. (18+ Adult Only)
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

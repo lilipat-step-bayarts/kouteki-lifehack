@@ -176,16 +176,22 @@ def get_header(current_page="home"):
           <span class="text-base font-black text-white tracking-tight block">オニゴンの夜更かしラボ</span>
         </div>
       </a>
-      <nav class="hidden md:flex items-center gap-2.5 text-xs font-bold text-slate-300">
+      <nav class="hidden md:flex items-center gap-2 text-xs font-bold text-slate-300">
         <a href="/" class="px-3 py-1.5 rounded-full transition {'bg-slate-800 text-fuchsia-400 border border-fuchsia-500/40' if current_page == 'home' else 'hover:text-fuchsia-400'}">🔥 新着速報</a>
-        <a href="/newcomers" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-fuchsia-600 text-white border-fuchsia-400 shadow-md shadow-fuchsia-950' if current_page == 'newcomers' else 'bg-purple-950/70 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900'}">
-          <span>🌟</span><span>新人図鑑・サムネ</span>
+        <a href="/sale-10yen" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-amber-500 text-slate-950 border-amber-300 shadow-md font-black' if current_page == 'sale_10yen' else 'bg-amber-950/60 text-amber-300 border-amber-500/30 hover:bg-amber-900/80'}">
+          <span>💰</span><span>10円・爆安セール</span>
         </a>
-        <a href="/asmr-ranking" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-950' if current_page == 'asmr' else 'bg-indigo-950/70 text-indigo-300 border-indigo-500/30 hover:bg-indigo-900'}">
-          <span>🎧</span><span>同人ASMR殿堂</span>
+        <a href="/free-videos" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-emerald-600 text-white border-emerald-400 shadow-md font-black' if current_page == 'free_videos' else 'bg-emerald-950/60 text-emerald-300 border-emerald-500/30 hover:bg-emerald-900/80'}">
+          <span>🎬</span><span>完全無料動画</span>
         </a>
-        <a href="/sale-500yen" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-rose-600 text-white border-rose-400 shadow-md shadow-rose-950' if current_page == 'sale' else 'bg-rose-950/70 text-amber-300 border-rose-500/30 hover:bg-rose-900'}">
-          <span>💰</span><span>500円セール神作</span>
+        <a href="/manga-books" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-sky-600 text-white border-sky-400 shadow-md font-black' if current_page == 'manga_books' else 'bg-sky-950/60 text-sky-300 border-sky-500/30 hover:bg-sky-900/80'}">
+          <span>📚</span><span>電子コミック</span>
+        </a>
+        <a href="/asmr-ranking" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-indigo-600 text-white border-indigo-400 shadow-md font-black' if current_page == 'asmr' else 'bg-indigo-950/60 text-indigo-300 border-indigo-500/30 hover:bg-indigo-900/80'}">
+          <span>🎧</span><span>同人ASMR</span>
+        </a>
+        <a href="/newcomers" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-fuchsia-600 text-white border-fuchsia-400 shadow-md font-black' if current_page == 'newcomers' else 'bg-purple-950/60 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900/80'}">
+          <span>🌟</span><span>新人図鑑</span>
         </a>
         <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-fuchsia-300 border border-purple-500/40 transition flex items-center gap-1">
           <span>𝕏</span><span>@Onigon_yfks</span>
@@ -195,9 +201,11 @@ def get_header(current_page="home"):
     <!-- スマホ用 横スクロール特設タブバー（回遊率アップ用） -->
     <div class="md:hidden border-t border-slate-800/80 bg-slate-900/90 px-3 py-2 flex items-center gap-2 overflow-x-auto text-[11px] font-bold whitespace-nowrap">
       <a href="/" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'home' else 'bg-slate-800 text-slate-300'}">🔥 トップ速報</a>
-      <a href="/newcomers" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'newcomers' else 'bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30'}">🌟 新人図鑑・サムネ</a>
-      <a href="/asmr-ranking" class="px-3 py-1 rounded-full {'bg-indigo-600 text-white' if current_page == 'asmr' else 'bg-indigo-950 text-indigo-300 border border-indigo-500/30'}">🎧 同人ASMRランキング</a>
-      <a href="/sale-500yen" class="px-3 py-1 rounded-full {'bg-rose-600 text-white' if current_page == 'sale' else 'bg-rose-950 text-amber-300 border border-rose-500/30'}">💰 500円セール神作</a>
+      <a href="/sale-10yen" class="px-3 py-1 rounded-full {'bg-amber-400 text-slate-950 font-black' if current_page == 'sale_10yen' else 'bg-amber-950/80 text-amber-300 border border-amber-500/30'}">💰 10円・爆安</a>
+      <a href="/free-videos" class="px-3 py-1 rounded-full {'bg-emerald-600 text-white font-black' if current_page == 'free_videos' else 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/30'}">🎬 完全無料</a>
+      <a href="/manga-books" class="px-3 py-1 rounded-full {'bg-sky-600 text-white font-black' if current_page == 'manga_books' else 'bg-sky-950/80 text-sky-300 border border-sky-500/30'}">📚 電子コミック</a>
+      <a href="/asmr-ranking" class="px-3 py-1 rounded-full {'bg-indigo-600 text-white' if current_page == 'asmr' else 'bg-indigo-950 text-indigo-300 border border-indigo-500/30'}">🎧 同人ASMR</a>
+      <a href="/newcomers" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'newcomers' else 'bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30'}">🌟 新人図鑑</a>
       <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded-full bg-slate-800 text-fuchsia-300 border border-purple-500/30">𝕏 @Onigon_yfks</a>
     </div>
   </header>
@@ -205,41 +213,50 @@ def get_header(current_page="home"):
 
 
 def get_hub_banners(current_page="home"):
-    """全ページ下部に配置する3大特設コーナー回遊カード（1人あたりPVとAdMax表示数を3倍化する導線）"""
+    """全ページ下部に配置する4大ジャンル特設コーナー回遊カード"""
     return """
     <section class="my-8 space-y-3">
       <div class="flex items-center justify-between">
         <h3 class="text-sm md:text-base font-black text-white flex items-center gap-2">
-          <span>👿</span><span>オニゴン特設コーナー（深夜の3大人気ランキング）</span>
+          <span>👿</span><span>オニゴンの4大特設コーナー（日替わり厳選ハブ）</span>
         </h3>
-        <span class="text-[11px] text-fuchsia-400 font-bold">回遊ピックアップ</span>
+        <span class="text-[11px] text-fuchsia-400 font-bold">4大ジャンル回遊</span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-        <a href="/newcomers" class="group p-4 rounded-2xl bg-gradient-to-br from-fuchsia-950/90 to-slate-900 border border-fuchsia-500/40 hover:border-fuchsia-400 transition flex flex-col justify-between shadow-lg">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <a href="/sale-10yen" class="group p-4 rounded-2xl bg-gradient-to-br from-amber-950/80 to-slate-900 border border-amber-500/40 hover:border-amber-400 transition flex flex-col justify-between shadow-lg">
           <div class="space-y-1.5">
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-600 text-white font-black">🌟 特設コーナー①</span>
-            <h4 class="text-sm font-black text-white group-hover:text-fuchsia-300">大型新人女優＆注目ルーキー図鑑</h4>
-            <p class="text-[11px] text-slate-300 leading-relaxed">ビジュアル・スタイル・没入感の3軸ステータス＆サムネイル一覧</p>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black">💰 Day 1 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-amber-300">10円動画＆爆安セール</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">缶コーヒー未満の10円動画・同人10円・ワンコイン500円名作</p>
           </div>
-          <span class="mt-3 text-[11px] font-bold text-fuchsia-300 group-hover:translate-x-1 transition inline-block">新人図鑑を見る →</span>
+          <span class="mt-3 text-[11px] font-bold text-amber-300 group-hover:translate-x-1 transition inline-block">爆安セールを見る →</span>
         </a>
 
-        <a href="/asmr-ranking" class="group p-4 rounded-2xl bg-gradient-to-br from-indigo-950/90 to-slate-900 border border-indigo-500/40 hover:border-indigo-400 transition flex flex-col justify-between shadow-lg">
+        <a href="/free-videos" class="group p-4 rounded-2xl bg-gradient-to-br from-emerald-950/80 to-slate-900 border border-emerald-500/40 hover:border-emerald-400 transition flex flex-col justify-between shadow-lg">
           <div class="space-y-1.5">
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-black">🎧 特設コーナー②</span>
-            <h4 class="text-sm font-black text-white group-hover:text-indigo-300">同人ASMR・耳かきボイス殿堂ランキング</h4>
-            <p class="text-[11px] text-slate-300 leading-relaxed">100万円級マイクKU100収録！寝落ち確定の神サークル厳選比較</p>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-600 text-white font-black">🎬 Day 2 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-emerald-300">完全無料動画＆サンプル</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">登録不要・クレカ不要！0円で今すぐ観られる公式長尺動画</p>
           </div>
-          <span class="mt-3 text-[11px] font-bold text-indigo-300 group-hover:translate-x-1 transition inline-block">ASMRランキングを見る →</span>
+          <span class="mt-3 text-[11px] font-bold text-emerald-300 group-hover:translate-x-1 transition inline-block">無料動画を見る →</span>
         </a>
 
-        <a href="/sale-500yen" class="group p-4 rounded-2xl bg-gradient-to-br from-rose-950/90 to-slate-900 border border-rose-500/40 hover:border-amber-400 transition flex flex-col justify-between shadow-lg">
+        <a href="/manga-books" class="group p-4 rounded-2xl bg-gradient-to-br from-sky-950/80 to-slate-900 border border-sky-500/40 hover:border-sky-400 transition flex flex-col justify-between shadow-lg">
           <div class="space-y-1.5">
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-600 text-white font-black">💰 特設コーナー③</span>
-            <h4 class="text-sm font-black text-white group-hover:text-amber-300">500円均一＆同人10円セール神作まとめ</h4>
-            <p class="text-[11px] text-slate-300 leading-relaxed">480分超え総集編や最大90%OFF対象作を最安値で揃える特設リスト</p>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-600 text-white font-black">📚 Day 3 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-sky-300">電子コミック・無料試し読み</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">1巻まるごと無料！深夜ベッドでスマホ即読み＆90%OFFクーポン</p>
           </div>
-          <span class="mt-3 text-[11px] font-bold text-amber-300 group-hover:translate-x-1 transition inline-block">セール神作まとめを見る →</span>
+          <span class="mt-3 text-[11px] font-bold text-sky-300 group-hover:translate-x-1 transition inline-block">電子コミックを見る →</span>
+        </a>
+
+        <a href="/asmr-ranking" class="group p-4 rounded-2xl bg-gradient-to-br from-indigo-950/80 to-slate-900 border border-indigo-500/40 hover:border-indigo-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-1.5">
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-black">🎧 Day 4 特設</span>
+            <h4 class="text-sm font-black text-white group-hover:text-indigo-300">同人ASMR＆大型新人図鑑</h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">100万円マイクKU100寝落ち音声＆今月のSSR注目ルーキー</p>
+          </div>
+          <span class="mt-3 text-[11px] font-bold text-indigo-300 group-hover:translate-x-1 transition inline-block">ASMR・新人を見る →</span>
         </a>
       </div>
     </section>
@@ -936,7 +953,8 @@ def build_asmr_ranking_page(asmr_works):
     print(f"Built ASMR ranking page: {out_file}")
 
 
-def build_sale_500yen_page(sale_picks):
+def build_sale_10yen_page(articles, sale_picks):
+    """Day 1 特設：10円動画＆爆安セール（ワンコイン500円・同人10円）ハブ"""
     cards = []
     for item in sale_picks:
         target_url = build_fanza_link(item.get("raw_url", "https://www.dmm.co.jp/digital/videoa/"))
@@ -975,8 +993,23 @@ def build_sale_500yen_page(sale_picks):
           <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="w-full py-3 px-4 bg-gradient-to-r from-rose-600 via-fuchsia-600 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white text-center rounded-xl font-black text-xs shadow-lg transition flex items-center justify-center gap-2">
             <span>🔥 公式セール対象ラインナップを確認する</span>
             <span>↗</span>
+          </a>
         </div>
         """)
+
+    # 10円・セール関連の記事ピックアップ
+    sale_articles = [a for a in articles if "10円" in a.get("category", "") or "セール" in a.get("category", "")]
+    sale_art_html = ""
+    for a in sale_articles[:4]:
+        sale_art_html += f"""
+        <a href="/articles/{a['slug']}" class="p-4 rounded-2xl bg-slate-900/80 border border-amber-500/30 hover:border-amber-400 transition flex flex-col justify-between">
+          <div class="space-y-1">
+            <span class="text-[10px] font-mono text-amber-400 font-bold">{a['date']}</span>
+            <h4 class="text-xs md:text-sm font-black text-white line-clamp-2">{a['title']}</h4>
+          </div>
+          <span class="text-[11px] text-amber-300 font-bold mt-2">オニゴンの解説を読む →</span>
+        </a>
+        """
 
     page_html = f"""<!DOCTYPE html>
 <html lang="ja">
@@ -984,39 +1017,61 @@ def build_sale_500yen_page(sale_picks):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="rating" content="adult">
-  <title>【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ | オニゴンの夜更かしラボ</title>
-  <meta name="description" content="480分超えの単体ベスト総集編がワンコイン500円！FANZA同人の10円セールや週末割引クーポンを重ね掛けして最安値で名作を揃える特設ガイド。">
-  <link rel="canonical" href="{SITE_URL}/sale-500yen">
+  <title>【最大90%OFF】FANZA 10円動画・同人10円＆500円セール神作まとめ | オニゴンの夜更かしラボ</title>
+  <meta name="description" content="缶コーヒー未満の10円動画から480分超え500円均一まで！FANZA同人10円セールや週末割引クーポンを重ね掛けして最安値で名作を揃える特設ガイド。">
+  <link rel="canonical" href="{SITE_URL}/sale-10yen">
   <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen">
   {AGE_GATE_MODAL}
-  {get_header("sale")}
+  {get_header("sale_10yen")}
 
-  <section class="relative bg-gradient-to-b from-rose-950/80 via-slate-950 to-slate-950 py-10 border-b border-rose-500/30">
+  <section class="relative bg-gradient-to-b from-amber-950/80 via-slate-950 to-slate-950 py-10 border-b border-amber-500/30">
     <div class="max-w-5xl mx-auto px-4 space-y-3">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-950 text-amber-300 text-xs font-bold border border-rose-500/40">
-        <span>💰</span><span>定価買い厳禁！オニゴン厳選・最安値セール特設</span>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950 text-amber-300 text-xs font-bold border border-amber-500/40">
+        <span>💰</span><span>定価買い厳禁！Day 1 オニゴン厳選・10円動画＆爆安セール特設</span>
       </div>
       <h1 class="text-2xl md:text-4xl font-black text-white leading-tight">
-        500円均一＆最大90%OFFセール<br>
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-400 to-fuchsia-400">コスパ最強の神作ジャンルまとめ</span>
+        10円動画＆500円均一セール<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-rose-400 to-fuchsia-400">缶コーヒー未満で買える歴代神作まとめ</span>
       </h1>
       <p class="text-xs md:text-sm text-slate-300 max-w-3xl leading-relaxed">
-        1分あたり約1円で楽しめる「4時間〜8時間収録の単体ベスト盤（500円均一対象）」から、うまい棒以下の「FANZA同人10円キャンペーン」まで、今すぐ使える最安値ルートを整理しました！
+        自販機の缶コーヒー1本の値段で10本以上買える「10円動画＆同人10円セール」から、480分超えベスト盤がワンコインの「500円均一」まで、お財布を痛めずに深夜を極楽にする最安値ルートを徹底網羅！
       </p>
+      <div class="pt-2 flex flex-wrap gap-3">
+        <a href="{build_fanza_link('https://video.dmm.co.jp/')}" target="_blank" rel="noopener noreferrer sponsored" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-slate-950 font-black text-xs shadow-lg transition flex items-center gap-1.5">
+          <span>🔥 FANZA公式 10円〜爆安セール会場へ直通</span>
+          <span>↗</span>
+        </a>
+      </div>
     </div>
   </section>
 
   <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
     {get_adult_ad_unit("top")}
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {''.join(cards)}
-    </div>
+    <section class="space-y-4">
+      <h3 class="text-base font-black text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span>💰</span><span>オニゴン厳選！ワンコイン500円＆10円セール注目神作ピックアップ</span>
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {''.join(cards)}
+      </div>
+    </section>
 
-    {get_hub_banners("sale")}
+    {f'''
+    <section class="space-y-3 pt-4">
+      <h3 class="text-base font-black text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span>📖</span><span>10円動画・爆安セール攻略の最新記事一覧</span>
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        {sale_art_html}
+      </div>
+    </section>
+    ''' if sale_art_html else ''}
+
+    {get_hub_banners("sale_10yen")}
     {get_adult_ad_unit("bottom")}
   </main>
 
@@ -1024,10 +1079,209 @@ def build_sale_500yen_page(sale_picks):
 </body>
 </html>"""
 
-    out_file = os.path.join(DIST_DIR, "sale-500yen.html")
+    for fname in ["sale-10yen.html", "sale-500yen.html"]:
+        out_file = os.path.join(DIST_DIR, fname)
+        with open(out_file, "w", encoding="utf-8") as f:
+            f.write(page_html)
+    print("Built 10yen & 500yen sale pages: sale-10yen.html, sale-500yen.html")
+
+
+def build_free_videos_page(articles):
+    """Day 2 特設：完全無料動画＆公式サンプル（0円視聴・登録不要）ハブ"""
+    free_url = build_fanza_link("https://video.dmm.co.jp/free/")
+    free_articles = [a for a in articles if "無料" in a.get("category", "") or "サンプル" in a.get("category", "")]
+    free_art_html = ""
+    for a in free_articles[:4]:
+        free_art_html += f"""
+        <a href="/articles/{a['slug']}" class="p-4 rounded-2xl bg-slate-900/80 border border-emerald-500/30 hover:border-emerald-400 transition flex flex-col justify-between">
+          <div class="space-y-1">
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">{a['date']}</span>
+            <h4 class="text-xs md:text-sm font-black text-white line-clamp-2">{a['title']}</h4>
+          </div>
+          <span class="text-[11px] text-emerald-300 font-bold mt-2">オニゴンの解説を読む →</span>
+        </a>
+        """
+
+    page_html = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
+  <title>【登録不要・0円視聴】FANZA公式 完全無料動画＆長尺プレビュー徹底ナビ | オニゴンの夜更かしラボ</title>
+  <meta name="description" content="クレカ登録ゼロ・完全無料で今すぐスマホから視聴できるFANZA公式無料動画コーナーと、失敗しない長尺サンプルの見極め方をオニゴンが解説。">
+  <link rel="canonical" href="{SITE_URL}/free-videos">
+  <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen">
+  {AGE_GATE_MODAL}
+  {get_header("free_videos")}
+
+  <section class="relative bg-gradient-to-b from-emerald-950/80 via-slate-950 to-slate-950 py-10 border-b border-emerald-500/30">
+    <div class="max-w-5xl mx-auto px-4 space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 text-xs font-bold border border-emerald-500/40">
+        <span>🎬</span><span>1円も払わずに楽しめる！Day 2 オニゴン厳選・完全無料動画特設</span>
+      </div>
+      <h1 class="text-2xl md:text-4xl font-black text-white leading-tight">
+        登録不要＆クレカ登録ゼロ<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-400">FANZA公式 完全無料動画コーナー</span>
+      </h1>
+      <p class="text-xs md:text-sm text-slate-300 max-w-3xl leading-relaxed">
+        「今夜はお金を使いたくない」「まず無料でどんな作品があるか楽しみたい」夜更かし勢必見！怪しい海外の違法海賊版サイトにアクセスしてウイルス感染するリスクはゼロ。公式プレイヤーのHD高画質で安全に0円視聴する方法をまとめました。
+      </p>
+      <div class="pt-2 flex flex-wrap gap-3">
+        <a href="{free_url}" target="_blank" rel="noopener noreferrer sponsored" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black text-xs shadow-lg transition flex items-center gap-1.5">
+          <span>🎬 FANZA公式 完全無料動画コーナーを今すぐ視聴</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+    {get_adult_ad_unit("top")}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="p-5 rounded-2xl bg-slate-900/90 border border-emerald-500/30 space-y-2">
+        <span class="text-2xl">⚡️</span>
+        <h3 class="text-sm font-black text-white">会員登録・クレカ番号不要</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">面倒な個人情報入力は一切なし。スマホのSafariやChromeから1タップですぐ動画が再生されます。</p>
+      </div>
+      <div class="p-5 rounded-2xl bg-slate-900/90 border border-emerald-500/30 space-y-2">
+        <span class="text-2xl">🛡️</span>
+        <h3 class="text-sm font-black text-white">公式だから100%安全・高画質</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">怪しい広告ポップアップやウイルス請求の心配ゼロ。国内最大手の正規サーバーから安心の高画質ストリーミング。</p>
+      </div>
+      <div class="p-5 rounded-2xl bg-slate-900/90 border border-emerald-500/30 space-y-2">
+        <span class="text-2xl">👀</span>
+        <h3 class="text-sm font-black text-white">3〜5分以上の長尺サンプル</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">静止画パッケージだけでなく、出演者の声質やライティングの質を事前に納得するまで無料で確認可能。</p>
+      </div>
+    </div>
+
+    {f'''
+    <section class="space-y-3 pt-4">
+      <h3 class="text-base font-black text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span>📖</span><span>完全無料動画・サンプル攻略の最新記事一覧</span>
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        {free_art_html}
+      </div>
+    </section>
+    ''' if free_art_html else ''}
+
+    {get_hub_banners("free_videos")}
+    {get_adult_ad_unit("bottom")}
+  </main>
+
+  {get_footer()}
+</body>
+</html>"""
+
+    out_file = os.path.join(DIST_DIR, "free-videos.html")
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(page_html)
-    print(f"Built 500yen sale page: {out_file}")
+    print("Built free videos page: free-videos.html")
+
+
+def build_manga_books_page(articles):
+    """Day 3 特設：FANZAブックス・深夜の電子コミック（1巻無料・90%OFF）ハブ"""
+    books_url = build_fanza_link("https://book.dmm.co.jp/")
+    manga_articles = [a for a in articles if "コミック" in a.get("category", "") or "ブックス" in a.get("category", "")]
+    manga_art_html = ""
+    for a in manga_articles[:4]:
+        manga_art_html += f"""
+        <a href="/articles/{a['slug']}" class="p-4 rounded-2xl bg-slate-900/80 border border-sky-500/30 hover:border-sky-400 transition flex flex-col justify-between">
+          <div class="space-y-1">
+            <span class="text-[10px] font-mono text-sky-400 font-bold">{a['date']}</span>
+            <h4 class="text-xs md:text-sm font-black text-white line-clamp-2">{a['title']}</h4>
+          </div>
+          <span class="text-[11px] text-sky-300 font-bold mt-2">オニゴンの解説を読む →</span>
+        </a>
+        """
+
+    page_html = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="rating" content="adult">
+  <title>【1巻丸ごと無料試し読み】FANZAブックス・深夜の電子コミック＆90%OFFクーポン特設 | オニゴンの夜更かしラボ</title>
+  <meta name="description" content="深夜のベッドの中でスマホ1台で即読破！FANZAブックスの1巻丸ごと無料作品や、スマホ容量ゼロで読める高画質ブラウザビューア活用ガイド。">
+  <link rel="canonical" href="{SITE_URL}/manga-books">
+  <link rel="icon" type="image/jpeg" href="/assets/onigon_avatar.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased font-sans min-h-screen">
+  {AGE_GATE_MODAL}
+  {get_header("manga_books")}
+
+  <section class="relative bg-gradient-to-b from-sky-950/80 via-slate-950 to-slate-950 py-10 border-b border-sky-500/30">
+    <div class="max-w-5xl mx-auto px-4 space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-950 text-sky-300 text-xs font-bold border border-sky-500/40">
+        <span>📚</span><span>深夜ベッドでスマホ即読破！Day 3 オニゴン厳選・電子コミック特設</span>
+      </div>
+      <h1 class="text-2xl md:text-4xl font-black text-white leading-tight">
+        1巻丸ごと無料＆90%OFFクーポン<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-indigo-300 to-purple-400">FANZAブックス 深夜の神コミック特選</span>
+      </h1>
+      <p class="text-xs md:text-sm text-slate-300 max-w-3xl leading-relaxed">
+        大容量データをダウンロードしてスマホのストレージを圧迫する時代は終わり！高画質ブラウザビューアで端末容量を1MBも使わずにサクサク読める話題の成人コミック・商業単行本・名作同人誌をオニゴンが厳選しました。
+      </p>
+      <div class="pt-2 flex flex-wrap gap-3">
+        <a href="{books_url}" target="_blank" rel="noopener noreferrer sponsored" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-black text-xs shadow-lg transition flex items-center gap-1.5">
+          <span>📚 FANZAブックス 無料試し読みコミック一覧へ</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+    {get_adult_ad_unit("top")}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="p-5 rounded-2xl bg-slate-900/90 border border-sky-500/30 space-y-2">
+        <span class="text-2xl">📱</span>
+        <h3 class="text-sm font-black text-white">端末容量消費ゼロ（ブラウザ即読み）</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">ZIP解凍やアプリインストール不要。購入後1秒でSafariやChrome上で高画質閲覧できます。</p>
+      </div>
+      <div class="p-5 rounded-2xl bg-slate-900/90 border border-sky-500/30 space-y-2">
+        <span class="text-2xl">🎁</span>
+        <h3 class="text-sm font-black text-white">1巻まるごと無料作品が常時多数</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">試し読みが数ページだけでなく、まるごと1巻無料の作品が充実。好みの絵柄をノーリスクで開拓可能。</p>
+      </div>
+      <div class="p-5 rounded-2xl bg-slate-900/90 border border-sky-500/30 space-y-2">
+        <span class="text-2xl">🎟️</span>
+        <h3 class="text-sm font-black text-white">初回70〜90%OFF＆ポイント還元</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">初回購入クーポンや週末のDMMポイントバックと併用することで、続きの巻も数十円〜数百円で読破。</p>
+      </div>
+    </div>
+
+    {f'''
+    <section class="space-y-3 pt-4">
+      <h3 class="text-base font-black text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+        <span>📖</span><span>電子コミック・無料試し読みの最新記事一覧</span>
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        {manga_art_html}
+      </div>
+    </section>
+    ''' if manga_art_html else ''}
+
+    {get_hub_banners("manga_books")}
+    {get_adult_ad_unit("bottom")}
+  </main>
+
+  {get_footer()}
+</body>
+</html>"""
+
+    out_file = os.path.join(DIST_DIR, "manga-books.html")
+    with open(out_file, "w", encoding="utf-8") as f:
+        f.write(page_html)
+    print("Built manga books page: manga-books.html")
 
 
 def build_home_page(articles, newcomers):
@@ -1036,14 +1290,30 @@ def build_home_page(articles, newcomers):
 
     article_cards = []
     for art in articles:
+        cat = art.get('category', '')
+        if "10円" in cat or "セール" in cat:
+            badge_class = "bg-amber-950/90 text-amber-300 border-amber-600/60 font-bold"
+        elif "無料" in cat:
+            badge_class = "bg-emerald-950/90 text-emerald-300 border-emerald-600/60 font-bold"
+        elif "コミック" in cat or "ブックス" in cat:
+            badge_class = "bg-sky-950/90 text-sky-300 border-sky-600/60 font-bold"
+        else:
+            badge_class = "bg-purple-950 text-fuchsia-300 border-purple-700/60 font-bold"
+
+        cycle_badge = art.get('cycle_badge', '')
+        cycle_html = f'<span class="text-[9px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono font-bold">{cycle_badge}</span>' if cycle_badge else ''
+
         article_cards.append(f"""
         <a href="/articles/{art['slug']}" class="group bg-slate-900/90 rounded-2xl p-5 border border-purple-500/30 hover:border-fuchsia-400/70 shadow-lg hover:shadow-fuchsia-950/40 transition-all flex flex-col justify-between">
           <div class="space-y-2.5">
-            <div class="flex items-center justify-between text-xs text-slate-400">
-              <span class="px-2.5 py-0.5 rounded-full bg-purple-950 text-fuchsia-300 border border-purple-700/60 font-bold">
-                {art.get('icon', '👿')} {art.get('category', '深夜速報')}
-              </span>
-              <time datetime="{art['date']}" class="font-mono">{art['date']}</time>
+            <div class="flex items-center justify-between text-xs text-slate-400 flex-wrap gap-1.5">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="px-2.5 py-0.5 rounded-full border text-[11px] {badge_class}">
+                  {art.get('icon', '👿')} {cat or '深夜速報'}
+                </span>
+                {cycle_html}
+              </div>
+              <time datetime="{art['date']}" class="font-mono text-slate-400">{art['date']}</time>
             </div>
             <h3 class="text-base font-black text-white group-hover:text-fuchsia-300 transition leading-snug">
               {art['title']}
@@ -1096,18 +1366,20 @@ def build_home_page(articles, newcomers):
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 via-pink-400 to-amber-300">最安値＆ハズレなしで。</span>
         </h1>
         <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
-          深夜の案内人「オニゴン」が、FANZAの500円均一セール・大型新人デビュー作・KU100バイノーラル同人ASMRを忖度なしレビュー！ジャケット詐欺を回避して神作だけを発掘します。
+          深夜の案内人「オニゴン」が、10円動画・完全無料動画・FANZAブックス電子コミック・KU100バイノーラルASMR・専属大型新人を4日周期で忖度なしレビュー！ジャケット詐欺を回避して神作だけを発掘します。
         </p>
-        <div class="flex flex-wrap justify-center md:justify-start gap-2.5 pt-1">
-          <a href="/newcomers" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white text-xs font-black shadow-lg shadow-fuchsia-600/30 transition flex items-center gap-1.5">
-            <span>🌟 大型新人・サムネ図鑑</span>
-            <span>→</span>
+        <div class="flex flex-wrap justify-center md:justify-start gap-2 pt-1">
+          <a href="/sale-10yen" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-md flex items-center gap-1">
+            <span>💰 10円・爆安セール</span>
           </a>
-          <a href="/asmr-ranking" class="px-4 py-2.5 rounded-xl bg-indigo-950 hover:bg-indigo-900 text-indigo-200 border border-indigo-500/40 text-xs font-bold transition">
-            🎧 同人ASMR殿堂ランキング
+          <a href="/free-videos" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition shadow-md flex items-center gap-1">
+            <span>🎬 完全無料動画</span>
           </a>
-          <a href="/sale-500yen" class="px-4 py-2.5 rounded-xl bg-rose-950 hover:bg-rose-900 text-amber-300 border border-rose-500/40 text-xs font-bold transition">
-            💰 500円セール神作
+          <a href="/manga-books" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-black text-xs transition shadow-md flex items-center gap-1">
+            <span>📚 電子コミック</span>
+          </a>
+          <a href="/newcomers" class="px-3.5 py-2 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-black text-xs transition shadow-md flex items-center gap-1">
+            <span>🌟 大型新人図鑑</span>
           </a>
         </div>
       </div>
@@ -1123,6 +1395,61 @@ def build_home_page(articles, newcomers):
   <!-- メインコンテンツ -->
   <main class="max-w-5xl mx-auto px-4 py-8 space-y-10">
     {get_adult_ad_unit("top")}
+
+    <!-- 4大ジャンル・日替わりクイックジャンプナビ -->
+    <section class="space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm md:text-base font-black text-white flex items-center gap-2">
+          <span>⚡️</span><span>オニゴンの4大厳選ジャンル（日替わりローテーション）</span>
+        </h2>
+        <span class="text-[11px] text-fuchsia-400 font-bold">目的別に今すぐ探す</span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <a href="/sale-10yen" class="group p-3.5 rounded-2xl bg-gradient-to-br from-amber-950/90 to-slate-900 border border-amber-500/40 hover:border-amber-400 transition shadow-lg flex flex-col justify-between">
+          <div class="space-y-1">
+            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 inline-block">Day 1</span>
+            <div class="font-black text-sm text-white group-hover:text-amber-300 flex items-center gap-1">
+              <span>💰</span> 10円・爆安セール
+            </div>
+            <p class="text-[10px] text-slate-300 leading-snug">10円動画・同人10円・ワンコイン500円</p>
+          </div>
+          <span class="text-[10px] font-bold text-amber-300 mt-2 block group-hover:translate-x-1 transition">特設ハブへ →</span>
+        </a>
+
+        <a href="/free-videos" class="group p-3.5 rounded-2xl bg-gradient-to-br from-emerald-950/90 to-slate-900 border border-emerald-500/40 hover:border-emerald-400 transition shadow-lg flex flex-col justify-between">
+          <div class="space-y-1">
+            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white inline-block">Day 2</span>
+            <div class="font-black text-sm text-white group-hover:text-emerald-300 flex items-center gap-1">
+              <span>🎬</span> 完全無料動画
+            </div>
+            <p class="text-[10px] text-slate-300 leading-snug">登録不要・クレカ不要！0円で即視聴</p>
+          </div>
+          <span class="text-[10px] font-bold text-emerald-300 mt-2 block group-hover:translate-x-1 transition">無料コーナーへ →</span>
+        </a>
+
+        <a href="/manga-books" class="group p-3.5 rounded-2xl bg-gradient-to-br from-sky-950/90 to-slate-900 border border-sky-500/40 hover:border-sky-400 transition shadow-lg flex flex-col justify-between">
+          <div class="space-y-1">
+            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-sky-600 text-white inline-block">Day 3</span>
+            <div class="font-black text-sm text-white group-hover:text-sky-300 flex items-center gap-1">
+              <span>📚</span> 電子コミック
+            </div>
+            <p class="text-[10px] text-slate-300 leading-snug">1巻無料試し読み・容量ゼロ即読破</p>
+          </div>
+          <span class="text-[10px] font-bold text-sky-300 mt-2 block group-hover:translate-x-1 transition">試し読み一覧へ →</span>
+        </a>
+
+        <a href="/asmr-ranking" class="group p-3.5 rounded-2xl bg-gradient-to-br from-indigo-950/90 to-slate-900 border border-indigo-500/40 hover:border-indigo-400 transition shadow-lg flex flex-col justify-between">
+          <div class="space-y-1">
+            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-600 text-white inline-block">Day 4</span>
+            <div class="font-black text-sm text-white group-hover:text-indigo-300 flex items-center gap-1">
+              <span>🎧</span> 同人ASMR・新人
+            </div>
+            <p class="text-[10px] text-slate-300 leading-snug">KU100寝落ち音声＆注目大型ルーキー</p>
+          </div>
+          <span class="text-[10px] font-bold text-indigo-300 mt-2 block group-hover:translate-x-1 transition">殿堂ランキングへ →</span>
+        </a>
+      </div>
+    </section>
 
     {get_hub_banners("home")}
 
@@ -1330,13 +1657,15 @@ def main():
 
     build_newcomers_page(newcomers)
     build_asmr_ranking_page(asmr_works)
-    build_sale_500yen_page(sale_picks)
+    build_sale_10yen_page(articles, sale_picks)
+    build_free_videos_page(articles)
+    build_manga_books_page(articles)
     build_home_page(articles, newcomers)
     build_about_page()
     build_privacy_page()
     build_seo_files(articles)
 
-    print("✨ Successfully built Store 3 (Onigon Night Lab) static site with 3 Special Hubs in dist/!")
+    print("✨ Successfully built Store 3 (Onigon Night Lab) static site with 4-Genre Rotation in dist/!")
 
 
 if __name__ == "__main__":

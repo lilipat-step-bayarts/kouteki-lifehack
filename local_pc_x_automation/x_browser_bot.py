@@ -222,9 +222,11 @@ def fetch_articles_for_account(key, acc_cfg):
         top_thumb = newcomers[0].get("package_image_url", "") if newcomers else ""
 
         special_hubs = [
-            {"slug": "special:newcomers", "title": "【毎月更新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧", "package_image_url": top_thumb},
-            {"slug": "special:asmr-ranking", "title": "【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング"},
-            {"slug": "special:sale-500yen", "title": "【最大90%OFF】FANZA 500円均一＆同人10円セール神作まとめ"}
+            {"slug": "special:sale-10yen", "title": "【最大90%OFF】FANZA 10円動画・同人10円＆500円セール神作まとめ", "category": "10円動画・爆安セール攻略"},
+            {"slug": "special:free-videos", "title": "【登録不要・0円視聴】FANZA公式 完全無料動画＆長尺プレビュー徹底ナビ", "category": "完全無料動画・公式サンプル"},
+            {"slug": "special:manga-books", "title": "【1巻丸ごと無料試し読み】FANZAブックス・深夜の電子コミック特設", "category": "電子コミック・無料試し読み"},
+            {"slug": "special:newcomers", "title": "【毎月更新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧", "package_image_url": top_thumb, "category": "同人ASMR・大型新人図鑑"},
+            {"slug": "special:asmr-ranking", "title": "【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング", "category": "同人ASMR・大型新人図鑑"}
         ]
 
         newcomer_items = []
@@ -239,7 +241,8 @@ def fetch_articles_for_account(key, acc_cfg):
                 "stage_name": stage_name,
                 "catchcopy": catchcopy,
                 "package_image_url": nc.get("package_image_url", ""),
-                "affiliate_url": nc.get("affiliate_url", "")
+                "affiliate_url": nc.get("affiliate_url", ""),
+                "category": "同人ASMR・大型新人図鑑"
             })
 
         articles = newcomer_items + special_hubs + articles
@@ -285,7 +288,7 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
         url = f"{acc_cfg['site_url']}/articles/{id_val}"
         return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n#コスメ成分 #プチプラコスメ #スキンケア #イケロ"
 
-    else:  # store3_onigon
+    else:  # store3_onigon (4大ジャンル日替わりローテーション対応)
         if article.get("is_newcomer"):
             stage_name = article.get("stage_name", "注目ルーキー")
             catchcopy = article.get("catchcopy", "")
@@ -296,20 +299,37 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
             ]
             return random.choice(patterns)
 
-        if 20 <= hour < 22:
-            time_hook = "【夜の開幕・セール速報👿🔥】"
-            lead = "オニゴンです🌙今夜ハズレを引きたくない人へ！最安値セール＆注目作の結論まとめ👇"
-        elif 22 <= hour <= 23:
-            time_hook = "【ベッドイン＆同人ASMR特選🎧🌙】"
-            lead = "イヤホン推奨！寝落ち前にじっくり楽しめる神作＆大型ルーキー図鑑👇"
-        else:
-            time_hook = "【真夜中の夜更かし神作ラボ👿✨】"
-            lead = "まだ起きてる夜更かし勢へ！サンプル後半まで検証した忖度なしの本物レビュー👇"
         if id_val.startswith("special:"):
             url = f"{acc_cfg['site_url']}/{id_val.replace('special:', '')}"
         else:
             url = f"{acc_cfg['site_url']}/articles/{id_val}"
-        return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n#オニゴンの夜更かしラボ #同人ASMR #ワンコインセール #深夜エンタメ"
+
+        cat = article.get("category", "")
+        # 4大ジャンル別ツイートテンプレート
+        if "10円" in cat or "セール" in cat:
+            patterns = [
+                f"【深夜の爆安セール速報💰🔥】\n『{short_title}』\n\n缶コーヒー未満の10円動画＆ワンコイン500円神作まとめ！知らなきゃ損する最安値ルートをオニゴンが暴露👇\n{url}\n#10円動画 #FANZAセール #ワンコイン #オニゴンの夜更かしラボ",
+                f"【定価買いは情弱？！💰✨】\n『{short_title}』\n\n今夜10円で買える歴代名作＆週末割引クーポンまとめ！底値で買い漁る防衛術👇\n{url}\n#10円動画 #FANZAセール #オニゴンの夜更かしラボ"
+            ]
+            return random.choice(patterns)
+        elif "無料" in cat:
+            patterns = [
+                f"【完全無料・0円視聴速報🎬✨】\n『{short_title}』\n\nクレカ登録不要！今すぐスマホから長尺プレビュー＆無料本編を安全に視聴できる公式裏ワザ👇\n{url}\n#無料動画 #FANZA無料 #0円視聴 #オニゴンの夜更かしラボ",
+                f"【1円も払わずに今すぐ視聴🎬🌙】\n『{short_title}』\n\n「今夜はお金を使いたくない」夜更かし勢へ！登録不要で観られる公式無料コーナーはこちら👇\n{url}\n#無料動画 #FANZA無料 #オニゴンの夜更かしラボ"
+            ]
+            return random.choice(patterns)
+        elif "コミック" in cat or "ブックス" in cat:
+            patterns = [
+                f"【深夜の電子コミック速報📚🌙】\n『{short_title}』\n\n1巻まるごと無料試し読み＆端末容量ゼロでブラウザ即読破！深夜ベッドのお供に👇\n{url}\n#FANZAブックス #電子コミック #無料試し読み #オニゴンの夜更かしラボ",
+                f"【スマホ容量を1MBも消費しない📚✨】\n『{short_title}』\n\n大容量DLは今すぐやめろ！ブラウザ即読み＆神サークルの10円〜半額セール発掘ガイド👇\n{url}\n#FANZA同人 #電子コミック #オニゴンの夜更かしラボ"
+            ]
+            return random.choice(patterns)
+        else:  # ASMR・新人
+            patterns = [
+                f"【ベッドイン＆同人ASMR特選🎧🌙】\n『{short_title}』\n\nイヤホン推奨！耳元ゼロ距離の吐息＆KU100収録の寝落ち神作まとめ👇\n{url}\n#同人ASMR #KU100 #寝ホン #オニゴンの夜更かしラボ",
+                f"【真夜中の夜更かし神作ラボ👿✨】\n『{short_title}』\n\nまだ起きてる夜更かし勢へ！サンプル後半まで検証した忖度なしの本物レビュー👇\n{url}\n#オニゴンの夜更かしラボ #深夜エンタメ #同人ASMR"
+            ]
+            return random.choice(patterns)
 
 
 def is_logged_in(page):
