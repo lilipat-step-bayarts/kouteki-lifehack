@@ -21,12 +21,45 @@ SITE_TITLE = "コスメ成分ラボ・プチプラ速報 | 知恵の案内人イ
 SITE_DESCRIPTION = "高いデパコスと何が違う？レチノール、ナイアシンアミド、ヒト型セラミド、ビタミンCなどの有効成分を、知恵のマスコット『イケロ』が科学的根拠に基づいて徹底比較・解説する美容情報メディア。"
 SITE_URL = "https://ikero.lilipat-cosme-bayarts.com"
 
-# 忍者AdMax 広告コード（ビュー型）
-NINJA_AD_SCRIPT = """
-<!-- 忍者AdMax ビュー報酬ユニット -->
-<div class="my-6 p-3 bg-rose-50/50 rounded-xl border border-rose-100 flex flex-col items-center justify-center min-h-[120px] text-center">
-  <span class="text-[10px] text-rose-400 font-medium mb-1">スポンサーリンク</span>
-  <script src="https://adm.shinobi.jp/s/b133ea03dc5417daa8dc029d6b6b4816"></script>
+AMAZON_TAG = "ikerocosme-22"
+RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"
+
+# 広告コード（スマホ: 忍者AdMax / PC: 楽天・Amazon公認コスメ特集バナー）
+NINJA_AD_SCRIPT = f"""
+<!-- スポンサーユニット -->
+<div class="my-6 p-3 md:p-4 bg-gradient-to-br from-rose-50/70 via-pink-50/40 to-amber-50/30 rounded-2xl border border-rose-200 text-center shadow-2xs overflow-hidden">
+  <div class="flex items-center justify-between mb-2 pb-1 border-b border-rose-100 text-[10px] font-bold text-rose-500 uppercase tracking-wider">
+    <span class="flex items-center gap-1 font-bold">🌸 スポンサーリンク（コスメ・美容特集）</span>
+    <span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full text-[9px] font-medium">公式キャンペーン</span>
+  </div>
+
+  <!-- スマホ表示：忍者AdMax（スマホ端末時のみ配信） -->
+  <div class="block sm:hidden flex justify-center items-center">
+    <script src="https://adm.shinobi.jp/s/b133ea03dc5417daa8dc029d6b6b4816"></script>
+  </div>
+
+  <!-- PCデスクトップ表示：楽天・Amazonコスメ公式特集カード -->
+  <div class="hidden sm:flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-white/95 rounded-xl border border-rose-200 shadow-2xs text-left">
+    <div class="space-y-1.5 flex-1">
+      <div class="flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded bg-rose-600 text-white font-extrabold text-[11px]">楽天公式</span>
+        <h3 class="text-sm md:text-base font-extrabold text-slate-900 leading-snug">
+          【コスメ・スキンケア】今月売れてるベストコスメ＆ポイント最大20倍特集
+        </h3>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed">
+        美容成分マニアが厳選！デパコス級のプチプラ化粧水から最新の韓国コスメまで、楽天・Amazonのリアルタイム売れ筋ランキングをチェック。
+      </p>
+    </div>
+    <div class="shrink-0 flex flex-col gap-2 w-full md:w-auto">
+      <a href="https://hb.afl.rakuten.co.jp/hgc/597f29ed.f305c9f6.597f29ee.8555f86c/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F%25E3%2582%25B9%25E3%2582%25AD%25E3%2583%25B3%25E3%2582%25B1%25E3%2582%25A2%2B%25E7%25BE%258E%25E5%25AE%25B9%25E6%25B6%25B2%2F&link_type=text" target="_blank" rel="noopener noreferrer sponsored" class="px-5 py-3 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-400 hover:to-pink-400 text-white font-black text-xs rounded-xl shadow-sm hover:shadow transition flex items-center justify-center gap-2 whitespace-nowrap">
+        <span>✨ 楽天市場で人気コスメランキングを見る ↗</span>
+      </a>
+      <a href="https://www.amazon.co.jp/s?k=%E3%82%B9%E3%82%AD%E3%83%B3%E3%82%B1%E3%82%A2+%E7%BE%8E%E5%AE%B9%E6%B6%B2&tag=ikerocosme-22" target="_blank" rel="noopener noreferrer sponsored" class="text-[11px] text-rose-700 hover:underline font-bold text-center">
+        Amazonで最新コスメ・スキンケアを探す ↗
+      </a>
+    </div>
+  </div>
 </div>
 """
 

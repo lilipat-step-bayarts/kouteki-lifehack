@@ -108,18 +108,49 @@ AUTHOR_CARD = """
   </div>
 """
 
+AMAZON_TAG = "ikerocosme-22"
+RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"
+
 def live_ad_box(label):
+    rakuten_sim_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote('https://event.rakuten.co.jp/furusato/guide/totalsimulation/', safe='')}&link_type=text"
+    amazon_guide_url = f"https://www.amazon.co.jp/s?k={urllib.parse.quote('控除 節税 確定申告 本')}&tag={AMAZON_TAG}"
+
     return f"""
-    <div class="my-6 border border-slate-200/80 bg-slate-50/80 rounded-2xl p-3 text-center overflow-hidden">
-      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">スポンサーリンク</div>
-      <div class="flex justify-center items-center min-h-[250px]">
+    <div class="my-6 border border-indigo-200/90 bg-gradient-to-br from-slate-50 via-indigo-50/30 to-blue-50/40 rounded-2xl p-3 md:p-4 text-center overflow-hidden shadow-2xs">
+      <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-indigo-100/70 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+        <span class="text-indigo-600 flex items-center gap-1 font-bold">📢 スポンサーリンク（家計防衛・節税診断）</span>
+        <span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full text-[9px] font-medium">公式シミュレーター</span>
+      </div>
+
+      <!-- スマホ表示：忍者AdMax（スマホ端末時のみアドネットワーク配信） -->
+      <div class="block sm:hidden flex justify-center items-center">
         {NINJA_AD_TAG}
+      </div>
+
+      <!-- PCデスクトップ表示：公的制度連動・高還元スポンサーカード（PCで確実に表示され高成約） -->
+      <div class="hidden sm:flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-white/95 rounded-xl border border-indigo-200 shadow-2xs text-left">
+        <div class="space-y-1.5 flex-1">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-rose-600 text-white font-extrabold text-[11px]">楽天公式</span>
+            <h3 class="text-sm md:text-base font-extrabold text-slate-900 leading-snug">
+              【自己負担2,000円】あなたの控除限度額はいくら？楽天ふるさと納税 3秒無料診断
+            </h3>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            年収と家族構成を入力するだけで今年の減税上限枠が丸わかり。高級肉・お米・日用品をもらいながら翌年の住民税・所得税をまるごと控除！
+          </p>
+        </div>
+        <div class="shrink-0 flex flex-col gap-2 w-full md:w-auto">
+          <a href="{rakuten_sim_url}" target="_blank" rel="noopener noreferrer sponsored" class="px-5 py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-black text-xs rounded-xl shadow-sm hover:shadow transition flex items-center justify-center gap-2 whitespace-nowrap">
+            <span>🎁 無料で控除上限額を今すぐ診断 ↗</span>
+          </a>
+          <a href="{amazon_guide_url}" target="_blank" rel="noopener noreferrer sponsored" class="text-[11px] text-indigo-700 hover:underline font-bold text-center">
+            Amazonで最新の節税・申請ガイド本を見る ↗
+          </a>
+        </div>
       </div>
     </div>
     """
-
-AMAZON_TAG = "ikerocosme-22"
-RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"
 
 def get_store1_amazon_card(art):
     cat = art.get("category", "")
