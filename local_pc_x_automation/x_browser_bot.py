@@ -305,6 +305,14 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
             url = f"{acc_cfg['site_url']}/articles/{id_val}"
 
         cat = article.get("category", "")
+        # ハッピーメール・深夜マッチング専用テンプレート
+        if "マッチング" in cat or "happymail" in id_val:
+            patterns = [
+                f"【今夜会える？深夜マッチング攻略💌🌙】\n『{short_title}』\n\n累計3500万人突破のハッピーメール！男性も年齢確認だけで貰える無料ポイントを使って、課金ゼロで今夜チャットする裏ワザをオニゴンが暴露👇\n{url}\n#ハッピーメール #マッチングアプリ #出会い #オニゴンの夜更かしラボ",
+                f"【画面の向こうだけじゃ物足りない夜に…💌✨】\n『{short_title}』\n\n「今夜ひま」「大人の関係希望」な女性が深夜にリアルタイム多数ログイン中！無料ポイントの活用法とサクラ秒速回避法👇\n{url}\n#ハッピーメール #出会い系 #深夜マッチング #オニゴンの夜更かしラボ"
+            ]
+            return random.choice(patterns)
+
         # 4大ジャンル別ツイートテンプレート
         if "10円" in cat or "セール" in cat:
             patterns = [

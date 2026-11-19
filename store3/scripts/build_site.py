@@ -28,6 +28,8 @@ SITE_URL = "https://onigon-night-lab.pages.dev"
 DMM_AFFILIATE_ID = os.environ.get("DMM_AFFILIATE_ID", "").strip() or "Onigon-001"
 # 忍者AdMaxで「成人（アダルト属性・18禁サイト用）」として発行した3号店専用広告枠ID
 ADULT_ADMAX_TAG_ID = os.environ.get("ADULT_ADMAX_TAG_ID", "").strip() or "510c352d44b5c4c8109a0972bbd6c310"
+# ハッピーメール（公式マッチングアフィリエイト）
+HAPPYMAIL_AFFILIATE_URL = os.environ.get("HAPPYMAIL_AFFILIATE_URL", "").strip() or "https://happymail.jp/?af31395501"
 
 
 def get_adult_ad_unit(slot_type="top"):
@@ -97,6 +99,57 @@ def get_adult_ad_unit(slot_type="top"):
           </a>
         </div>
         """
+
+
+def get_happymail_banner():
+    """
+    3号店（オニゴンの夜更かしラボ）専用の深夜マッチングPRユニット。
+    ハッピーメール（無料会員登録・無料ポイント付与）への誘導で最大収益化を図る。
+    """
+    return f"""
+    <!-- ハッピーメール 深夜マッチング特設PRカード -->
+    <div class="my-8 p-5 md:p-6 bg-gradient-to-r from-rose-950/95 via-pink-950/90 to-purple-950/90 rounded-3xl border-2 border-rose-500/50 shadow-2xl shadow-rose-950/40 relative overflow-hidden">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-rose-600 text-white font-black tracking-wider uppercase shadow-sm">
+            PR / 深夜のリアルマッチング
+          </span>
+          <span class="text-[11px] text-pink-300 font-bold flex items-center gap-1">
+            <span>✨</span><span>会員数3,500万人突破・国内最大級</span>
+          </span>
+        </div>
+        <span class="text-[11px] text-amber-300 font-mono font-black">🎁 無料登録で即P付与中</span>
+      </div>
+
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+        <div class="space-y-2">
+          <h3 class="text-base md:text-lg font-black text-white leading-snug">
+            画面の向こうだけじゃ物足りない夜に…！<br class="hidden sm:inline">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-200 to-amber-200">
+              今夜話せる相手が見つかる「ハッピーメール」無料お試し
+            </span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed max-w-2xl">
+            「寂しい」「今から軽く飲みたい」「大人の関係希望」な女性が深夜にリアルタイム多数ログイン中！男性も<b class="text-rose-300">年齢確認だけで貰える無料ポイント</b>を使えば、課金ゼロで今夜すぐメッセージ送信可能。24時間365日有人監視でサクラも徹底排除。
+          </p>
+          <div class="flex items-center gap-3 text-[11px] text-slate-400 flex-wrap pt-1">
+            <span class="flex items-center gap-1 text-emerald-400 font-bold">✓ 女性は完全無料</span>
+            <span class="flex items-center gap-1 text-pink-300 font-bold">✓ 男性も無料ポイントでメッセージ可</span>
+            <span class="flex items-center gap-1 text-sky-400 font-bold">✓ 24時間サポート＆身分証確認で安全</span>
+            <a href="/articles/happymail-midnight-dating-guide" class="text-fuchsia-300 underline hover:text-fuchsia-200 font-bold">オニゴンの攻略記事を読む →</a>
+          </div>
+        </div>
+
+        <div class="shrink-0 flex flex-col sm:flex-row lg:flex-col gap-2">
+          <a href="{HAPPYMAIL_AFFILIATE_URL}" target="_blank" rel="noopener noreferrer sponsored" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-fuchsia-600 hover:from-rose-400 hover:to-fuchsia-500 text-white font-black text-sm shadow-lg shadow-rose-950 transition transform hover:-translate-y-0.5">
+            <span>💌</span>
+            <span>無料ポイントを受け取る ↗</span>
+          </a>
+          <span class="text-[10px] text-center text-slate-400">※18歳未満利用不可・登録1分</span>
+        </div>
+      </div>
+    </div>
+    """
 
 
 AGE_GATE_MODAL = """
@@ -193,6 +246,9 @@ def get_header(current_page="home"):
         <a href="/newcomers" class="px-3 py-1.5 rounded-full border transition flex items-center gap-1 {'bg-fuchsia-600 text-white border-fuchsia-400 shadow-md font-black' if current_page == 'newcomers' else 'bg-purple-950/60 text-fuchsia-300 border-fuchsia-500/30 hover:bg-purple-900/80'}">
           <span>🌟</span><span>新人図鑑</span>
         </a>
+        <a href="{HAPPYMAIL_AFFILIATE_URL}" target="_blank" rel="noopener noreferrer sponsored" class="px-3 py-1.5 rounded-full border border-rose-500/50 bg-rose-950/80 text-rose-300 hover:bg-rose-900 transition flex items-center gap-1 shadow-sm font-black">
+          <span>💌</span><span>深夜マッチング(無料P)</span>
+        </a>
         <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-fuchsia-300 border border-purple-500/40 transition flex items-center gap-1">
           <span>𝕏</span><span>@Onigon_yfks</span>
         </a>
@@ -206,6 +262,7 @@ def get_header(current_page="home"):
       <a href="/manga-books" class="px-3 py-1 rounded-full {'bg-sky-600 text-white font-black' if current_page == 'manga_books' else 'bg-sky-950/80 text-sky-300 border border-sky-500/30'}">📚 電子コミック</a>
       <a href="/asmr-ranking" class="px-3 py-1 rounded-full {'bg-indigo-600 text-white' if current_page == 'asmr' else 'bg-indigo-950 text-indigo-300 border border-indigo-500/30'}">🎧 同人ASMR</a>
       <a href="/newcomers" class="px-3 py-1 rounded-full {'bg-fuchsia-600 text-white' if current_page == 'newcomers' else 'bg-purple-950 text-fuchsia-300 border border-fuchsia-500/30'}">🌟 新人図鑑</a>
+      <a href="{HAPPYMAIL_AFFILIATE_URL}" target="_blank" rel="noopener noreferrer sponsored" class="px-3 py-1 rounded-full bg-rose-950 text-rose-300 border border-rose-500/50 font-black">💌 出会い(無料P)</a>
       <a href="https://x.com/Onigon_yfks" target="_blank" rel="noopener noreferrer" class="px-3 py-1 rounded-full bg-slate-800 text-fuchsia-300 border border-purple-500/30">𝕏 @Onigon_yfks</a>
     </div>
   </header>
@@ -688,6 +745,8 @@ def build_article_page(article_meta, all_articles):
 
       {cta_card}
 
+      {get_happymail_banner()}
+
       {get_adult_ad_unit("bottom")}
 
       <div class="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -799,6 +858,7 @@ def build_newcomers_page(newcomers):
     </section>
 
     {get_hub_banners("newcomers")}
+    {get_happymail_banner()}
     {get_adult_ad_unit("bottom")}
   </main>
 
@@ -940,6 +1000,7 @@ def build_asmr_ranking_page(asmr_works):
     </div>
 
     {get_hub_banners("asmr")}
+    {get_happymail_banner()}
     {get_adult_ad_unit("bottom")}
   </main>
 
@@ -1072,6 +1133,7 @@ def build_sale_10yen_page(articles, sale_picks):
     ''' if sale_art_html else ''}
 
     {get_hub_banners("sale_10yen")}
+    {get_happymail_banner()}
     {get_adult_ad_unit("bottom")}
   </main>
 
@@ -1172,6 +1234,7 @@ def build_free_videos_page(articles):
     ''' if free_art_html else ''}
 
     {get_hub_banners("free_videos")}
+    {get_happymail_banner()}
     {get_adult_ad_unit("bottom")}
   </main>
 
@@ -1271,6 +1334,7 @@ def build_manga_books_page(articles):
     ''' if manga_art_html else ''}
 
     {get_hub_banners("manga_books")}
+    {get_happymail_banner()}
     {get_adult_ad_unit("bottom")}
   </main>
 
@@ -1489,6 +1553,7 @@ def build_home_page(articles, newcomers):
       </div>
     </section>
 
+    {get_happymail_banner()}
     {get_adult_ad_unit("bottom")}
   </main>
 
