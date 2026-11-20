@@ -432,6 +432,104 @@ def get_hub_banners(current_page="home"):
     """
 
 
+def get_campaign_intel_section():
+    """DMMアフィリエイト公式メルマガから抽出したリアルタイム開催中セール速報セクション"""
+    intel_path = os.path.join(ARTICLES_DIR, "campaign_intel.json")
+    if not os.path.exists(intel_path):
+        return ""
+    try:
+        with open(intel_path, "r", encoding="utf-8") as f:
+            intel = json.load(f)
+    except Exception:
+        return ""
+
+    camps = intel.get("all_active_campaigns", [])
+    if not camps:
+        return ""
+
+    # 注目度の高いキャンペーンを優先表示（ブックス、動画、同人、TV等）
+    priority_keywords = ["BLACK FRIDAY", "10円", "100円", "500円", "夜ふかし", "見放題", "還元"]
+    picked = []
+    for c in camps:
+        title = c.get("title", "")
+        pts = " ".join(c.get("points", []))
+        subs = " ".join(c.get("sub_campaigns", []))
+        full_text = f"{title} {pts} {subs}"
+        if any(kw in full_text for kw in priority_keywords):
+            picked.append(c)
+        if len(picked) >= 4:
+            break
+
+    if not picked:
+        picked = camps[:4]
+
+    cards_html = []
+    for c in picked:
+        svc = c.get("service", "DMM")
+        title = c.get("title", "")
+        pts = c.get("points", [""])[0] if c.get("points") else ""
+        subs = c.get("sub_campaigns", [])
+
+        # サービス別の公式アフィリエイトリンク生成
+        if "ブックス" in svc:
+            target_url = build_fanza_link("https://book.dmm.co.jp/")
+            badge_color = "bg-sky-600 text-white"
+            icon = "📚"
+        elif "動画" in svc:
+            target_url = build_fanza_link("https://video.dmm.co.jp/")
+            badge_color = "bg-rose-600 text-white"
+            icon = "🎬"
+        elif "同人" in svc:
+            target_url = build_fanza_link("https://www.dmm.co.jp/dc/doujin/")
+            badge_color = "bg-indigo-600 text-white"
+            icon = "🎧"
+        else:
+            target_url = build_fanza_link("https://www.dmm.co.jp/")
+            badge_color = "bg-amber-600 text-white"
+            icon = "🔥"
+
+        sub_badges = "".join([f'<span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-amber-300 border border-amber-500/30">{s.strip()}</span>' for s in subs[:3]])
+
+        cards_html.append(f"""
+        <a href="{target_url}" target="_blank" rel="noopener noreferrer sponsored" class="group p-4 rounded-2xl bg-slate-900/90 border border-purple-500/30 hover:border-amber-400 transition flex flex-col justify-between shadow-lg">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] px-2 py-0.5 rounded-full {badge_color} font-black">{icon} {svc}</span>
+              <span class="text-[10px] text-amber-400 font-mono font-bold">公式セール ↗</span>
+            </div>
+            <h4 class="text-sm font-black text-white group-hover:text-amber-300 leading-snug">{title}</h4>
+            <p class="text-[11px] text-slate-300 line-clamp-2 leading-relaxed">{pts}</p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between">
+            <div class="flex items-center gap-1 flex-wrap">
+              {sub_badges}
+            </div>
+            <span class="text-[10px] font-bold text-amber-300 group-hover:translate-x-1 transition shrink-0 ml-2">特設会場を見る →</span>
+          </div>
+        </a>
+        """)
+
+    return f"""
+    <!-- DMM公式メルマガ連動：現在開催中の緊急セール速報 -->
+    <section class="space-y-3 p-5 md:p-6 bg-gradient-to-r from-purple-950/70 via-slate-900 to-amber-950/60 rounded-3xl border border-amber-500/40 shadow-xl">
+      <div class="flex items-center justify-between border-b border-purple-500/30 pb-3 flex-wrap gap-2">
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black tracking-wide">
+            DMMメルマガ直結
+          </span>
+          <h2 class="text-sm md:text-base font-black text-white flex items-center gap-1.5">
+            <span>📢</span><span>公式告知：今週末の注目セール・大型キャンペーン速報</span>
+          </h2>
+        </div>
+        <span class="text-[11px] text-slate-400">オニゴンが公式メールからリアルタイム抜粋</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+        {''.join(cards_html)}
+      </div>
+    </section>
+    """
+
+
 def get_footer():
     return """
   <footer class="bg-slate-950 text-slate-400 py-12 mt-16 border-t border-purple-900/50">
@@ -1626,6 +1724,8 @@ def build_home_page(articles, newcomers):
         </a>
       </div>
     </section>
+
+    {get_campaign_intel_section()}
 
     {get_hub_banners("home")}
 
