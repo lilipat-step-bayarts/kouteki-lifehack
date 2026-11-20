@@ -288,16 +288,26 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
         url = f"{acc_cfg['site_url']}/articles/{id_val}"
         return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n#コスメ成分 #プチプラコスメ #スキンケア #イケロ"
 
-    else:  # store3_onigon (4大ジャンル日替わりローテーション対応)
+    else:  # store3_onigon (チュウ犬スタイル：極短文・共感・男の本音＋大判カード展開)
         if article.get("is_newcomer"):
-            stage_name = article.get("stage_name", "注目ルーキー")
-            catchcopy = article.get("catchcopy", "")
             aff_url = article.get("affiliate_url") or f"{acc_cfg['site_url']}/newcomers"
-            patterns = [
-                f"【FANZA注目ルーキー速報👿✨】\n『{stage_name}』\n\n{catchcopy[:42]}…\n\n話題沸騰中のデビュー作！公式パッケージ＆サンプル動画はこちら👇\n{aff_url}\n#FANZA #FANZA新人 #オニゴンの夜更かしラボ",
-                f"【今夜の注目新人ピックアップ👿🔥】\n『{stage_name}』\n\nオニゴンが検証！サンプル後半まで必見の大型ルーキー✨\n👇公式サンプル＆詳細\n{aff_url}\n#FANZA #FANZA注目作 #オニゴンの夜更かしラボ"
+            hooks = [
+                "これはありがたいですね⏬ #PR",
+                "深夜にこれは反則だろ…⏬ #PR",
+                "思わず二度見したわこれ⏬ #PR",
+                "この破壊力はずるい⏬ #PR",
+                "今夜の優勝決まりました⏬ #PR",
+                "普通に神作で草⏬ #PR",
+                "こんなん見せられたら寝れん⏬ #PR",
+                "破壊力高すぎて声出た⏬ #PR",
+                "男なら全員刺さるやつ⏬ #PR",
+                "週末にじっくり見るやつ⏬ #PR",
+                "B級だけどめっちゃ良い具合⏬ #PR",
+                "休憩しよって言われたらするよね⏬ #PR",
+                "無料サンプルだけでも見てほしい⏬ #PR",
+                "完全にツボに入った⏬ #PR"
             ]
-            return random.choice(patterns)
+            return f"{random.choice(hooks)}\n{aff_url}"
 
         if id_val.startswith("special:"):
             url = f"{acc_cfg['site_url']}/{id_val.replace('special:', '')}"
@@ -305,39 +315,51 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
             url = f"{acc_cfg['site_url']}/articles/{id_val}"
 
         cat = article.get("category", "")
-        # ハッピーメール・深夜マッチング専用テンプレート
         if "マッチング" in cat or "happymail" in id_val:
-            patterns = [
-                f"【今夜会える？深夜マッチング攻略💌🌙】\n『{short_title}』\n\n累計3500万人突破のハッピーメール！男性も年齢確認だけで貰える無料ポイントを使って、課金ゼロで今夜チャットする裏ワザをオニゴンが暴露👇\n{url}\n#ハッピーメール #マッチングアプリ #出会い #オニゴンの夜更かしラボ",
-                f"【画面の向こうだけじゃ物足りない夜に…💌✨】\n『{short_title}』\n\n「今夜ひま」「大人の関係希望」な女性が深夜にリアルタイム多数ログイン中！無料ポイントの活用法とサクラ秒速回避法👇\n{url}\n#ハッピーメール #出会い系 #深夜マッチング #オニゴンの夜更かしラボ"
+            hooks = [
+                "深夜にこれ知ってたら普通に助かる⏬ #PR",
+                "画面の向こうだけじゃ物足りない時に…⏬ #PR",
+                "無料ポイントだけでここまで出来るの強い⏬ #PR",
+                "今夜ひまな人はこれ一択⏬ #PR"
             ]
-            return random.choice(patterns)
+            return f"{random.choice(hooks)}\n{url}"
 
-        # 4大ジャンル別ツイートテンプレート
-        if "10円" in cat or "セール" in cat:
-            patterns = [
-                f"【深夜の爆安セール速報💰🔥】\n『{short_title}』\n\n缶コーヒー未満の10円動画＆ワンコイン500円神作まとめ！知らなきゃ損する最安値ルートをオニゴンが暴露👇\n{url}\n#10円動画 #FANZAセール #ワンコイン #オニゴンの夜更かしラボ",
-                f"【定価買いは情弱？！💰✨】\n『{short_title}』\n\n今夜10円で買える歴代名作＆週末割引クーポンまとめ！底値で買い漁る防衛術👇\n{url}\n#10円動画 #FANZAセール #オニゴンの夜更かしラボ"
+        elif "10円" in cat or "セール" in cat:
+            hooks = [
+                "10円で買えるの普通にバグだろ⏬ #PR",
+                "ワンコインでこれはありがたいですね⏬ #PR",
+                "定価で買ってた過去の自分を殴りたい⏬ #PR",
+                "今夜10円で買える神作まとめ⏬ #PR",
+                "缶コーヒーより安くて草⏬ #PR"
             ]
-            return random.choice(patterns)
+            return f"{random.choice(hooks)}\n{url}"
+
         elif "無料" in cat:
-            patterns = [
-                f"【完全無料・0円視聴速報🎬✨】\n『{short_title}』\n\nクレカ登録不要！今すぐスマホから長尺プレビュー＆無料本編を安全に視聴できる公式裏ワザ👇\n{url}\n#無料動画 #FANZA無料 #0円視聴 #オニゴンの夜更かしラボ",
-                f"【1円も払わずに今すぐ視聴🎬🌙】\n『{short_title}』\n\n「今夜はお金を使いたくない」夜更かし勢へ！登録不要で観られる公式無料コーナーはこちら👇\n{url}\n#無料動画 #FANZA無料 #オニゴンの夜更かしラボ"
+            hooks = [
+                "クレカも登録も不要で観れるの助かる⏬ #PR",
+                "1円も払いたくない夜はこれ一択⏬ #PR",
+                "普通に公式で0円公開されてるの知らんかった⏬ #PR",
+                "完全無料で今すぐ観れるやつ⏬ #PR"
             ]
-            return random.choice(patterns)
+            return f"{random.choice(hooks)}\n{url}"
+
         elif "コミック" in cat or "ブックス" in cat:
-            patterns = [
-                f"【深夜の電子コミック速報📚🌙】\n『{short_title}』\n\n1巻まるごと無料試し読み＆端末容量ゼロでブラウザ即読破！深夜ベッドのお供に👇\n{url}\n#FANZAブックス #電子コミック #無料試し読み #オニゴンの夜更かしラボ",
-                f"【スマホ容量を1MBも消費しない📚✨】\n『{short_title}』\n\n大容量DLは今すぐやめろ！ブラウザ即読み＆神サークルの10円〜半額セール発掘ガイド👇\n{url}\n#FANZA同人 #電子コミック #オニゴンの夜更かしラボ"
+            hooks = [
+                "1巻まるごと無料で読めるのありがたい⏬ #PR",
+                "スマホの容量食わずに読めるの神すぎ⏬ #PR",
+                "深夜ベッドの中で読むと止まらん⏬ #PR",
+                "BLACK FRIDAY先行セールが普通に強い⏬ #PR"
             ]
-            return random.choice(patterns)
-        else:  # ASMR・新人
-            patterns = [
-                f"【ベッドイン＆同人ASMR特選🎧🌙】\n『{short_title}』\n\nイヤホン推奨！耳元ゼロ距離の吐息＆KU100収録の寝落ち神作まとめ👇\n{url}\n#同人ASMR #KU100 #寝ホン #オニゴンの夜更かしラボ",
-                f"【真夜中の夜更かし神作ラボ👿✨】\n『{short_title}』\n\nまだ起きてる夜更かし勢へ！サンプル後半まで検証した忖度なしの本物レビュー👇\n{url}\n#オニゴンの夜更かしラボ #深夜エンタメ #同人ASMR"
+            return f"{random.choice(hooks)}\n{url}"
+
+        else:  # ASMR・寝落ち・その他
+            hooks = [
+                "イヤホンつけて聴いたら脳がとろけた⏬ #PR",
+                "耳元ゼロ距離の吐息は反則だろ…⏬ #PR",
+                "寝落ち用に聴いてたら逆に目が冴えた⏬ #PR",
+                "深夜の神作見つけました⏬ #PR"
             ]
-            return random.choice(patterns)
+            return f"{random.choice(hooks)}\n{url}"
 
 
 def is_logged_in(page):
@@ -402,7 +424,9 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
     # サムネイル・パッケージ画像のダウンロード準備
     img_url = target_article.get("package_image_url") or target_article.get("image_url")
     temp_img_path = None
-    if img_url:
+    # チュウ犬スタイル（store3_onigon）：画像ファイル添付をスキップし、
+    # X公式のOGPカード（タップで即DMM商品ページに直行する大判カード）を優先展開させる
+    if key != "store3_onigon" and img_url:
         try:
             ext = ".jpg"
             if ".png" in img_url.lower():
@@ -435,9 +459,19 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
             else:
                 print("    ⚠️ fileInputが見つかりませんでした")
         else:
-            intent_url = f"https://x.com/intent/post?text={quote(tweet_text)}"
-            page.goto(intent_url, wait_until="domcontentloaded", timeout=30000)
-            human_sleep(4.5, 6.5)
+            page.goto("https://x.com/compose/post", wait_until="domcontentloaded", timeout=30000)
+            human_sleep(3.5, 5.0)
+            textbox = page.locator('[data-testid="tweetTextarea_0"]').first
+            if textbox.count() > 0:
+                textbox.click()
+                human_sleep(0.5, 1.2)
+                textbox.fill(tweet_text)
+                print("    🌐 公式大判カード（Twitter Card）のプレビュー展開を待機中...")
+                human_sleep(5.0, 7.0)
+            else:
+                intent_url = f"https://x.com/intent/post?text={quote(tweet_text)}"
+                page.goto(intent_url, wait_until="domcontentloaded", timeout=30000)
+                human_sleep(4.5, 6.5)
 
         post_btn = page.locator('[data-testid="tweetButton"]').first
         if post_btn.count() == 0:
