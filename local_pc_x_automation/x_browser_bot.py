@@ -220,13 +220,16 @@ def fetch_articles_for_account(key, acc_cfg):
                     pass
 
         top_thumb = newcomers[0].get("package_image_url", "") if newcomers else ""
+        top_thumb_1 = newcomers[1].get("package_image_url", top_thumb) if len(newcomers) > 1 else top_thumb
+        top_thumb_2 = newcomers[2].get("package_image_url", top_thumb) if len(newcomers) > 2 else top_thumb
+        top_thumb_3 = newcomers[3].get("package_image_url", top_thumb) if len(newcomers) > 3 else top_thumb
 
         special_hubs = [
-            {"slug": "special:sale-10yen", "title": "【最大90%OFF】FANZA 10円動画・同人10円＆500円セール神作まとめ", "category": "10円動画・爆安セール攻略"},
-            {"slug": "special:free-videos", "title": "【登録不要・0円視聴】FANZA公式 完全無料動画＆長尺プレビュー徹底ナビ", "category": "完全無料動画・公式サンプル"},
-            {"slug": "special:manga-books", "title": "【1巻丸ごと無料試し読み】FANZAブックス・深夜の電子コミック特設", "category": "電子コミック・無料試し読み"},
+            {"slug": "special:sale-10yen", "title": "【最大90%OFF】FANZA 10円動画・同人10円＆500円セール神作まとめ", "category": "10円動画・爆安セール攻略", "package_image_url": top_thumb},
+            {"slug": "special:free-videos", "title": "【登録不要・0円視聴】FANZA公式 完全無料動画＆長尺プレビュー徹底ナビ", "category": "完全無料動画・公式サンプル", "package_image_url": top_thumb_1},
+            {"slug": "special:manga-books", "title": "【1巻丸ごと無料試し読み】FANZAブックス・深夜の電子コミック特設", "category": "電子コミック・無料試し読み", "package_image_url": top_thumb_2},
             {"slug": "special:newcomers", "title": "【毎月更新】大型新人女優・注目ルーキー図鑑＆サムネイル一覧", "package_image_url": top_thumb, "category": "同人ASMR・大型新人図鑑"},
-            {"slug": "special:asmr-ranking", "title": "【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング", "category": "同人ASMR・大型新人図鑑"}
+            {"slug": "special:asmr-ranking", "title": "【KU100バイノーラル】同人ASMR・耳かきボイス殿堂入りランキング", "package_image_url": top_thumb_3, "category": "同人ASMR・大型新人図鑑"}
         ]
 
         newcomer_items = []
@@ -240,10 +243,15 @@ def fetch_articles_for_account(key, acc_cfg):
                 "is_newcomer": True,
                 "stage_name": stage_name,
                 "catchcopy": catchcopy,
-                "package_image_url": nc.get("package_image_url", ""),
+                "package_image_url": nc.get("package_image_url", top_thumb),
                 "affiliate_url": nc.get("affiliate_url", ""),
                 "category": "同人ASMR・大型新人図鑑"
             })
+
+        for idx, art in enumerate(articles):
+            if not art.get("package_image_url") and not art.get("image_url"):
+                if newcomers:
+                    art["package_image_url"] = newcomers[idx % len(newcomers)].get("package_image_url", top_thumb)
 
         articles = newcomer_items + special_hubs + articles
     return articles
@@ -424,9 +432,7 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
     # サムネイル・パッケージ画像のダウンロード準備
     img_url = target_article.get("package_image_url") or target_article.get("image_url")
     temp_img_path = None
-    # チュウ犬スタイル（store3_onigon）：画像ファイル添付をスキップし、
-    # X公式のOGPカード（タップで即DMM商品ページに直行する大判カード）を優先展開させる
-    if key != "store3_onigon" and img_url:
+    if img_url:
         try:
             ext = ".jpg"
             if ".png" in img_url.lower():
