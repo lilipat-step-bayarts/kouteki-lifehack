@@ -441,6 +441,24 @@ def build_article_page(art, all_articles):
         <!-- 神アイテムカード -->
         {god_card_html}
 
+        <!-- ⚡ 神ゼウス直選・今すぐ買うべきバズ神アイテム特設バナー -->
+        <div class="my-6 p-4 md:p-5 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-slate-950 rounded-2xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="space-y-1 text-center sm:text-left">
+            <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-950 text-amber-300 text-[11px] font-black">
+              <span>⚡ 神ゼウス直選</span>
+            </div>
+            <h3 class="text-sm md:text-base font-black leading-snug text-slate-950">
+              知らなきゃ大損！SNSでバズり散らかした『即買い神アイテムBEST7』
+            </h3>
+            <p class="text-[11px] text-slate-900 font-bold">
+              ワークマン防寒ブーツ・Anker神充電器・カルディ爆売れ調味料を写真付きで全公開
+            </p>
+          </div>
+          <a href="/articles/workman-god-winter-shoes" class="shrink-0 px-4 py-2.5 bg-slate-950 hover:bg-slate-900 text-amber-300 font-black text-xs rounded-xl shadow transition transform hover:scale-105 flex items-center gap-1.5">
+            <span>殿堂入りを見る →</span>
+          </a>
+        </div>
+
         {ZEUS_AUTHOR_CARD}
 
         {NINJA_AD_SCRIPT}
@@ -589,6 +607,53 @@ def build_home_page(articles):
     <!-- メインコンテンツ -->
     <main class="max-w-4xl mx-auto px-4 py-8 space-y-6">
       {NINJA_AD_SCRIPT}
+
+      <!-- 👑 神ゼウスの殿堂入り・2026年爆売れ神アイテム特設バナー -->
+      <section class="p-6 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-slate-950 rounded-3xl shadow-lg relative overflow-hidden">
+        <div class="space-y-4">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950 text-amber-300 text-xs font-black shadow-2xs">
+              <span>⚡ 神ゼウス直選</span> 殿堂入り神アイテム特集
+            </span>
+            <span class="text-xs text-amber-950 font-black">SNSで10万いいね超え</span>
+          </div>
+          <div class="space-y-1">
+            <h2 class="text-xl md:text-2xl font-black text-slate-950 leading-tight">
+              知らなきゃ大損！<br class="hidden sm:inline">
+              売り切れ前に即カートに入れるべき『2026神アイテムBEST3』
+            </h2>
+            <p class="text-xs md:text-sm text-amber-950 font-bold leading-relaxed max-w-2xl">
+              「防寒靴に1万円出すのはアホ」「コードの絡まりでイライラするな」！全知全能の神ゼウスが天上から厳選した、費用対効果が壊れている神アイテムを写真付きで速報。
+            </p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            <a href="/articles/workman-god-winter-shoes" class="p-3.5 bg-white/40 hover:bg-white/60 backdrop-blur border border-amber-400/60 rounded-2xl transition flex flex-col justify-between group shadow-sm">
+              <div class="space-y-1">
+                <span class="text-[10px] font-black px-2 py-0.5 rounded bg-slate-950 text-amber-300">防寒・防水</span>
+                <h3 class="text-xs font-black text-slate-900 group-hover:text-amber-800">ワークマン 防寒シューズ</h3>
+                <p class="text-[10px] text-slate-800 font-medium line-clamp-2">2,900円でデパ地下高級ブーツより暖かいとSNS絶賛</p>
+              </div>
+              <span class="text-[11px] font-black text-slate-950 mt-2">実物フォト検証 →</span>
+            </a>
+            <a href="/articles/anker-gadget-magnetic-cable" class="p-3.5 bg-white/40 hover:bg-white/60 backdrop-blur border border-amber-400/60 rounded-2xl transition flex flex-col justify-between group shadow-sm">
+              <div class="space-y-1">
+                <span class="text-[10px] font-black px-2 py-0.5 rounded bg-slate-950 text-amber-300">デスク時短</span>
+                <h3 class="text-xs font-black text-slate-900 group-hover:text-amber-800">Anker マグネットケーブル</h3>
+                <p class="text-[10px] text-slate-800 font-medium line-clamp-2">カチッと吸着して絡まない！デスク周りの配線地獄から解放</p>
+              </div>
+              <span class="text-[11px] font-black text-slate-950 mt-2">実物フォト検証 →</span>
+            </a>
+            <a href="/articles/winter-heater-gadget" class="p-3.5 bg-white/40 hover:bg-white/60 backdrop-blur border border-amber-400/60 rounded-2xl transition flex flex-col justify-between group shadow-sm">
+              <div class="space-y-1">
+                <span class="text-[10px] font-black px-2 py-0.5 rounded bg-slate-950 text-amber-300">冬の電気代</span>
+                <h3 class="text-xs font-black text-slate-900 group-hover:text-amber-800">2秒速暖 セラミックヒーター</h3>
+                <p class="text-[10px] text-slate-800 font-medium line-clamp-2">スイッチを入れて2秒で温風！脱衣所・デスク足元の救世主</p>
+              </div>
+              <span class="text-[11px] font-black text-slate-950 mt-2">実物フォト検証 →</span>
+            </a>
+          </div>
+        </div>
+      </section>
 
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">

@@ -152,6 +152,204 @@ def live_ad_box(label):
     </div>
     """
 
+def get_furusato_hub_callout():
+    """全記事に挿入する年末駆け込みふるさと納税の成約導線バナー"""
+    return """
+    <!-- 🚨 2026年末駆け込み・特設ふるさと納税コールアウト -->
+    <div class="my-6 p-4 md:p-5 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white rounded-2xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="space-y-1 text-center sm:text-left">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-yellow-100 text-[11px] font-black">
+          <span>🚨 2026年末 駆け込み生活防衛</span>
+          <span class="bg-rose-600 text-white px-1.5 py-0.2 rounded text-[10px]">12/31締切</span>
+        </div>
+        <h3 class="text-sm md:text-base font-black leading-snug">
+          実質2,000円で生活費を数万円浮かす！楽天ふるさと納税完全攻略
+        </h3>
+        <p class="text-[11px] text-orange-100">
+          あなたの控除限度額はいくら？3秒診断表＆絶対損しない還元率最強返礼品BEST10
+        </p>
+      </div>
+      <a href="/articles/furusato-nozei-killer-ranking-2026" class="shrink-0 px-4 py-2.5 bg-white hover:bg-yellow-50 text-orange-600 font-black text-xs rounded-xl shadow transition transform hover:scale-105 flex items-center gap-1.5">
+        <span>特設攻略を見る →</span>
+      </a>
+    </div>
+    """
+
+def get_furusato_killer_ranking_cards():
+    """ふるさと納税キラー記事専用：超高還元・生活費防衛返礼品BEST10カード一覧"""
+    rakuten_sim_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote('https://event.rakuten.co.jp/furusato/guide/totalsimulation/', safe='')}&link_type=text"
+    
+    items = [
+        {
+            "rank": "第1位",
+            "tag": "生活費直撃・食費防衛",
+            "title": "山形県産はえぬき 無洗米 20kg (10kg×2袋)",
+            "city": "山形県新庄市・酒田市ほか",
+            "desc": "米価高騰の今、最も家計を助ける圧倒的人気No.1返礼品！冷めても美味しく無洗米で水道代と手間もカット。寄付するだけで約2〜3ヶ月分の主食代が浮きます。",
+            "donation": "12,000円〜15,000円前後",
+            "keyword": "ふるさと納税 はえぬき 20kg 無洗米"
+        },
+        {
+            "rank": "第2位",
+            "tag": "メガ盛り・冷凍ストック",
+            "title": "都城産豚「高城の里」わくわく3.6kgセット",
+            "city": "宮崎県都城市",
+            "desc": "楽天ふるさと納税で何年も殿堂入りを続ける伝説の返礼品。ロース・バラ・肩ロース・切り落としが小分け冷凍で届くため、普段の夕食の肉代がゼロに。",
+            "donation": "17,000円",
+            "keyword": "ふるさと納税 都城市 高城の里 豚肉 3.6kg"
+        },
+        {
+            "rank": "第3位",
+            "tag": "贅沢海鮮・高還元",
+            "title": "オホーツク産ホタテ玉冷大 1kg (北海道)",
+            "city": "北海道紋別市",
+            "desc": "大粒で肉厚、お刺身・バター焼きに最高。中国禁輸措置支援で増量やポイントアップが続いており、還元率と満足度が飛び抜けて高い定番ギフトです。",
+            "donation": "14,000円前後",
+            "keyword": "ふるさと納税 紋別市 ホタテ 1kg"
+        },
+        {
+            "rank": "第4位",
+            "tag": "日用品消耗品・ストック",
+            "title": "エリエール消臭+ トイレットティシュー 72ロール",
+            "city": "静岡県富士市",
+            "desc": "「重くてかさばる日用品はふるさと納税で自宅に届けてもらう」が現代の賢い生活防衛。1回の寄付で半年〜1年分の日用品代が丸ごと浮きます。",
+            "donation": "15,000円",
+            "keyword": "ふるさと納税 エリエール トイレットペーパー 72ロール"
+        },
+        {
+            "rank": "第5位",
+            "tag": "リピート率No.1海鮮",
+            "title": "訳あり プレミアム エンペラーサーモン 900g",
+            "city": "北海道白糠町",
+            "desc": "SNSや口コミで爆発的ヒット。小分けブロックで届くのでカルパッチョ・レアステーキ・丼ぶりと自由自在。脂の乗りがデパ地下の高級魚以上と話題。",
+            "donation": "15,000円",
+            "keyword": "ふるさと納税 エンペラーサーモン 白糠町"
+        },
+        {
+            "rank": "第6位",
+            "tag": "冬のビタミン補給",
+            "title": "和歌山県有田市 有田みかん 10kg (糖度厳選)",
+            "city": "和歌山県有田市",
+            "desc": "年末年始のこたつのお供に最適！甘みとコクが凝縮された本場有田みかん。家族みんなで楽しめて年末の駆け込み寄付に最も選ばれている果物枠です。",
+            "donation": "10,000円",
+            "keyword": "ふるさと納税 有田みかん 10kg"
+        },
+        {
+            "rank": "第7位",
+            "tag": "晩酌代カット",
+            "title": "アサヒスーパードライ 350ml 24本 (1ケース)",
+            "city": "茨城県守谷市・神奈川県南足柄市ほか",
+            "desc": "ビール好きなら絶対これ。重いケースを玄関まで配達してもらえて、毎月のビール代（約5,000円）を実質2,000円の負担枠で節約できます。",
+            "donation": "16,000円前後",
+            "keyword": "ふるさと納税 アサヒスーパードライ 24本"
+        },
+        {
+            "rank": "第8位",
+            "tag": "高還元家電",
+            "title": "アラジン グラファイトトースター (2枚焼き)",
+            "city": "兵庫県加西市",
+            "desc": "0.2秒で発熱する憧れの高級トースターがふるさと納税でもらえる！毎朝の食パンが劇的に美味しくなり、日々の生活満足度が上がる大人気家電です。",
+            "donation": "30,000円",
+            "keyword": "ふるさと納税 アラジン トースター 加西市"
+        },
+        {
+            "rank": "第9位",
+            "tag": "極上ごちそう",
+            "title": "宮崎県産 うなぎ蒲焼 特大サイズ 2〜3尾セット",
+            "city": "宮崎県都農町",
+            "desc": "職人が香ばしく焼き上げた国産うなぎ。外はカリッと中はふっくら。年末年始の家族の集まりや自分へのご褒美ディナーにぴったりです。",
+            "donation": "12,000円〜15,000円",
+            "keyword": "ふるさと納税 うなぎ 蒲焼 特大 宮崎"
+        },
+        {
+            "rank": "第10位",
+            "tag": "消耗品ストック",
+            "title": "花王 アタック抗菌EX 洗濯洗剤 詰め替え 超特大セット",
+            "city": "和歌山県和歌山市",
+            "desc": "毎日使う洗剤だからこそ絶対に無駄にならない。部屋干し臭を消臭する大人気アタックが超特大容量で届き、日々の買い出しの手間から解放されます。",
+            "donation": "10,000円",
+            "keyword": "ふるさと納税 アタック抗菌EX 洗剤 詰め替え"
+        }
+    ]
+
+    cards = []
+    for it in items:
+        kw = it["keyword"]
+        target_search = f"https://search.rakuten.co.jp/search/mall/{kw}/"
+        rakuten_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote(target_search, safe='')}&link_type=text"
+        amazon_url = f"https://www.amazon.co.jp/s?k={urllib.parse.quote(kw)}&tag={AMAZON_TAG}"
+        
+        cards.append(f"""
+        <div class="p-5 bg-white border-2 border-amber-200/90 rounded-2xl shadow-sm hover:shadow-md transition space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs rounded-lg shadow-2xs">
+                {it['rank']}
+              </span>
+              <span class="text-xs font-bold text-slate-500">{it['city']}</span>
+            </div>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+              {it['tag']}
+            </span>
+          </div>
+
+          <h3 class="text-base font-black text-slate-900 leading-snug">
+            {it['title']}
+          </h3>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            {it['desc']}
+          </p>
+
+          <div class="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="text-xs">
+              <span class="text-slate-400">寄付額目安:</span>
+              <span class="text-rose-600 font-extrabold text-sm ml-1">{it['donation']}</span>
+              <span class="text-[10px] text-slate-500 ml-1">（実質自己負担2,000円枠）</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <a href="{rakuten_url}" target="_blank" rel="noopener noreferrer sponsored" class="px-4 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-xs font-black rounded-xl shadow-sm transition flex items-center gap-1">
+                <span>🛍️ 楽天市場で返礼品を見る・ポイント還元比較 ↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        """)
+
+    all_cards = "\\n".join(cards)
+    return f"""
+    <!-- 👑 楽天ふるさと納税 還元率最強BEST10 特集セクション -->
+    <section class="space-y-4 my-8">
+      <div class="p-5 bg-gradient-to-r from-rose-50 via-amber-50 to-orange-50 border-2 border-rose-300 rounded-3xl space-y-2">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-600 text-white text-xs font-black shadow-2xs">
+          <span>👑 2026年最新</span> ほぽりん厳選・生活費防衛返礼品ランキング
+        </div>
+        <h2 class="text-lg md:text-xl font-black text-slate-900">
+          【還元率最強BEST10】生活費を直接浮かす実用特化型返礼品
+        </h2>
+        <p class="text-xs text-slate-700 leading-relaxed">
+          贅沢品よりも日々の食費・日用品を節約して家計を守りたい方へ。リピート率・還元率・生活費削減効果の3軸で厳選した絶対失敗しない神返礼品一覧です。（※12月は品切れが相次ぐためお早めの寄付を推奨します）
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        {all_cards}
+      </div>
+
+      <!-- 下部シミュレーター誘導 -->
+      <div class="p-5 bg-gradient-to-br from-indigo-900 to-blue-900 text-white rounded-3xl shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="space-y-1 text-center sm:text-left">
+          <span class="text-xs font-bold text-yellow-300">💡 まだ寄付上限額を調べていない方へ</span>
+          <h3 class="text-base font-extrabold">年収と家族構成を入れるだけ！楽天公式3秒シミュレーター</h3>
+          <p class="text-xs text-indigo-200">自己負担2,000円を超えないための正確な上限金額を今すぐ無料で確認できます。</p>
+        </div>
+        <a href="{rakuten_sim_url}" target="_blank" rel="noopener noreferrer sponsored" class="shrink-0 px-5 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black text-xs md:text-sm rounded-xl shadow-md transition transform hover:scale-105 flex items-center gap-2">
+          <span>🎁 上限額を今すぐ無料診断 ↗</span>
+        </a>
+      </div>
+    </section>
+    """
+
 def get_store1_amazon_card(art):
     cat = art.get("category", "")
     title = art.get("title", "")
@@ -313,6 +511,34 @@ def build_index(articles):
         </p>
       </section>
 
+      <!-- 🚨 2026年末駆け込み・特設ふるさと納税ゴールドバナー -->
+      <section class="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white rounded-3xl p-6 md:p-7 shadow-lg relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-5">
+          <div class="space-y-2 text-center md:text-left">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-yellow-100 text-xs font-black shadow-2xs">
+              <span>🚨 2026年末 駆け込み生活防衛</span>
+              <span class="bg-rose-600 text-white px-2 py-0.2 rounded-full text-[10px]">12/31締切</span>
+            </div>
+            <h2 class="text-xl md:text-2xl font-black leading-tight text-white drop-shadow-sm">
+              自己負担2,000円で生活費を数万円浮かす！<br class="hidden sm:inline">
+              楽天ふるさと納税『控除限度額3秒チェック＆還元率最強BEST10』
+            </h2>
+            <p class="text-xs md:text-sm text-orange-100 leading-relaxed max-w-xl">
+              年末調整・確定申告する会社員・公務員必見！お米20kg・メガ盛り豚肉・日用品が実質タダ同然で届く神返礼品と、あなたの控除限度額シミュレーションを完全図解。
+            </p>
+          </div>
+          <div class="shrink-0 flex flex-col sm:flex-row md:flex-col gap-2 w-full md:w-auto">
+            <a href="/articles/furusato-nozei-killer-ranking-2026" class="px-6 py-3.5 bg-white hover:bg-yellow-50 text-orange-600 font-black text-xs md:text-sm rounded-2xl shadow-md transition transform hover:scale-105 text-center flex items-center justify-center gap-2">
+              <span>🎁 特設攻略＆神返礼品BEST10を見る</span>
+              <span>→</span>
+            </a>
+            <a href="https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote('https://event.rakuten.co.jp/furusato/guide/totalsimulation/', safe='')}&link_type=text" target="_blank" rel="noopener noreferrer sponsored" class="px-5 py-2.5 bg-orange-950/40 hover:bg-orange-950/60 text-yellow-200 border border-yellow-300/40 font-bold text-xs rounded-xl transition text-center flex items-center justify-center gap-1.5">
+              <span>⏱️ 楽天公式 3秒限度額診断 ↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {live_ad_box("トップ上部")}
 
       <!-- Article Grid -->
@@ -428,6 +654,11 @@ def build_article_page(art, all_articles=None):
         }
     ], ensure_ascii=False)
 
+    if art['id'] == 'furusato-nozei-killer-ranking-2026':
+        furusato_feature_html = get_furusato_killer_ranking_cards()
+    else:
+        furusato_feature_html = get_furusato_hub_callout()
+
     return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -515,6 +746,8 @@ def build_article_page(art, all_articles=None):
             </table>
           </div>
         </section>
+
+        {furusato_feature_html}
 
         {live_ad_box("記事中間・高クリック率枠")}
 

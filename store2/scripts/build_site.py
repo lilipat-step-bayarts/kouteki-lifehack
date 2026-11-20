@@ -546,6 +546,24 @@ def build_article_page(article_meta):
         {body_html}
       </div>
 
+      <!-- 👑 特設ハブ導線：成分スペシャリスト厳選・神プチプラ特集 -->
+      <div class="my-6 p-4 md:p-5 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 text-white rounded-2xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="space-y-1 text-center sm:text-left">
+          <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 text-emerald-100 text-[11px] font-black">
+            <span>🔬 イケロのガチ厳選</span>
+          </div>
+          <h3 class="text-sm md:text-base font-black leading-snug">
+            デパコスに1万円払う前に！1,000円台の神プチプラ成分比較ランキング
+          </h3>
+          <p class="text-[11px] text-emerald-100">
+            レチノール・ナイアシンアミド・ヒト型セラミド配合の科学的根拠ある名品だけをピックアップ
+          </p>
+        </div>
+        <a href="/articles/retinol-puchipura-hikaku" class="shrink-0 px-4 py-2.5 bg-white hover:bg-emerald-50 text-emerald-700 font-black text-xs rounded-xl shadow transition transform hover:scale-105 flex items-center gap-1.5">
+          <span>殿堂入り比較を見る →</span>
+        </a>
+      </div>
+
       {NINJA_AD_SCRIPT}
 
       <!-- 物販アフィリエイトカード（高成約導線） -->
@@ -709,6 +727,53 @@ def build_home_page(articles):
   <!-- メインコンテンツ -->
   <main class="max-w-4xl mx-auto px-4 py-8 space-y-6">
     {NINJA_AD_SCRIPT}
+
+    <!-- 👑 イケロの殿堂入り・成分別プチプラ比較特設バナー -->
+    <section class="p-6 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 text-white rounded-3xl shadow-lg relative overflow-hidden">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-emerald-100 text-xs font-black shadow-2xs">
+            <span>👑 専門家ガチ厳選</span> 殿堂入りコスメ成分特集
+          </span>
+          <span class="text-xs text-emerald-100 font-bold">デパコス級プチプラ比較</span>
+        </div>
+        <div class="space-y-1">
+          <h2 class="text-xl md:text-2xl font-black text-white leading-tight">
+            1個3万円のデパコスと同成分？！<br class="hidden sm:inline">
+            1,000円台で肌が変わる神プチプラ徹底比較BEST3
+          </h2>
+          <p class="text-xs md:text-sm text-emerald-50 leading-relaxed max-w-2xl">
+            「高い化粧品ほど効果がある」は本当か？成分スペシャリストが全成分表示を解剖し、本当に買う価値のある1,000円台の医薬部外品・薬用プチプラだけを厳選。
+          </p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <a href="/articles/retinol-puchipura-hikaku" class="p-3.5 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 rounded-2xl transition flex flex-col justify-between group">
+            <div class="space-y-1">
+              <span class="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-400 text-slate-950">ハリ・シワ改善</span>
+              <h3 class="text-xs font-bold text-white group-hover:text-emerald-200">ピュアレチノール神プチプラ比較</h3>
+              <p class="text-[10px] text-emerald-100 line-clamp-2">無印 vs なめらか本舗の純粋レチノール配合率をガチ検証</p>
+            </div>
+            <span class="text-[11px] font-bold text-yellow-300 mt-2">比較を読む →</span>
+          </a>
+          <a href="/articles/niacinamide-whitening-dupe" class="p-3.5 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 rounded-2xl transition flex flex-col justify-between group">
+            <div class="space-y-1">
+              <span class="text-[10px] font-black px-2 py-0.5 rounded bg-teal-300 text-slate-950">美白・くすみ</span>
+              <h3 class="text-xs font-bold text-white group-hover:text-teal-200">ナイアシンアミド5%配合神3選</h3>
+              <p class="text-[10px] text-emerald-100 line-clamp-2">デパコス激似とバズった1,000円台の医薬部外品を厳選</p>
+            </div>
+            <span class="text-[11px] font-bold text-yellow-300 mt-2">比較を読む →</span>
+          </a>
+          <a href="/articles/ceramide-skin-barrier-guide" class="p-3.5 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 rounded-2xl transition flex flex-col justify-between group">
+            <div class="space-y-1">
+              <span class="text-[10px] font-black px-2 py-0.5 rounded bg-cyan-300 text-slate-950">冬の重度乾燥</span>
+              <h3 class="text-xs font-bold text-white group-hover:text-cyan-200">ヒト型セラミド名品化粧水</h3>
+              <p class="text-[10px] text-emerald-100 line-clamp-2">角質バリアを立て直すドラッグストアで買える名品</p>
+            </div>
+            <span class="text-[11px] font-bold text-yellow-300 mt-2">比較を読む →</span>
+          </a>
+        </div>
+      </div>
+    </section>
 
     <div class="flex items-center justify-between">
       <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
