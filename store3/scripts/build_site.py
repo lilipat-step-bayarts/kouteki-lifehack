@@ -152,7 +152,17 @@ def get_happymail_banner():
     """
 
 
-AGE_GATE_MODAL = """
+def build_fanza_link(raw_url):
+    """DMM_AFFILIATE_ID が設定されていれば公式アフィリエイトリンクに変換、未設定なら公式ページへ直リンク"""
+    if DMM_AFFILIATE_ID:
+        encoded = urllib.parse.quote(raw_url, safe="")
+        return f"https://al.dmm.co.jp/?lurl={encoded}&af_id={DMM_AFFILIATE_ID}&ch=link_tool&ch_id=link"
+    return raw_url
+
+
+fanza_interstitial_url = build_fanza_link("https://www.dmm.co.jp/dc/doujin/")
+
+AGE_GATE_MODAL = f"""
 <!-- 18歳以上年齢確認モーダル (DMM/FANZA審査対応) -->
 <div id="onigon-age-gate" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-950/95 backdrop-blur-md p-4">
   <div class="max-w-md w-full bg-slate-900 border-2 border-purple-500/60 rounded-3xl p-6 md:p-8 text-center shadow-2xl shadow-purple-950/80 space-y-5">
@@ -181,38 +191,140 @@ AGE_GATE_MODAL = """
     </div>
   </div>
 </div>
+
+<!-- 👿 オニゴン深夜特製・全面広告モーダル (上部＆下部バツボタン付きインタースティシャル広告) -->
+<div id="onigon-interstitial-modal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-5 overflow-y-auto">
+  <div class="relative max-w-lg w-full bg-slate-900 border-2 border-fuchsia-500/80 rounded-3xl shadow-2xl shadow-fuchsia-950/90 text-left my-auto overflow-hidden">
+    
+    <!-- ✕ 上部フローティングバツボタン（スマホで最も押しやすい右上配置） -->
+    <button onclick="closeInterstitialAd()" aria-label="広告を閉じる" class="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-800/90 hover:bg-slate-700 text-white border-2 border-fuchsia-400 flex items-center justify-center font-black text-base shadow-xl cursor-pointer z-30 transition transform hover:scale-110 active:scale-95">
+      ✕
+    </button>
+
+    <!-- 上部ヘッダーバー（PR表記 ＆ 上部バツボタンテキスト） -->
+    <div class="px-4 py-2.5 bg-slate-950 border-b border-purple-500/40 flex items-center justify-between text-xs pr-14">
+      <div class="flex items-center gap-1.5 font-bold text-fuchsia-300">
+        <span class="px-2 py-0.5 rounded bg-rose-600 text-white font-black text-[10px]">PR</span>
+        <span>オニゴン特選・深夜限定スペシャルオファー</span>
+      </div>
+      <button onclick="closeInterstitialAd()" class="text-[11px] text-slate-400 hover:text-white underline font-medium cursor-pointer">
+        ✕ 閉じる
+      </button>
+    </div>
+
+    <!-- 広告コンテンツエリア -->
+    <div class="p-4 sm:p-5 space-y-3.5">
+      
+      <!-- 忍者AdMax 成人向け広告枠（ビュー課金） -->
+      <div class="flex flex-col items-center justify-center min-h-[250px] bg-slate-950 rounded-2xl p-2 border border-purple-500/30">
+        <span class="text-[9px] text-slate-500 mb-1">スポンサードリンク</span>
+        <!-- admax -->
+        <script src="https://adm.shinobi.jp/s/{ADULT_ADMAX_TAG_ID}"></script>
+        <!-- admax -->
+      </div>
+
+      <!-- 高成約・深夜限定成約カード 1: FANZA同人セール -->
+      <a href="{fanza_interstitial_url}" target="_blank" rel="noopener noreferrer sponsored" class="block p-3.5 rounded-2xl bg-gradient-to-r from-fuchsia-950 via-purple-900 to-slate-900 border border-fuchsia-400/50 hover:border-fuchsia-300 transition group shadow-md">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-600 text-white font-black">FANZA 18+</span>
+          <span class="text-[10px] text-amber-300 font-bold">10円〜最大90%OFF ↗</span>
+        </div>
+        <div class="text-xs sm:text-sm font-black text-white group-hover:text-fuchsia-300 transition leading-snug">
+          🔥 【深夜限定】バイノーラルASMR・同人コミック・動画セール会場
+        </div>
+        <p class="text-[11px] text-slate-300 mt-1 line-clamp-1">
+          ダウンロード不要・スマホのブラウザで今すぐ試聴＆試し読み可能！
+        </p>
+      </a>
+
+      <!-- 高成約・深夜限定成約カード 2: ハッピーメール -->
+      <a href="{HAPPYMAIL_AFFILIATE_URL}" target="_blank" rel="noopener noreferrer sponsored" class="block p-3.5 rounded-2xl bg-gradient-to-r from-rose-950 via-pink-900 to-slate-900 border border-rose-400/50 hover:border-rose-300 transition group shadow-md">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-600 text-white font-black">無料マッチング</span>
+          <span class="text-[10px] text-pink-300 font-bold">登録1分・即P付与 ↗</span>
+        </div>
+        <div class="text-xs sm:text-sm font-black text-white group-hover:text-pink-300 transition leading-snug">
+          💌 今夜話せる相手が見つかる「ハッピーメール」（無料ポイント配布中）
+        </div>
+        <p class="text-[11px] text-slate-300 mt-1 line-clamp-1">
+          会員数3,500万人突破！男性も無料ポイントでメッセージ送信可能
+        </p>
+      </a>
+
+    </div>
+
+    <!-- ✕ 下部バツボタン（全幅の大型クローズボタン） -->
+    <div class="p-3 bg-slate-950/80 border-t border-purple-500/30">
+      <button onclick="closeInterstitialAd()" class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-2xl text-xs sm:text-sm font-black transition flex items-center justify-center gap-2 cursor-pointer border border-slate-700 shadow-md active:bg-slate-900">
+        <span>✕ 広告を閉じてサイトを見る（Continue to Site）</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
 <script>
-  (function() {
-    try {
-      if (localStorage.getItem('onigon_age_verified_v1') !== 'true') {
-        var modal = document.getElementById('onigon-age-gate');
-        if (modal) {
-          modal.classList.remove('hidden');
-          modal.classList.add('flex');
-        }
-      }
-    } catch (e) {}
-  })();
-  function confirmAgeGate() {
-    try {
-      localStorage.setItem('onigon_age_verified_v1', 'true');
-    } catch (e) {}
-    var modal = document.getElementById('onigon-age-gate');
-    if (modal) {
+  function showInterstitialAd() {{
+    try {{
+      if (sessionStorage.getItem('onigon_interstitial_closed') === 'true') {{
+        return;
+      }}
+      var modal = document.getElementById('onigon-interstitial-modal');
+      if (modal) {{
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }}
+    }} catch(e) {{}}
+  }}
+
+  function closeInterstitialAd() {{
+    try {{
+      sessionStorage.setItem('onigon_interstitial_closed', 'true');
+    }} catch(e) {{}}
+    var modal = document.getElementById('onigon-interstitial-modal');
+    if (modal) {{
       modal.classList.add('hidden');
       modal.classList.remove('flex');
-    }
-  }
+    }}
+  }}
+
+  // 年齢確認モーダル制御
+  (function() {{
+    try {{
+      if (localStorage.getItem('onigon_age_verified_v1') !== 'true') {{
+        var modal = document.getElementById('onigon-age-gate');
+        if (modal) {{
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }}
+      }} else {{
+        // すでに年齢確認済みの場合は、1秒後に全面広告をポップアップ
+        setTimeout(showInterstitialAd, 1000);
+      }}
+    }} catch (e) {{}}
+  }})();
+
+  function confirmAgeGate() {{
+    try {{
+      localStorage.setItem('onigon_age_verified_v1', 'true');
+    }} catch (e) {{}}
+    var modal = document.getElementById('onigon-age-gate');
+    if (modal) {{
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }}
+    // 年齢確認完了後、スムーズに全面広告を表示
+    setTimeout(showInterstitialAd, 600);
+  }}
+
+  // ESCキーでも閉じられる親切設計
+  document.addEventListener('keydown', function(e) {{
+    if (e.key === 'Escape') {{
+      closeInterstitialAd();
+    }}
+  }});
 </script>
 """
-
-
-def build_fanza_link(raw_url):
-    """DMM_AFFILIATE_ID が設定されていれば公式アフィリエイトリンクに変換、未設定なら公式ページへ直リンク"""
-    if DMM_AFFILIATE_ID:
-        encoded = urllib.parse.quote(raw_url, safe="")
-        return f"https://al.dmm.co.jp/?lurl={encoded}&af_id={DMM_AFFILIATE_ID}&ch=link_tool&ch_id=link"
-    return raw_url
 
 
 def get_header(current_page="home"):
