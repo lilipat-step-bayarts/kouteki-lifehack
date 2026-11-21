@@ -257,7 +257,13 @@ def fetch_articles_for_account(key, acc_cfg):
     return articles
 
 
-def build_tweet_text(key, acc_cfg, article, now_jst):
+def build_tweet_bundle(key, acc_cfg, article, now_jst):
+    """
+    Xのアルゴリズム対策（外部リンクペナルティ回避）バンドル生成関数
+    - main_text: 本文（外部リンクなし＝おすすめ表示・インプレッション最大化）
+    - reply_text: ツリー（リプライ欄）に自動返信するリンク付きテキスト（1・2号店対応）
+    - image_source: 添付する画像パスまたはURL（ローカル画像最優先、なければリモート）
+    """
     hour = now_jst.hour
     title = article.get("title", "")
     short_title = title[:36] + "…" if len(title) > 37 else title
@@ -273,12 +279,21 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
         else:
             time_hook = "【夜の家計見直し速報🌙】"
         url = f"{acc_cfg['site_url']}/articles/{id_val}"
-        patterns = [
-            f"{time_hook}\n『{short_title}』\n\n国は自動で振り込んでくれません！知っておきたい要点と申請手順をまとめました🐧✨\n👇詳細はこちら\n{url}\n#公的ライフハック #給付金 #ほぽりん",
-            f"【申請しないと損する公的制度】\n『{short_title}』\n\n「自分には関係ない」と放置していませんか？\n対象者や手取りへの影響額を3秒図解で解説🐧✨\n👇詳細・申請方法\n{url}\n#公的ライフハック #節約 #ほぽりん",
-            f"{time_hook}\n『{short_title}』\n\n知っている人だけが得をする公的支援の最新情報です🐧\n手取りを守る具体策と注意点をまとめました👇\n{url}\n#公的ライフハック #家計防衛 #ほぽりん"
+        main_patterns = [
+            f"{time_hook}\n『{short_title}』\n\n国は自動で振り込んでくれません！知らないと数十万円単位で損する公的給付金・控除の要点を図解解説🐧✨\n\n👇受給条件・シミュレーターの詳細はリプ欄へ！\n#公的ライフハック #給付金 #ほぽりん",
+            f"【知らなきゃ大損する公的制度🐧】\n『{short_title}』\n\n「自分には関係ない」と放置していませんか？\n知っている人だけが得をする公的支援の最新情報を整理しました✨\n\n👇具体的な申請手順・対象者条件はリプ欄へ！\n#公的ライフハック #節税 #ほぽりん",
+            f"{time_hook}\n『{short_title}』\n\n手取りを守るための最新公的マネー知識です🐧\n会社も国も教えてくれない重要ポイントを整理しました✨\n\n👇詳細・公式申請ガイドはリプ欄へ！\n#公的ライフハック #家計防衛 #ほぽりん"
         ]
-        return random.choice(patterns)
+        main_text = random.choice(main_patterns)
+        reply_text = f"🐧【詳細な申請手順・シミュレーターはこちら】\n『{short_title}』の公式情報・申請ステップまとめ👇\n{url}\n\n※あとで見返せるように【ブックマーク🔖】推奨です！"
+        local_card = os.path.join(BASE_DIR, "assets", "hoporin_infographic_card.jpg")
+        remote_card = f"{GITHUB_RAW_BASE}/assets/hoporin_infographic_card.jpg"
+        img_source = (
+            article.get("package_image_url") or 
+            article.get("image_url") or 
+            (local_card if os.path.exists(local_card) else remote_card)
+        )
+        return main_text, reply_text, img_source
 
     elif key == "store2_ikero":
         if 6 <= hour < 10:
@@ -294,9 +309,23 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
             time_hook = "【夜のスキンケア速報🌙】"
             lead = "知恵の白キツネ・イケロが忖度なしで解説する成分の真実👇"
         url = f"{acc_cfg['site_url']}/articles/{id_val}"
-        return f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n#コスメ成分 #プチプラコスメ #スキンケア #イケロ"
+        main_patterns = [
+            f"{time_hook}\n『{short_title}』\n\n{lead}\n実は有効成分がほぼ同じ？！知らなきゃ一生損するスキンケアの科学を徹底比較🧪✨\n\n👇1,000円台のおすすめ名品・成分比較はリプ欄へ！\n#コスメ成分 #プチプラコスメ #スキンケア #イケロ",
+            f"【デパコスvsプチプラ成分比較🦊】\n『{short_title}』\n\n高い化粧品＝肌に良いとは限りません。\n全成分表示を見極めて、コスパ最強で美肌を作る秘訣を解説します🧪✨\n\n👇詳しい成分分析・おすすめ一覧はリプ欄へ！\n#コスメ成分 #美容垢さんと繋がりたい #イケロ"
+        ]
+        main_text = random.choice(main_patterns)
+        reply_text = f"🦊【詳しい成分解説・おすすめアイテムはこちら】\n『{short_title}』の科学的根拠＆プチプラ名品比較まとめ👇\n{url}\n\n※お買い物前のチェック用に【ブックマーク🔖】推奨です！"
+        local_card = os.path.join(BASE_DIR, "assets", "ikero_infographic_card.jpg")
+        remote_card = f"{GITHUB_RAW_BASE}/store2/assets/ikero_infographic_card.jpg"
+        img_source = (
+            article.get("package_image_url") or 
+            article.get("image_url") or 
+            (local_card if os.path.exists(local_card) else remote_card)
+        )
+        return main_text, reply_text, img_source
 
     else:  # store3_onigon (チュウ犬スタイル：極短文・共感・男の本音＋大判カード展開)
+        img_source = article.get("package_image_url") or article.get("image_url")
         if article.get("is_newcomer"):
             aff_url = article.get("affiliate_url") or f"{acc_cfg['site_url']}/newcomers"
             hooks = [
@@ -315,7 +344,7 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
                 "無料サンプルだけでも見てほしい⏬ #PR",
                 "完全にツボに入った⏬ #PR"
             ]
-            return f"{random.choice(hooks)}\n{aff_url}"
+            return f"{random.choice(hooks)}\n{aff_url}", None, img_source
 
         if id_val.startswith("special:"):
             url = f"{acc_cfg['site_url']}/{id_val.replace('special:', '')}"
@@ -330,7 +359,7 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
                 "無料ポイントだけでここまで出来るの強い⏬ #PR",
                 "今夜ひまな人はこれ一択⏬ #PR"
             ]
-            return f"{random.choice(hooks)}\n{url}"
+            main_text = f"{random.choice(hooks)}\n{url}"
 
         elif "10円" in cat or "セール" in cat:
             hooks = [
@@ -340,7 +369,7 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
                 "今夜10円で買える神作まとめ⏬ #PR",
                 "缶コーヒーより安くて草⏬ #PR"
             ]
-            return f"{random.choice(hooks)}\n{url}"
+            main_text = f"{random.choice(hooks)}\n{url}"
 
         elif "無料" in cat:
             hooks = [
@@ -349,7 +378,7 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
                 "普通に公式で0円公開されてるの知らんかった⏬ #PR",
                 "完全無料で今すぐ観れるやつ⏬ #PR"
             ]
-            return f"{random.choice(hooks)}\n{url}"
+            main_text = f"{random.choice(hooks)}\n{url}"
 
         elif "コミック" in cat or "ブックス" in cat:
             hooks = [
@@ -358,7 +387,7 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
                 "深夜ベッドの中で読むと止まらん⏬ #PR",
                 "BLACK FRIDAY先行セールが普通に強い⏬ #PR"
             ]
-            return f"{random.choice(hooks)}\n{url}"
+            main_text = f"{random.choice(hooks)}\n{url}"
 
         else:  # ASMR・寝落ち・その他
             hooks = [
@@ -367,7 +396,14 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
                 "寝落ち用に聴いてたら逆に目が冴えた⏬ #PR",
                 "深夜の神作見つけました⏬ #PR"
             ]
-            return f"{random.choice(hooks)}\n{url}"
+            main_text = f"{random.choice(hooks)}\n{url}"
+
+        return main_text, None, img_source
+
+
+def build_tweet_text(key, acc_cfg, article, now_jst):
+    main_text, _, _ = build_tweet_bundle(key, acc_cfg, article, now_jst)
+    return main_text
 
 
 def is_logged_in(page):
@@ -422,29 +458,39 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
 
     target_article = unposted[0]
     article_id = target_article.get(id_key)
-    tweet_text = build_tweet_text(key, acc_cfg, target_article, now_jst)
+    main_text, reply_text, img_source = build_tweet_bundle(key, acc_cfg, target_article, now_jst)
 
     print("    --------------------------------------------------")
-    for line in tweet_text.splitlines():
-        print(f"    {line}")
+    print(f"    【親ポスト本文（リンクなし・高露出）】:\n{main_text}")
+    if reply_text:
+        print(f"    【ツリー返信（リプ欄URL・ペナルティ回避）】:\n{reply_text}")
+    if img_source:
+        print(f"    【添付画像】: {img_source}")
     print("    --------------------------------------------------")
 
-    # サムネイル・パッケージ画像のダウンロード準備
-    img_url = target_article.get("package_image_url") or target_article.get("image_url")
+    # サムネイル・イラスト画像の準備（ローカル最優先・なければダウンロード）
     temp_img_path = None
-    if img_url:
+    is_temp_file = False
+    if img_source:
         try:
-            ext = ".jpg"
-            if ".png" in img_url.lower():
-                ext = ".png"
-            temp_img_path = os.path.join(tempfile.gettempdir(), f"tweet_img_{os.getpid()}_{int(time.time())}{ext}")
-            req = urllib.request.Request(img_url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=15) as resp, open(temp_img_path, "wb") as f_out:
-                f_out.write(resp.read())
-            print(f"    📷 パッケージ・サムネイル画像を取得しました: {img_url}")
+            if os.path.exists(img_source):
+                temp_img_path = img_source
+                is_temp_file = False
+                print(f"    📷 ローカル画像を添付準備完了: {img_source}")
+            elif img_source.startswith("http://") or img_source.startswith("https://"):
+                ext = ".jpg"
+                if ".png" in img_source.lower():
+                    ext = ".png"
+                temp_img_path = os.path.join(tempfile.gettempdir(), f"tweet_img_{os.getpid()}_{int(time.time())}{ext}")
+                req = urllib.request.Request(img_source, headers={"User-Agent": "Mozilla/5.0"})
+                with urllib.request.urlopen(req, timeout=15) as resp, open(temp_img_path, "wb") as f_out:
+                    f_out.write(resp.read())
+                is_temp_file = True
+                print(f"    📷 リモートイラスト画像を取得しました: {img_source}")
         except Exception as e:
-            print(f"    ⚠️ 画像ダウンロード失敗（テキストのみで続行）: {e}")
+            print(f"    ⚠️ 画像準備失敗（テキストのみで続行）: {e}")
             temp_img_path = None
+            is_temp_file = False
 
     try:
         if temp_img_path and os.path.exists(temp_img_path):
@@ -454,12 +500,12 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
             if textbox.count() > 0:
                 textbox.click()
                 human_sleep(0.5, 1.2)
-                textbox.fill(tweet_text)
+                textbox.fill(main_text)
                 human_sleep(1.5, 2.5)
 
             file_input = page.locator('input[data-testid="fileInput"]').first
             if file_input.count() > 0:
-                print("    📎 パッケージ・サムネイル画像を添付中...")
+                print("    📎 アイキャッチ・イラスト画像を添付中...")
                 file_input.set_input_files(temp_img_path)
                 human_sleep(4.5, 6.5)
             else:
@@ -471,11 +517,11 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
             if textbox.count() > 0:
                 textbox.click()
                 human_sleep(0.5, 1.2)
-                textbox.fill(tweet_text)
+                textbox.fill(main_text)
                 print("    🌐 公式大判カード（Twitter Card）のプレビュー展開を待機中...")
                 human_sleep(5.0, 7.0)
             else:
-                intent_url = f"https://x.com/intent/post?text={quote(tweet_text)}"
+                intent_url = f"https://x.com/intent/post?text={quote(main_text)}"
                 page.goto(intent_url, wait_until="domcontentloaded", timeout=30000)
                 human_sleep(4.5, 6.5)
 
@@ -487,7 +533,7 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
             if textbox.count() > 0:
                 textbox.click()
                 human_sleep(0.5, 1.0)
-                textbox.fill(tweet_text)
+                textbox.fill(main_text)
                 human_sleep(1.5, 2.5)
             if temp_img_path and os.path.exists(temp_img_path):
                 file_input = page.locator('input[data-testid="fileInput"]').first
@@ -502,14 +548,65 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
             posted_ids.append(article_id)
             daily_counts[cycle_key] = today_count + 1
             acc_state["last_posted_at"] = datetime.now(timezone.utc).isoformat()
-            img_status = "（パッケージ写真添付済）" if temp_img_path else ""
-            print(f"    🎉 ブラウザから記事ポスト{img_status}を送信しました！ ({today_count + 1}/{max_posts})")
+            img_status = "（イラスト画像添付済）" if temp_img_path else ""
+            print(f"    🎉 ブラウザから親ポスト{img_status}を送信しました！ ({today_count + 1}/{max_posts})")
+
+            # ----------------------------------------------------
+            # リンクペナルティ回避：ツリー（リプライ欄）への自動返信
+            # ----------------------------------------------------
+            if reply_text:
+                print("    💬 リンクペナルティ対策：ツリー（リプ欄）へURLを自動投稿中...")
+                try:
+                    profile_url = f"https://x.com/{acc_cfg['handle']}"
+                    page.goto(profile_url, wait_until="domcontentloaded", timeout=30000)
+                    human_sleep(4.0, 6.0)
+
+                    tweets = page.locator('article[data-testid="tweet"]')
+                    target_tweet = None
+                    for idx in range(min(tweets.count(), 3)):
+                        tw = tweets.nth(idx)
+                        tw_text = tw.inner_text() or ""
+                        if "固定されたポスト" in tw_text or "Pinned" in tw_text:
+                            continue
+                        target_tweet = tw
+                        break
+                    if not target_tweet and tweets.count() > 0:
+                        target_tweet = tweets.first
+
+                    if target_tweet:
+                        reply_btn = target_tweet.locator('button[data-testid="reply"]').first
+                        if reply_btn.count() > 0:
+                            reply_btn.click()
+                            human_sleep(2.5, 4.0)
+
+                            reply_box = page.locator('[data-testid="tweetTextarea_0"]').first
+                            if reply_box.count() > 0:
+                                reply_box.click()
+                                human_sleep(0.5, 1.2)
+                                reply_box.fill(reply_text)
+                                human_sleep(2.0, 3.0)
+
+                                reply_submit_btn = page.locator('[data-testid="tweetButton"]').first
+                                if reply_submit_btn.count() > 0:
+                                    reply_submit_btn.click()
+                                    human_sleep(4.0, 6.0)
+                                    print("    ✅ ツリー（リプ欄）へのリンクURL返信が完了しました！")
+                                else:
+                                    print("    ⚠️ 返信用送信ボタンが見つかりませんでした")
+                            else:
+                                print("    ⚠️ 返信用テキストエリアが見つかりませんでした")
+                        else:
+                            print("    ⚠️ リプライボタンが見つかりませんでした")
+                    else:
+                        print("    ⚠️ プロフィール上に最新ツイートが見つかりませんでした")
+                except Exception as reply_err:
+                    print(f"    ⚠️ ツリー返信処理中に例外が発生しました（親ポストは送信済）: {reply_err}")
         else:
             print("    ⚠️ 投稿ボタンが見つかりませんでした（ログイン状態を確認してください）。")
     except Exception as e:
         print(f"    ⚠️ ブラウザ投稿中にエラーが発生しました: {e}")
     finally:
-        if temp_img_path and os.path.exists(temp_img_path):
+        if is_temp_file and temp_img_path and os.path.exists(temp_img_path):
             try:
                 os.remove(temp_img_path)
             except Exception:
