@@ -19,7 +19,7 @@ DIST_ASSETS_DIR = os.path.join(DIST_DIR, "assets")
 
 SITE_TITLE = "コスメ成分ラボ・プチプラ速報 | 知恵の案内人イケロが忖度なし比較"
 SITE_DESCRIPTION = "高いデパコスと何が違う？レチノール、ナイアシンアミド、ヒト型セラミド、ビタミンCなどの有効成分を、知恵のマスコット『イケロ』が科学的根拠に基づいて徹底比較・解説する美容情報メディア。"
-SITE_URL = "https://ikero.lilipat-cosme-bayarts.com"
+SITE_URL = "https://lilipat-cosme-bayarts.com"
 
 AMAZON_TAG = "ikerocosme-22"
 RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"

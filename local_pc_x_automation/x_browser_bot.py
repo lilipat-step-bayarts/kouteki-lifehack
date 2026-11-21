@@ -69,7 +69,7 @@ ACCOUNTS = {
     "store2_ikero": {
         "name": "2号店（イケロ @ikero_lab）",
         "handle": "ikero_lab",
-        "site_url": "https://ikero.lilipat-cosme-bayarts.com",
+        "site_url": "https://lilipat-cosme-bayarts.com",
         "remote_articles_url": f"{GITHUB_RAW_BASE}/store2/articles/articles.json",
         "local_articles_fallback": os.path.join(os.path.dirname(BASE_DIR), "store2", "articles", "articles.json"),
         "id_key": "slug",

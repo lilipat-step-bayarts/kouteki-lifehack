@@ -59,7 +59,7 @@ NOTE_ACCOUNTS = {
         "email": "ynmrstc@gmail.com",
         "default_pass": "ssikeeMkt1004",
         "profile_dir": os.path.join(PROFILES_DIR, "note_store2_ikero"),
-        "site_url": "https://ikero.lilipat-cosme-bayarts.com",
+        "site_url": "https://lilipat-cosme-bayarts.com",
         "remote_articles_url": f"{GITHUB_RAW_BASE}/store2/articles/articles.json",
         "local_articles_fallback": os.path.join(os.path.dirname(BASE_DIR), "store2", "articles", "articles.json"),
         "id_key": "slug",

@@ -122,7 +122,7 @@ def generate_tweet_text(article):
 
     title = article.get("title", "")
     short_title = title[:36] + "…" if len(title) > 37 else title
-    url = f"https://ikero.lilipat-cosme-bayarts.com/articles/{article['slug']}"
+    url = f"https://lilipat-cosme-bayarts.com/articles/{article['slug']}"
     hashtags = "#コスメ成分 #プチプラコスメ #スキンケア #イケロ"
 
     tweet = f"{time_hook}\n『{short_title}』\n\n{lead}\n{url}\n{hashtags}"
