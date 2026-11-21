@@ -122,13 +122,13 @@ def live_ad_box(label):
         <span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full text-[9px] font-medium">公式シミュレーター</span>
       </div>
 
-      <!-- スマホ表示：忍者AdMax（スマホ端末時のみアドネットワーク配信） -->
-      <div class="block sm:hidden flex justify-center items-center">
+      <!-- 忍者AdMax：全端末（PC・スマホ）共通で確実に表示・インプレッション計測 -->
+      <div class="my-3 flex justify-center items-center overflow-hidden">
         {NINJA_AD_TAG}
       </div>
 
-      <!-- PCデスクトップ表示：公的制度連動・高還元スポンサーカード（PCで確実に表示され高成約） -->
-      <div class="hidden sm:flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-white/95 rounded-xl border border-indigo-200 shadow-2xs text-left">
+      <!-- 公的制度連動・高還元スポンサーカード -->
+      <div class="mt-3 flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-white/95 rounded-xl border border-indigo-200 shadow-2xs text-left">
         <div class="space-y-1.5 flex-1">
           <div class="flex items-center gap-2">
             <span class="px-2 py-0.5 rounded bg-rose-600 text-white font-extrabold text-[11px]">楽天公式</span>
