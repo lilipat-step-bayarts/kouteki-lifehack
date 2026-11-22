@@ -406,15 +406,42 @@ def build_tweet_text(key, acc_cfg, article, now_jst):
     return main_text
 
 
-def is_logged_in(page):
+def check_login_status(page):
+    """Xのログイン状態を判定する。(is_logged: bool, reason: str) を返す"""
     try:
-        page.goto("https://x.com/home", wait_until="domcontentloaded", timeout=30000)
-        human_sleep(3.5, 5.0)
-        if "login" in page.url or "i/flow/login" in page.url:
-            return False
-        return True
-    except Exception:
-        return False
+        page.goto("https://x.com/home", wait_until="domcontentloaded", timeout=25000)
+        human_sleep(3.0, 4.5)
+        current_url = page.url.lower()
+
+        if "login" in current_url or "i/flow/login" in current_url:
+            return False, f"ログインURLにリダイレクトされました ({page.url})"
+
+        # 主要なログイン後UI要素の存在確認
+        logged_in_selectors = [
+            '[data-testid="SideNav_NewTweet_Button"]',
+            '[data-testid="AppTabBar_Home_Link"]',
+            '[data-testid="primaryColumn"]',
+            '[data-testid="SideNav_AccountSwitcher_Button"]',
+            'a[data-testid="AppTabBar_Profile_Link"]'
+        ]
+        for sel in logged_in_selectors:
+            if page.locator(sel).count() > 0:
+                return True, f"ログインUI要素確認成功 ({sel})"
+
+        # URLが /home のままならログイン中と判定
+        if "x.com/home" in current_url or "twitter.com/home" in current_url:
+            return True, "ホームURL確認成功"
+
+        return False, f"未ログインまたは不明な画面です (URL: {page.url})"
+    except Exception as e:
+        return False, f"判定アクセス時に例外発生: {e}"
+
+
+def is_logged_in(page):
+    logged, reason = check_login_status(page)
+    if not logged:
+        print(f"    ⚠️ ログイン未完了判定: {reason}")
+    return logged
 
 
 def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False):
@@ -826,6 +853,91 @@ def run_for_account(key, acc_cfg, state, login_mode=False, headless=False, skip_
         context.close()
 
 
+def run_diagnose(state, headless=False):
+    """3店舗のログインセッション・記事数・投稿ステータスを一括点検する"""
+    print("\n" + "=" * 68)
+    print("🔍 【X自動運用システム 診断モード】設定・ログイン・待機状況の総合点検")
+    print("=" * 68)
+
+    now_jst = get_now_jst()
+    print(f"🕒 現在時刻 (JST): {now_jst.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"📁 プロファイル保存先: {PROFILES_DIR}")
+    print(f"📄 運用状態ファイル: {STATE_FILE} (存在: {'あり' if os.path.exists(STATE_FILE) else 'なし'})")
+
+    with sync_playwright() as p:
+        for key, acc_cfg in ACCOUNTS.items():
+            print(f"\n------------------------------------------------------------")
+            print(f"📌 {acc_cfg['name']}")
+            print(f"------------------------------------------------------------")
+
+            profile_path = os.path.join(PROFILES_DIR, key)
+            has_profile = os.path.isdir(profile_path)
+            print(f"  ・プロファイルフォルダ: {'✅ 作成済' if has_profile else '❌ 未作成 (初回ログインが必要)'}")
+
+            # 記事データ取得チェック
+            articles = fetch_articles_for_account(key, acc_cfg)
+            print(f"  ・最新記事データベース: {'✅ ' + str(len(articles)) + '件取得成功' if articles else '❌ 取得失敗'}")
+
+            # ステート状況
+            acc_state = state.get(key, {})
+            posted_ids = acc_state.get("posted_ids", [])
+            print(f"  ・投稿済み記事履歴: {len(posted_ids)} 件")
+
+            # 本日の投稿数
+            cycle_key = get_cycle_date_key(acc_cfg, now_jst)
+            today_count = acc_state.get("daily_post_counts", {}).get(cycle_key, 0)
+            max_posts = acc_cfg["max_posts_per_day"]
+            print(f"  ・本日の投稿実績: {today_count} / {max_posts} 回")
+
+            # 時間帯判定
+            in_window = is_within_active_window(acc_cfg, now_jst)
+            window_desc = "06:00〜21:59 JST" if acc_cfg["active_window"] == "day" else "20:00〜翌02:59 JST"
+            print(f"  ・稼働時間帯: {window_desc} ➔ {'✅ 現在稼働時間内' if in_window else '⏸️ 現在稼働時間外'}")
+
+            # 投稿間隔チェック
+            last_posted_str = acc_state.get("last_posted_at")
+            if last_posted_str:
+                try:
+                    last_dt = datetime.fromisoformat(last_posted_str)
+                    elapsed_min = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60.0
+                    min_interval = acc_cfg["min_post_interval_min"]
+                    if elapsed_min >= min_interval:
+                        print(f"  ・インターバル: ✅ 経過 {elapsed_min:.1f}分 (最低 {min_interval}分) ➔ ポスト可能")
+                    else:
+                        print(f"  ・インターバル: ⏳ 経過 {elapsed_min:.1f}分 (最低 {min_interval}分) ➔ あと {min_interval - elapsed_min:.1f}分 待機")
+                except Exception:
+                    print(f"  ・インターバル: 記録日時解析エラー ({last_posted_str})")
+            else:
+                print(f"  ・インターバル: ✅ 過去の投稿記録なし (即投稿可能)")
+
+            # ブラウザ起動してログイン判定
+            print(f"  ・Xセッション接続テスト中...")
+            try:
+                os.makedirs(profile_path, exist_ok=True)
+                context = p.chromium.launch_persistent_context(
+                    user_data_dir=profile_path,
+                    headless=headless,
+                    viewport={"width": 1280, "height": 840},
+                    locale="ja-JP",
+                    timezone_id="Asia/Tokyo",
+                    args=["--disable-blink-features=AutomationControlled"]
+                )
+                page = context.pages[0] if context.pages else context.new_page()
+                is_logged, reason = check_login_status(page)
+                context.close()
+                if is_logged:
+                    print(f"  ・ログインセッション: ✅ 正常にログイン中！ ({reason})")
+                else:
+                    print(f"  ・ログインセッション: ❌ 未ログインまたはセッション切れ！ ({reason})")
+                    print(f"     👉 解決コマンド: python x_browser_bot.py --login --account {key}")
+            except Exception as e:
+                print(f"  ・ブラウザ起動エラー: {e}")
+
+    print("\n" + "=" * 68)
+    print("🎯 診断完了！問題のあるアカウントはログインコマンドを実行してください。")
+    print("=" * 68)
+
+
 def main():
     parser = argparse.ArgumentParser(description="完全無料($0.00) 別PCスタンドアロン用 X自動投稿＆フォロバ＆フォロー＆30日片思い解除エンジン")
     parser.add_argument("--login", action="store_true", help="初回ログイン用モードでブラウザを開きます")
@@ -834,9 +946,15 @@ def main():
     parser.add_argument("--post-only", action="store_true", help="記事ポストのみを実行します")
     parser.add_argument("--follow-only", action="store_true", help="フォロー・フォロバ・片思い解除のみを実行します")
     parser.add_argument("--force", action="store_true", help="時間帯や間隔制限を無視して今すぐ強制テスト投稿します")
+    parser.add_argument("--diagnose", action="store_true", help="全アカウントのログイン状態・設定・記事取得状況を診断します")
     args = parser.parse_args()
 
     state = load_state()
+
+    if args.diagnose:
+        run_diagnose(state, headless=args.headless)
+        return
+
     target_keys = list(ACCOUNTS.keys()) if args.account == "all" else [args.account]
     now_jst = get_now_jst()
 
