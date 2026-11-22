@@ -375,6 +375,9 @@ def main():
     added_count = 0
     for topic in STORE1_TOPIC_POOL:
         if topic["title"] not in seen_titles and topic["id"] not in seen_ids:
+            topic_date = topic.get("date", TODAY_STR)
+            if topic_date > TODAY_STR:
+                continue
             new_item = dict(topic)
             if "date" not in new_item or not new_item["date"]:
                 new_item["date"] = TODAY_STR
@@ -383,10 +386,12 @@ def main():
             cleaned_articles.append(new_item)
             # Markdown生成
             md_path = os.path.join(ARTICLES_DIR, f"{new_item['id']}.md")
-            with open(md_path, "w", encoding="utf-8") as f:
-                f.write(generate_markdown_article(new_item))
+            if not os.path.exists(md_path):
+                with open(md_path, "w", encoding="utf-8") as f:
+                    f.write(generate_markdown_article(new_item))
             added_count += 1
             print(f"✨ [Store 1 新規独自記事追加] {new_item['title'][:32]}...")
+            break
 
     # 3. 日付降順でソートして保存
     cleaned_articles = sorted(
