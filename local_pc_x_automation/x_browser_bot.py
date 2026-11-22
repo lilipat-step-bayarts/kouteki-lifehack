@@ -525,7 +525,7 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
                 page.goto(intent_url, wait_until="domcontentloaded", timeout=30000)
                 human_sleep(4.5, 6.5)
 
-        post_btn = page.locator('[data-testid="tweetButton"]').first
+        post_btn = page.locator('[data-testid="tweetButton"], [data-testid="tweetButtonInline"]').first
         if post_btn.count() == 0:
             page.goto("https://x.com/compose/post", wait_until="domcontentloaded", timeout=30000)
             human_sleep(3.5, 5.0)
@@ -540,7 +540,7 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
                 if file_input.count() > 0:
                     file_input.set_input_files(temp_img_path)
                     human_sleep(4.0, 6.0)
-            post_btn = page.locator('[data-testid="tweetButton"]').first
+            post_btn = page.locator('[data-testid="tweetButton"], [data-testid="tweetButtonInline"]').first
 
         if post_btn.count() > 0:
             post_btn.click()
@@ -586,7 +586,7 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
                                 reply_box.fill(reply_text)
                                 human_sleep(2.0, 3.0)
 
-                                reply_submit_btn = page.locator('[data-testid="tweetButton"]').first
+                                reply_submit_btn = page.locator('[data-testid="tweetButton"], [data-testid="tweetButtonInline"]').first
                                 if reply_submit_btn.count() > 0:
                                     reply_submit_btn.click()
                                     human_sleep(4.0, 6.0)
