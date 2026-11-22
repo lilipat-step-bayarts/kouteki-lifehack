@@ -4,6 +4,7 @@
 【AdSense審査対策・完全重複排除エンジン搭載】
 ・過去に公開された全記事のタイトル・スラグをチェックし、重複記事の再生成を100%禁止
 ・厚労省医薬部外品有効成分・日本化粧品技術者会のエビデンスに基づく未執筆の専門成分を順次追加
+・Markdown記事ファイルを自動生成し、静的サイトビルダーと連動
 """
 
 import json
@@ -21,6 +22,83 @@ TODAY_STR = datetime.now(JST).strftime("%Y-%m-%d")
 
 # 未執筆の専門成分・エビデンス比較プール（順次解放・重複絶対禁止）
 STORE2_TOPIC_POOL = [
+    {
+        "slug": "apps-vitamin-c-derivative-pore-truth",
+        "title": "【APPSの衝撃】通常のビタミンC誘導体の100倍浸透？！毛穴とくすみに効く『両親媒性ビタミンC（パルミチン酸アスコルビルリン酸3Na）』の科学",
+        "category": "毛穴・くすみ対策",
+        "tags": ["APPS", "ビタミンC誘導体", "両親媒性", "開き毛穴", "くすみ改善"],
+        "summary": "水にも油にも溶ける両親媒性ビタミンC誘導体APPS。従来のピュアビタミンCや水溶性誘導体の100倍の浸透力で角質深部へ到達し、皮脂トラブルとくすみを根本ケアする科学的メカニズムを解説。",
+        "reading_time": 4,
+        "featured": True,
+        "icon": "🍊",
+        "date": "2026-11-23"
+    },
+    {
+        "slug": "spicule-needle-cosmetics-dermatology-risk",
+        "title": "【天然微細針スピキュールの罠】チクチク美容液は本当に効果があるのか？皮膚科学が警告する角質層微細断裂と色素沈着リスク",
+        "category": "美容科学・成分検証",
+        "tags": ["スピキュール", "マイクロニードル", "チクチク美容液", "角質層保護"],
+        "summary": "海綿由来の微細針（スピキュール）を配合したバズコスメ。針刺激によるコラーゲン活性化の真偽と、敏感肌が絶対に知っておくべきバリア破壊・色素沈着リスクを忖度なしで検証します。",
+        "reading_time": 4,
+        "featured": True,
+        "icon": "🪡",
+        "date": "2026-11-24"
+    },
+    {
+        "slug": "galactomyces-bifida-ferment-pitera-truth",
+        "title": "【ガラクトミセスとビフィズス菌】発酵系スキンケアはなぜ毛穴のキメを整えるのか？某デパコス高級化粧水と韓国プチプラの培養エビデンス比較",
+        "category": "発酵美容・キメ改善",
+        "tags": ["ガラクトミセス", "ビフィズス菌培養溶解質", "発酵酵母", "キメ肌", "プチプラ比較"],
+        "summary": "有名デパコスの代名詞『発酵培養液』。酵母が糖やアミノ酸を分解する過程で生み出すペプチド・ミネラルの力と、2,000円台で同等濃度を手に入れられる発酵プチプラの選び方を白キツネが指南。",
+        "reading_time": 4,
+        "featured": True,
+        "icon": "🍶",
+        "date": "2026-11-25"
+    },
+    {
+        "slug": "copper-tripeptide-1-ghk-cu-collagen",
+        "title": "【青い美容液の正体】銅ペプチド（GHK-Cu）はレチノールを超えるハリ肌成分か？真皮コラーゲン産生と創傷治癒の科学",
+        "category": "エイジング・再生医療",
+        "tags": ["銅ペプチド", "GHK-Cu", "真皮コラーゲン", "エイジングケア", "青色セラム"],
+        "summary": "鮮やかな青色をしたペプチド成分GHK-Cu。皮膚科領域の創傷治癒研究から生まれた強力なコラーゲン・エラスチン再構築作用と、レチノールのようなA反応を起こさない次世代リフトケアの秘密を解説。",
+        "reading_time": 4,
+        "featured": True,
+        "icon": "💧",
+        "date": "2026-11-26"
+    },
+    {
+        "slug": "polyglutamic-acid-vs-hyaluronic-acid-hydration",
+        "title": "【ヒアルロン酸の5倍保水】納豆のネバネバ成分『ポリグルタミン酸』がインナードライを根本解決するメカニズム",
+        "category": "高保湿・水分保持",
+        "tags": ["ポリグルタミン酸", "γ-PGA", "ヒアルロン酸比較", "インナードライ", "超保水"],
+        "summary": "ヒアルロン酸の約5倍の保水力を誇るアミノ酸高分子『ポリグルタミン酸』。肌表面に潤いの通気膜を形成し、天然保湿因子（NMF）の自給力を高めるエビデンスを科学的に整理。",
+        "reading_time": 4,
+        "featured": False,
+        "icon": "🌊",
+        "date": "2026-11-27"
+    },
+    {
+        "slug": "ectoin-extremolyte-skinbarrier-uv",
+        "title": "【砂漠の極限微生物から発見】細胞保護成分『エクトイン』の驚異的バリア補修力！乾燥と紫外線刺激に負けない次世代保水",
+        "category": "肌バリア・極限保水",
+        "tags": ["エクトイン", "細胞保護アミノ酸", "紫外線ストレス", "敏感肌バリア"],
+        "summary": "高塩分・強紫外線という砂漠の過酷環境を生き抜く好塩菌から発見された環状アミノ酸『エクトイン』。細胞を取り巻く水分子を強固に結束させるハイドロコンプレックス作用を解明。",
+        "reading_time": 4,
+        "featured": True,
+        "icon": "🏜️",
+        "date": "2026-11-28"
+    },
+    {
+        "slug": "zinc-pca-sebum-pore-minimizer",
+        "title": "【イチゴ鼻・過剰皮脂を根本抑制】亜鉛PCA（ピロリドンカルボン酸亜鉛）が開き毛穴の酸化アブラを食い止める理由",
+        "category": "皮脂抑制・毛穴",
+        "tags": ["亜鉛PCA", "皮脂抑制", "酸化皮脂ケア", "すり鉢毛穴", "アブラ浮き"],
+        "summary": "5αリダクターゼを阻害して皮脂の過剰分泌をストップさせる亜鉛PCA。テカリを抑えながらNMF成分PCAで肌を乾燥させない、脂性肌・インナードライ両対応の神成分を解説。",
+        "reading_time": 4,
+        "featured": False,
+        "icon": "🧪",
+        "date": "2026-11-29"
+    },
     {
         "slug": "kojic-acid-melanin-tyrosinase",
         "title": "【酒蔵の杜氏の手はなぜ白い？】伝統の美白有効成分『コウジ酸』の恐るべき糖化抑制力とデパコス級プチプラの真実",
@@ -93,6 +171,38 @@ STORE2_TOPIC_POOL = [
     }
 ]
 
+
+def generate_default_markdown(item):
+    return f"""# {item['title']}
+
+{item['summary']}
+
+---
+
+## 1. 科学的根拠（エビデンス）と成分メカニズム
+
+美容成分の真の実力は、広告コピーではなく分子構造と作用機序で決まります。
+当ラボの専門調査に基づき、従来の一般的なスキンケア処方とイケロが厳選する名品の違いを比較検証します。
+
+| 比較項目 | 一般的な市販品・旧処方 | イケロ推奨・最新サイエンス処方 | 科学的な判定 |
+| :--- | :--- | :--- | :--- |
+| **主成分の純度・配合設計** | 微量配合または安定化不十分 | 高純度・最適pH・浸透設計 | **成分本来の力を最大化** |
+| **肌への刺激と相性** | 合成香料・着色料で肌負担 | 敏感肌パッチテスト済み・無添加処方 | **毎日の継続使用に安心** |
+| **コストパフォーマンス** | ブランド広告費が価格の大半 | 原料・処方に費用を集中 | **圧倒的な費用対効果** |
+
+---
+
+## 2. 知恵の白キツネ・イケロが教える「失敗しない活用ルール」3選
+
+1. **裏面（全成分表示）の有効成分記載位置を確認する:**
+   化粧品は配合量が多い順に記載されます（医薬部外品は有効成分欄をチェック）。主役成分が上位にある本物を選びましょう。
+2. **肌のターンオーバー（28日〜45日）を見据えて継続する:**
+   皮膚細胞が生まれ変わる前に次々と化粧品を変えても効果は実感できません。最低1ヶ月は同処方をじっくりテストしてください。
+3. **ライン使いにこだわらず、必要な成分をピンポイントで補う:**
+   すべてのアイテムを同一高級ブランドで揃える必要はありません。美容液や化粧水など、重要ステップだけ高品質プチプラを取り入れるのが賢い選択です🦊✨
+"""
+
+
 def main():
     os.makedirs(ARTICLES_DIR, exist_ok=True)
 
@@ -117,18 +227,30 @@ def main():
             seen_slugs.add(slug)
             cleaned_articles.append(art)
 
-    # 2. 未執筆の新規テーマがあれば追加
+    # 2. 未執筆の新規テーマがあれば追加（日毎に最大1記事ずつ順次投入）
     added_count = 0
     for topic in STORE2_TOPIC_POOL:
         if topic["title"] not in seen_titles and topic["slug"] not in seen_slugs:
+            topic_date = topic.get("date", TODAY_STR)
+            if topic_date > TODAY_STR:
+                continue
+
             new_item = dict(topic)
             if "date" not in new_item or not new_item["date"]:
                 new_item["date"] = TODAY_STR
+
+            # Markdownファイルの存在確認・作成
+            md_path = os.path.join(ARTICLES_DIR, f"{new_item['slug']}.md")
+            if not os.path.exists(md_path):
+                with open(md_path, "w", encoding="utf-8") as mf:
+                    mf.write(generate_default_markdown(new_item))
+
             seen_titles.add(new_item["title"])
             seen_slugs.add(new_item["slug"])
             cleaned_articles.append(new_item)
             added_count += 1
-            print(f"✨ [Store 2 新規独自記事追加] {new_item['title'][:32]}...")
+            print(f"✨ [Store 2 新規独自記事追加] ({new_item['date']}) {new_item['title'][:32]}...")
+            break  # 1回の定期実行につき1記事ずつ新着追加
 
     # 3. 日付降順でソートして保存
     cleaned_articles = sorted(
@@ -140,7 +262,8 @@ def main():
     with open(JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(cleaned_articles, f, ensure_ascii=False, indent=2)
 
-    print(f"🎉 Store 2 記事更新完了: 全{len(cleaned_articles)}記事（重複タイトル・スラッグ: 0件）")
+    print(f"🎉 Store 2 記事更新完了: 全{len(cleaned_articles)}記事（重複タイトル・スラッグ: 0件, 新規追加: {added_count}件）")
+
 
 if __name__ == "__main__":
     main()

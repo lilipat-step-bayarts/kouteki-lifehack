@@ -73,6 +73,16 @@ NOTE_ACCOUNTS = {
 }
 
 
+INITIAL_NOTE_POSTED_SEED = {
+    "store1_hoporin": [
+        "jidou-teate-kakuju-2026"
+    ],
+    "store2_ikero": [
+        "peptides-matrixyl-argireline"
+    ]
+}
+
+
 def human_sleep(min_sec=2.0, max_sec=4.0):
     time.sleep(random.uniform(min_sec, max_sec))
 
@@ -85,15 +95,21 @@ def load_state():
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                state = json.load(f)
+                for k, seed_list in INITIAL_NOTE_POSTED_SEED.items():
+                    acc_state = state.setdefault(k, {"posted_ids": [], "last_posted_at": None, "total_posts": 0})
+                    for sid in seed_list:
+                        if sid not in acc_state.get("posted_ids", []):
+                            acc_state["posted_ids"].append(sid)
+                return state
         except Exception:
             pass
     state = {}
     for k in NOTE_ACCOUNTS.keys():
         state[k] = {
-            "posted_ids": [],
+            "posted_ids": list(INITIAL_NOTE_POSTED_SEED.get(k, [])),
             "last_posted_at": None,
-            "total_posts": 0
+            "total_posts": len(INITIAL_NOTE_POSTED_SEED.get(k, []))
         }
     return state
 
@@ -429,6 +445,32 @@ def post_article_to_note(page, key, acc_cfg, article, publish=False):
     return True
 
 
+def fetch_existing_note_titles(page):
+    """note管理画面 (https://note.com/notes) から既に投稿済みの記事タイトル一覧を自動検知する"""
+    published_titles = []
+    try:
+        print("  🔍 note管理画面から既存の公開・下書きタイトルを照合中...")
+        page.goto("https://note.com/notes", wait_until="domcontentloaded", timeout=25000)
+        human_sleep(3.0, 4.5)
+        # note一覧の見出し要素
+        title_elements = page.locator('a[href*="/n/"], h3, [class*="title"], [class*="NoteItem"]')
+        count = min(title_elements.count(), 40)
+        for i in range(count):
+            try:
+                t = title_elements.nth(i).inner_text().strip()
+                if t and len(t) >= 6 and not t.startswith("http") and "\n" not in t:
+                    if t not in published_titles:
+                        published_titles.append(t)
+            except Exception:
+                pass
+        print(f"    ℹ️ note上で検出された既存記事タイトル: {len(published_titles)}件")
+        for pt in published_titles[:5]:
+            print(f"      ・{pt[:40]}...")
+    except Exception as e:
+        print(f"    ⚠️ note管理画面チェック中に例外（続行）: {e}")
+    return published_titles
+
+
 def run_account(p, key, acc_cfg, state, force=False, publish=False):
     acc_state = state.setdefault(key, {"posted_ids": [], "last_posted_at": None, "total_posts": 0})
     posted_ids = acc_state.setdefault("posted_ids", [])
@@ -464,19 +506,54 @@ def run_account(p, key, acc_cfg, state, force=False, publish=False):
             print("    ⚠️ 記事データが取得できませんでした。")
             return
 
+        # 日付降順（最新記事優先）でソート
+        articles = sorted(articles, key=lambda x: x.get("date", "2026-11-09"), reverse=True)
+
         id_key = acc_cfg["id_key"]
-        unposted = [a for a in articles if a.get(id_key) and a.get(id_key) not in posted_ids]
+        # note上の既存タイトルをチェック
+        existing_note_titles = fetch_existing_note_titles(page)
+
+        unposted = []
+        for a in articles:
+            a_id = a.get(id_key)
+            a_title = a.get("title", "")
+            if not a_id:
+                continue
+            if a_id in posted_ids:
+                continue
+
+            # note上にすでに同一または類似タイトルが存在するか判定
+            is_duplicate = False
+            for ent in existing_note_titles:
+                short_a = a_title.replace("【", "").replace("】", "")[:20]
+                short_e = ent.replace("【", "").replace("】", "")[:20]
+                if short_a in short_e or short_e in short_a:
+                    is_duplicate = True
+                    break
+            if is_duplicate:
+                print(f"    ⚠️ 重複防止：『{a_title[:30]}...』は既にnote上に存在するためスキップ・履歴登録します。")
+                if a_id not in posted_ids:
+                    posted_ids.append(a_id)
+                continue
+
+            unposted.append(a)
+
         if not unposted:
-            print("    🔄 全記事を一巡したため、投稿履歴をリセットして先頭から再開します。")
-            posted_ids.clear()
-            unposted = articles
+            print("    ℹ️ 全記事がすでにnoteに投稿済みです。新しい記事の生成をお待ちください。")
+            save_state(state)
+            return
 
         target_article = unposted[0]
+        print(f"    🎯 次の投稿対象（最新・未投稿）: 『{target_article.get('title')[:35]}...』 (日付: {target_article.get('date')})")
+
         success = post_article_to_note(page, key, acc_cfg, target_article, publish=publish)
         if success:
             art_id = target_article.get(id_key)
             posted_ids.append(art_id)
             acc_state["last_posted_at"] = datetime.now(timezone.utc).isoformat()
+            acc_state["total_posts"] = acc_state.get("total_posts", 0) + 1
+            save_state(state)
+            print(f"    📊 投稿履歴を更新しました（合計: {acc_state['total_posts']} 記事）。")
             acc_state["total_posts"] = acc_state.get("total_posts", 0) + 1
             save_state(state)
             print(f"    📊 投稿履歴を更新しました（合計: {acc_state['total_posts']} 記事）。")
