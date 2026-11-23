@@ -471,7 +471,7 @@ def fetch_existing_note_titles(page):
     return published_titles
 
 
-def run_account(p, key, acc_cfg, state, force=False, publish=False):
+def run_account(p, key, acc_cfg, state, force=False, publish=False, limit=1):
     acc_state = state.setdefault(key, {"posted_ids": [], "last_posted_at": None, "total_posts": 0})
     posted_ids = acc_state.setdefault("posted_ids", [])
 
@@ -543,20 +543,22 @@ def run_account(p, key, acc_cfg, state, force=False, publish=False):
             save_state(state)
             return
 
-        target_article = unposted[0]
-        print(f"    🎯 次の投稿対象（最新・未投稿）: 『{target_article.get('title')[:35]}...』 (日付: {target_article.get('date')})")
+        target_articles = unposted[:limit]
+        for idx, target_article in enumerate(target_articles):
+            print(f"    🎯 投稿対象 ({idx + 1}/{len(target_articles)}): 『{target_article.get('title')[:35]}...』 (日付: {target_article.get('date')})")
 
-        success = post_article_to_note(page, key, acc_cfg, target_article, publish=publish)
-        if success:
-            art_id = target_article.get(id_key)
-            posted_ids.append(art_id)
-            acc_state["last_posted_at"] = datetime.now(timezone.utc).isoformat()
-            acc_state["total_posts"] = acc_state.get("total_posts", 0) + 1
-            save_state(state)
-            print(f"    📊 投稿履歴を更新しました（合計: {acc_state['total_posts']} 記事）。")
-            acc_state["total_posts"] = acc_state.get("total_posts", 0) + 1
-            save_state(state)
-            print(f"    📊 投稿履歴を更新しました（合計: {acc_state['total_posts']} 記事）。")
+            success = post_article_to_note(page, key, acc_cfg, target_article, publish=publish)
+            if success:
+                art_id = target_article.get(id_key)
+                if art_id not in posted_ids:
+                    posted_ids.append(art_id)
+                acc_state["last_posted_at"] = datetime.now(timezone.utc).isoformat()
+                acc_state["total_posts"] = acc_state.get("total_posts", 0) + 1
+                save_state(state)
+                print(f"    📊 投稿履歴を更新しました（合計: {acc_state['total_posts']} 記事）。")
+                if idx + 1 < len(target_articles):
+                    print("    ⏳ 連続投稿の間隔を待機中（5〜10秒）...")
+                    human_sleep(5.0, 10.0)
 
     finally:
         human_sleep(2.0, 3.5)
@@ -567,6 +569,7 @@ def main():
     parser = argparse.ArgumentParser(description="note自動転記＆集客エンジン")
     parser.add_argument("--account", choices=["store1_hoporin", "store2_ikero", "all"], default="all")
     parser.add_argument("--publish", action="store_true", help="下書き保存ではなく直接一般公開する")
+    parser.add_argument("--limit", type=int, default=1, help="1回に投稿する記事数（デフォルト: 1）")
     parser.add_argument("--login-only", action="store_true", help="ログイン画面を開いて確認・手動認証を行う")
     args = parser.parse_args()
 
@@ -575,17 +578,17 @@ def main():
     print("========================================================")
     print("【note（高ドメイン）自動転記＆送客エンジン 稼働開始】")
     mode_str = "本番一般公開モード 🚀" if args.publish else "安全下書き保存モード 💾"
-    print(f"モード: {mode_str}")
+    print(f"モード: {mode_str} / アカウント上限: {args.limit} 件")
     print("========================================================")
 
     with sync_playwright() as p:
         if args.account == "all":
             for k, cfg in NOTE_ACCOUNTS.items():
-                run_account(p, k, cfg, state, publish=args.publish)
+                run_account(p, k, cfg, state, publish=args.publish, limit=args.limit)
                 human_sleep(4.0, 7.0)
         else:
             cfg = NOTE_ACCOUNTS[args.account]
-            run_account(p, args.account, cfg, state, publish=args.publish)
+            run_account(p, args.account, cfg, state, publish=args.publish, limit=args.limit)
 
     print("\n🎉 本日のnote自動処理がすべて完了しました！")
 
