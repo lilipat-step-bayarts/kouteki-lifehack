@@ -318,35 +318,106 @@ def post_article_to_note(page, key, acc_cfg, article, publish=False):
     except Exception as e:
         print(f"    ⚠️ タイトル入力エラー: {e}")
 
-    # 2. ヘッダーアイキャッチ画像のアップロード
-    header_img = acc_cfg.get("header_image")
-    if header_img and not os.path.exists(header_img):
-        # リモート画像をダウンロード
+    # 2. ヘッダーアイキャッチ画像の生成・解決とアップロード (note公式推奨 1280x670)
+    eyecatch_path = None
+    try:
+        # 自律的ダイナミック見出し画像生成モジュール
+        from generate_eyecatch import generate_note_eyecatch
+        article_title = article.get("title", title)
+        eyecatch_path = generate_note_eyecatch(
+            store_key=key,
+            title=article_title,
+            article_id=id_val,
+            base_image_path=acc_cfg.get("header_image")
+        )
+    except Exception as gen_err:
+        print(f"    ⚠️ アイキャッチ動的生成スキップ ({gen_err})、静的画像にフォールバックします。")
+        eyecatch_path = acc_cfg.get("header_image")
+
+    # ローカル画像が見つからない場合はリモートからフォールバック取得
+    if not eyecatch_path or not os.path.exists(eyecatch_path):
         remote_url = acc_cfg.get("remote_header_image")
         if remote_url:
             try:
-                temp_img = os.path.join(tempfile.gettempdir(), f"note_thumb_{key}.jpg")
+                temp_img = os.path.join(tempfile.gettempdir(), f"note_thumb_{key}_{id_val}.jpg")
                 req = urllib.request.Request(remote_url, headers={"User-Agent": "Mozilla/5.0"})
                 with urllib.request.urlopen(req, timeout=15) as resp, open(temp_img, "wb") as f_out:
                     f_out.write(resp.read())
-                header_img = temp_img
+                eyecatch_path = temp_img
             except Exception:
-                header_img = None
+                eyecatch_path = None
 
-    if header_img and os.path.exists(header_img):
+    if eyecatch_path and os.path.exists(eyecatch_path):
         try:
-            file_input = page.locator('input[type="file"]').first
-            if file_input.count() > 0:
-                file_input.set_input_files(header_img)
-                print("    📷 ヘッダーアイキャッチ画像をアップロードしました。")
-                human_sleep(3.5, 5.5)
-                # クロップダイアログが出た場合の「保存」クリック
-                crop_save = page.locator('button:has-text("保存")').first
-                if crop_save.count() > 0 and crop_save.is_visible():
-                    crop_save.click()
-                    human_sleep(2.0, 3.5)
+            print(f"    📷 見出し画像の設定を開始します: {os.path.basename(eyecatch_path)}")
+            # 1) noteエディタ上部の見出し画像ボタン（円形カメラ＋アイコン）を特定
+            # noteの仕様: textarea[placeholder*="タイトル"] の上部にある button[aria-label*="画像を追加"]
+            img_btn_candidates = page.locator('button[aria-label*="画像を追加"], button[aria-label*="見出し画像"], button[aria-label*="画像"]')
+            target_btn = None
+            if img_btn_candidates.count() > 0:
+                # 画面内で一番上にある画像ボタンを選択（本文側の誤クリック防止）
+                min_y = float("inf")
+                for i in range(img_btn_candidates.count()):
+                    try:
+                        box = img_btn_candidates.nth(i).bounding_box()
+                        if box and box["y"] < min_y:
+                            min_y = box["y"]
+                            target_btn = img_btn_candidates.nth(i)
+                    except Exception:
+                        pass
+
+            if not target_btn or target_btn.count() == 0:
+                # タイトル入力欄の直前にあるボタンを探す
+                title_loc = page.locator('textarea[placeholder*="タイトル"]').first
+                if title_loc.count() > 0:
+                    target_btn = title_loc.locator('xpath=preceding::button[1]')
+
+            if target_btn and target_btn.count() > 0:
+                target_btn.scroll_into_view_if_needed()
+                target_btn.click(force=True)
+                human_sleep(1.0, 1.8)
+
+            # 2) ドロップダウンメニューの「画像をアップロード」をクリック
+            upload_item = page.locator('button:has-text("画像をアップロード"), div:has-text("画像をアップロード"), li:has-text("画像をアップロード")').first
+            file_chooser = None
+            if upload_item.count() > 0 and upload_item.is_visible():
+                try:
+                    with page.expect_file_chooser(timeout=6000) as fc_info:
+                        upload_item.click(force=True)
+                    file_chooser = fc_info.value
+                except Exception as fc_err:
+                    print(f"    ℹ️ expect_file_chooser待機タイムアウト: {fc_err}")
+
+            if file_chooser:
+                file_chooser.set_files(eyecatch_path)
+                print(f"    ✅ ファイルチューザー経由でアップロード成功: {os.path.basename(eyecatch_path)}")
+            else:
+                # フォールバック: input[type="file"] がマウントされているかチェック
+                file_input = page.locator('input[type="file"]').first
+                if file_input.count() > 0:
+                    file_input.set_input_files(eyecatch_path)
+                    print(f"    ✅ input[type=file] 経由でアップロード成功: {os.path.basename(eyecatch_path)}")
+
+            # 3) クロップ・トリミングダイアログが出現した場合の「保存」処理
+            human_sleep(2.5, 4.0)
+            dialog = page.locator('div[role="dialog"]')
+            save_btn = None
+            if dialog.count() > 0 and dialog.is_visible():
+                save_btn = dialog.locator('button:has-text("保存")').first
+            if not save_btn or save_btn.count() == 0 or not save_btn.is_visible():
+                save_btn = page.locator('button:has-text("保存")').first
+
+            if save_btn and save_btn.count() > 0 and save_btn.is_visible():
+                for _ in range(15):
+                    if save_btn.is_enabled():
+                        break
+                    human_sleep(0.4, 0.7)
+                save_btn.click(force=True)
+                print("    ✅ 見出し画像の配置・トリミングを保存しました。")
+                human_sleep(2.0, 3.5)
+
         except Exception as img_err:
-            print(f"    ⚠️ ヘッダー画像設定スキップ: {img_err}")
+            print(f"    ⚠️ ヘッダー画像設定処理中に例外（続行します）: {img_err}")
 
     # 3. 本文入力（ProseMirrorエディタ突破：物理入力 & クリップボード活用）
     try:

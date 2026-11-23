@@ -4,3 +4,5 @@ node_modules/
 .env
 scripts/set_github_secret.py
 scripts/push_to_github.py
+local_pc_x_automation/cache/
+local_pc_x_automation/browser_profiles/
