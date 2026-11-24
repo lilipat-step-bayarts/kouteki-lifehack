@@ -112,7 +112,7 @@ AMAZON_TAG = "ikerocosme-22"
 RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"
 
 def live_ad_box(label):
-    rakuten_sim_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote('https://event.rakuten.co.jp/furusato/guide/totalsimulation/', safe='')}&link_type=text"
+    rakuten_sim_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote('https://event.rakuten.co.jp/furusato/guide/simulation/', safe='')}&link_type=text"
     amazon_guide_url = f"https://www.amazon.co.jp/s?k={urllib.parse.quote('控除 節税 確定申告 本')}&tag={AMAZON_TAG}"
 
     return f"""
@@ -177,7 +177,7 @@ def get_furusato_hub_callout():
 
 def get_furusato_killer_ranking_cards():
     """ふるさと納税キラー記事専用：超高還元・生活費防衛返礼品BEST10カード一覧"""
-    rakuten_sim_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote('https://event.rakuten.co.jp/furusato/guide/totalsimulation/', safe='')}&link_type=text"
+    rakuten_sim_url = f"https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote('https://event.rakuten.co.jp/furusato/guide/simulation/', safe='')}&link_type=text"
     
     items = [
         {
@@ -360,7 +360,7 @@ def get_store1_amazon_card(art):
         high_ticket_badge = "💰 節税・控除枠の無料最大化"
         high_ticket_title = "【楽天ふるさと納税】年収・家族構成を入れるだけ！控除上限額3秒シミュレーター"
         high_ticket_desc = "自己負担2,000円で黒毛和牛・海鮮・日用品がもらえる「ふるさと納税」の自分の上限額を無料で診断。楽天ポイントも同時に貯まってダブルでお得です。"
-        high_ticket_target = "https://event.rakuten.co.jp/furusato/guide/totalsimulation/"
+        high_ticket_target = "https://event.rakuten.co.jp/furusato/guide/simulation/"
         high_ticket_btn = "🎁 楽天ふるさと納税で無料控除シミュレーション＆人気返礼品を見る"
         amazon_sub_keyword = "ふるさと納税 確定申告 節税 本"
     elif "省エネ" in title or "電気" in title or "エアコン" in title or "断熱" in title or "補助金" in cat or "住宅" in title:
@@ -532,7 +532,7 @@ def build_index(articles):
               <span>🎁 特設攻略＆神返礼品BEST10を見る</span>
               <span>→</span>
             </a>
-            <a href="https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote('https://event.rakuten.co.jp/furusato/guide/totalsimulation/', safe='')}&link_type=text" target="_blank" rel="noopener noreferrer sponsored" class="px-5 py-2.5 bg-orange-950/40 hover:bg-orange-950/60 text-yellow-200 border border-yellow-300/40 font-bold text-xs rounded-xl transition text-center flex items-center justify-center gap-1.5">
+            <a href="https://hb.afl.rakuten.co.jp/hgc/{RAKUTEN_AF_ID}/?pc={urllib.parse.quote('https://event.rakuten.co.jp/furusato/guide/simulation/', safe='')}&link_type=text" target="_blank" rel="noopener noreferrer sponsored" class="px-5 py-2.5 bg-orange-950/40 hover:bg-orange-950/60 text-yellow-200 border border-yellow-300/40 font-bold text-xs rounded-xl transition text-center flex items-center justify-center gap-1.5">
               <span>⏱️ 楽天公式 3秒限度額診断 ↗</span>
             </a>
           </div>
