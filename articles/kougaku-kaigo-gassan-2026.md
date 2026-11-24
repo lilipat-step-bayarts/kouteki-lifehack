@@ -3,7 +3,7 @@ title: "【年間最大数十万円の還付】医療と介護の両方を払っ
 category: "医療・介護費還付"
 date: "2026-11-16"
 source: "厚生労働省「高額医療・高額介護合算制度について」"
-source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/juutaku/kougakuiryou.html"
+source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/juuyou/kougakuiryou/index.html"
 ---
 
 # 【年間最大数十万円の還付】医療と介護の両方を払っている世帯は必見！『高額医療・高額介護合算制度』の申請漏れを防ぐ全手順
@@ -70,7 +70,7 @@ A. 計算期間の翌日（8月1日）から2年以内であれば、過去2年�
 本記事は正確な制度理解のため、以下の公的機関の発表情報を基に要約・作成しています。
 最新の詳細要件や申請用紙のダウンロードは公式サイトをご確認ください。
 
-- 参照元: [厚生労働省「高額医療・高額介護合算制度について」](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/juutaku/kougakuiryou.html)
+- 参照元: [厚生労働省「高額医療・高額介護合算制度について」](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/juuyou/kougakuiryou/index.html)
 
 <!-- [AD_SLOT_BOTTOM]: 記事下部 広告枠 (読後CTA/Cookie誘導枠) -->
 <div class="ad-placeholder" data-slot="bottom"></div>

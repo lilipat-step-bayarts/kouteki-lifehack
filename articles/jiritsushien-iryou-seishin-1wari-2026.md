@@ -3,7 +3,7 @@ title: "【心療内科・精神科の通院費が1割負担に】処方薬や�
 category: "医療費軽減制度"
 date: "2026-11-18"
 source: "厚生労働省「自立支援医療（精神通院医療）の概要」"
-source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/shougaishahukushi/jiritsu/seishin.html"
+source_url: "https://www.mhlw.go.jp/bunya/shougaihoken/jiritsu/seishin.html"
 ---
 
 # 【心療内科・精神科の通院費が1割負担に】処方薬やカウンセリング代が激減する『自立支援医療（精神通院医療）』の申請手順と所得制限
@@ -71,7 +71,7 @@ A. 原則として受給者証に登録した指定医療機関（主たる病�
 本記事は正確な制度理解のため、以下の公的機関の発表情報を基に要約・作成しています。
 最新の詳細要件や申請用紙のダウンロードは公式サイトをご確認ください。
 
-- 参照元: [厚生労働省「自立支援医療（精神通院医療）の概要」](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/shougaishahukushi/jiritsu/seishin.html)
+- 参照元: [厚生労働省「自立支援医療（精神通院医療）の概要」](https://www.mhlw.go.jp/bunya/shougaihoken/jiritsu/seishin.html)
 
 <!-- [AD_SLOT_BOTTOM]: 記事下部 広告枠 (読後CTA/Cookie誘導枠) -->
 <div class="ad-placeholder" data-slot="bottom"></div>

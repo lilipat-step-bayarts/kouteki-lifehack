@@ -3,7 +3,7 @@ title: "【ひとり親世帯に月最大4.5万円超】児童扶養手当の所
 category: "子育て・ひとり親支援"
 date: "2026-11-22"
 source: "こども家庭庁「児童扶養手当について」"
-source_url: "https://www.cfa.go.jp/policies/hitori-oya/jidou-fuyou-teate/"
+source_url: "https://www.cfa.go.jp/policies/hitori-oya/fuyou-teate"
 ---
 
 # 【ひとり親世帯に月最大4.5万円超】児童扶養手当の所得制限緩和と養育費の8割算入ルール！実家の親と同居する場合の注意点
@@ -69,7 +69,7 @@ A. 法的な婚姻届を出していなくても、内縁関係や生計を同�
 本記事は正確な制度理解のため、以下の公的機関の発表情報を基に要約・作成しています。
 最新の詳細要件や申請用紙のダウンロードは公式サイトをご確認ください。
 
-- 参照元: [こども家庭庁「児童扶養手当について」](https://www.cfa.go.jp/policies/hitori-oya/jidou-fuyou-teate/)
+- 参照元: [こども家庭庁「児童扶養手当について」](https://www.cfa.go.jp/policies/hitori-oya/fuyou-teate)
 
 <!-- [AD_SLOT_BOTTOM]: 記事下部 広告枠 (読後CTA/Cookie誘導枠) -->
 <div class="ad-placeholder" data-slot="bottom"></div>

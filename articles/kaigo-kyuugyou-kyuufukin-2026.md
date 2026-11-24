@@ -3,7 +3,7 @@ title: "【親の介護で離職するな】国から給料の67%が最大93日�
 category: "介護支援・休業給付金"
 date: "2026-11-23"
 source: "厚生労働省「介護休業給付について」"
-source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000158542.html"
+source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000158665.html"
 ---
 
 # 【親の介護で離職するな】国から給料の67%が最大93日分支給される『介護休業給付金』と会社を辞めずに親を救う合法的ロードマップ
@@ -69,4 +69,4 @@ source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000158542.html"
 ---
 
 ### 出典・公的参照元
-- 出典：[厚生労働省「介護休業給付について」](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000158542.html)
+- 出典：[厚生労働省「介護休業給付について」](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000158665.html)

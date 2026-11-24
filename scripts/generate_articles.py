@@ -48,7 +48,7 @@ STORE1_TOPIC_POOL = [
         ],
         "hoporin_tip": "介護休業は『自分で介護するための休み』ではなく『仕事と介護を両立するプロの体制を組むための期間』です！絶対に離職せず給付金を活用してくださいね🐧！",
         "source_name": "厚生労働省「介護休業給付について」",
-        "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000158542.html",
+        "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000158665.html",
         "date": "2026-11-23"
     },
     {
@@ -80,7 +80,7 @@ STORE1_TOPIC_POOL = [
         ],
         "hoporin_tip": "月ごとの『高額療養費』や『高額介護サービス費』を使っていても、さらに年単位で合算してダブルで戻ってくるのがこの制度の凄さです！申請しないと1円も戻らないので絶対チェックしてくださいね🐧！",
         "source_name": "厚生労働省「高額医療・高額介護合算制度について」",
-        "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/juutaku/kougakuiryou.html",
+        "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/juuyou/kougakuiryou/index.html",
         "date": "2026-11-16"
     },
     {
@@ -145,7 +145,7 @@ STORE1_TOPIC_POOL = [
         ],
         "hoporin_tip": "病院の先生や受付からは積極的に教えてくれないことが多いですが、申請した当日の診察代・薬代から1割になります！月々の医療費が半額以下になるので、通院中の方はすぐ先生に相談してくださいね🐧！",
         "source_name": "厚生労働省「自立支援医療（精神通院医療）の概要」",
-        "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/hukushi_kaigo/shougaishahukushi/jiritsu/seishin.html",
+        "source_url": "https://www.mhlw.go.jp/bunya/shougaihoken/jiritsu/seishin.html",
         "date": "2026-11-18"
     },
     {
@@ -177,7 +177,7 @@ STORE1_TOPIC_POOL = [
         ],
         "hoporin_tip": "給与明細を見て『こんなに減ったのか…』と落ち込む前に、必ず会社にこの給付金の手続きを依頼してください！非課税で年数十万円単位の手取り補填になる超重要制度です🐧！",
         "source_name": "厚生労働省・ハローワーク「高年齢雇用継続給付について」",
-        "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000160564_00005.html",
+        "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000135090.html",
         "date": "2026-11-19"
     },
     {
@@ -241,7 +241,7 @@ STORE1_TOPIC_POOL = [
         ],
         "hoporin_tip": "『失業保険は最後までもらった方が得』というのは大誤解です！再就職手当をもらい、新しい会社からの給料もダブルで手に入るので、早く就職した人の方がトータル手取りは圧倒的に多くなりますよ🐧！",
         "source_name": "ハローワーク・厚生労働省「再就職手当のご案内」",
-        "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000136569.html",
+        "source_url": "https://www.hellowork.mhlw.go.jp/insurance/insurance_stepup.html",
         "date": "2026-11-21"
     },
     {
@@ -272,7 +272,7 @@ STORE1_TOPIC_POOL = [
         ],
         "hoporin_tip": "手当をもらうだけでなく、児童扶養手当の受給者証があると『JR通勤定期券の3割引』や『粗大ごみ処理手数料免除』『水道料金減免』など自治体の独自優遇も雪だるま式に使えますよ🐧！",
         "source_name": "こども家庭庁「児童扶養手当について」",
-        "source_url": "https://www.cfa.go.jp/policies/hitori-oya/jidou-fuyou-teate/",
+        "source_url": "https://www.cfa.go.jp/policies/hitori-oya/fuyou-teate",
         "date": "2026-11-22"
     }
 ]

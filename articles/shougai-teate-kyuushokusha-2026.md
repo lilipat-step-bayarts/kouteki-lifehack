@@ -3,7 +3,7 @@ title: "【早期再就職で数十万円ゲット】失業保険を満額もら
 category: "雇用・再就職手当"
 date: "2026-11-21"
 source: "ハローワーク・厚生労働省「再就職手当のご案内」"
-source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000136569.html"
+source_url: "https://www.hellowork.mhlw.go.jp/insurance/insurance_stepup.html"
 ---
 
 # 【早期再就職で数十万円ゲット】失業保険を満額もらうより得をする『再就職手当』の支給要件と会社都合退職のボーナス
@@ -70,7 +70,7 @@ A. 雇用保険からの給付金はすべて所得税・住民税が非課税�
 本記事は正確な制度理解のため、以下の公的機関の発表情報を基に要約・作成しています。
 最新の詳細要件や申請用紙のダウンロードは公式サイトをご確認ください。
 
-- 参照元: [ハローワーク・厚生労働省「再就職手当のご案内」](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000136569.html)
+- 参照元: [ハローワーク・厚生労働省「再就職手当のご案内」](https://www.hellowork.mhlw.go.jp/insurance/insurance_stepup.html)
 
 <!-- [AD_SLOT_BOTTOM]: 記事下部 広告枠 (読後CTA/Cookie誘導枠) -->
 <div class="ad-placeholder" data-slot="bottom"></div>

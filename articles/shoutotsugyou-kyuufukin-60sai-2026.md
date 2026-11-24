@@ -3,7 +3,7 @@ title: "【60歳以降も働く人の特権】給料が下がっても国が最�
 category: "シニア雇用・給付金"
 date: "2026-11-19"
 source: "厚生労働省・ハローワーク「高年齢雇用継続給付について」"
-source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000160564_00005.html"
+source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000135090.html"
 ---
 
 # 【60歳以降も働く人の特権】給料が下がっても国が最大15%補填する『高年齢雇用継続給付』と年金併給調整のリアル
@@ -70,7 +70,7 @@ A. 週20時間以上勤務し、雇用保険の被保険者であればパート
 本記事は正確な制度理解のため、以下の公的機関の発表情報を基に要約・作成しています。
 最新の詳細要件や申請用紙のダウンロードは公式サイトをご確認ください。
 
-- 参照元: [厚生労働省・ハローワーク「高年齢雇用継続給付について」](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000160564_00005.html)
+- 参照元: [厚生労働省・ハローワーク「高年齢雇用継続給付について」](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000135090.html)
 
 <!-- [AD_SLOT_BOTTOM]: 記事下部 広告枠 (読後CTA/Cookie誘導枠) -->
 <div class="ad-placeholder" data-slot="bottom"></div>
