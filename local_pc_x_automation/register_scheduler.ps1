@@ -16,7 +16,11 @@ if (-not (Test-Path $batchPath)) {
     Exit 1
 }
 
-$times = @("07:00", "10:00", "12:15", "18:00", "21:00", "22:30", "00:30")
+# 1日5回（ほぽりんとイケロの30分ずらし分散投稿）＋ 夜間オニゴン
+# ほぽりん枠: 07:00, 10:00, 12:15, 18:00, 21:00
+# イケロ枠 (30分ずらし): 07:30, 10:30, 12:45, 18:30, 21:30
+# オニゴン枠: 22:30, 00:30
+$times = @("07:00", "07:30", "10:00", "10:30", "12:15", "12:45", "18:00", "18:30", "21:00", "21:30", "22:30", "00:30")
 $triggers = @()
 foreach ($t in $times) {
     $triggers += New-ScheduledTaskTrigger -Daily -At $t
@@ -29,10 +33,13 @@ $settings = New-ScheduledTaskSettingsSet -WakeToRun -AllowStartIfOnBatteries -Do
 try {
     # 既存タスクがあれば上書き
     Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
-    Register-ScheduledTask -TaskName $taskName -Trigger $triggers -Action $action -Settings $settings -Description "X (Twitter) 3店舗自動記事ポスト＆フォロバ定期実行ボット"
+    Register-ScheduledTask -TaskName $taskName -Trigger $triggers -Action $action -Settings $settings -Description "X (Twitter) ほぽりん＆イケロ30分ずらし1日5回分散投稿＆オニゴン定期実行ボット"
     Write-Host ""
     Write-Host "🎉 成功: タスクスケジューラに「$taskName」を正常に登録しました！" -ForegroundColor Green
-    Write-Host "   - 1日7回（07:00, 10:00, 12:15, 18:00, 21:00, 22:30, 00:30）に自動起動します。"
+    Write-Host "   - 1日5回（ほぽりんとイケロの30分ずらし）＋夜間オニゴンに自動起動します。"
+    Write-Host "     ほぽりん: 07:00, 10:00, 12:15, 18:00, 21:00"
+    Write-Host "     イケロ (30分ずらし): 07:30, 10:30, 12:45, 18:30, 21:30"
+    Write-Host "     オニゴン: 22:30, 00:30"
     Write-Host "   - PCがスリープしていても自動で復帰して実行されます（WakeToRun有効）。"
     Write-Host "   - 実行ログは $baseDir\logs\x_bot.log に蓄積されます。"
 } catch {

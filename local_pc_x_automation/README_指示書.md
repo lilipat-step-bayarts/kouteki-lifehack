@@ -13,8 +13,9 @@ GitHubリポジトリ `https://github.com/lilipat-step-bayarts/kouteki-lifehack.
 
 1. Pythonの `playwright` パッケージをインストールし、`playwright install chromium` を実行してください。
 2. `local_pc_x_automation/x_browser_bot.py` の設定で、片思い解除日数を30日（または14日）に調整できるようにし、まず初回ログイン保存モード（`--login`）で3アカウントそれぞれの専用ブラウザプロファイル（`browser_profiles/store1_hoporin`, `store2_ikero`, `store3_onigon`）を作成・ログイン待機させてください。
-3. 私が3つのアカウントにログインし終わったら、1日3回（例：12:30、19:30、22:30）に自動で `python x_browser_bot.py --account all` が実行されるようにWindowsのタスクスケジューラ（またはMacのlaunchd/cron）へ自動登録してください。
+3. 私が3つのアカウントにログインし終わったら、1日5回（ほぽりんとイケロの30分ずらし：07:00, 07:30, 10:00, 10:30, 12:15, 12:45, 18:00, 18:30, 21:00, 21:30）＋夜間オニゴン（22:30, 00:30）に自動で `setup_windows_scheduler.bat`（または `register_scheduler.ps1`）が実行されるようにWindowsのタスクスケジューラへ自動登録してください。
 4. 注意点として、1号店（@ramune_lilipat）と2号店（@ikero_lab）は相互フォロー保護対象にし、3号店（成人向け @Onigon_yfks）は1・2号店と完全に分離して夜間のみ動くようにしてください。
+
 ```
 
 ---

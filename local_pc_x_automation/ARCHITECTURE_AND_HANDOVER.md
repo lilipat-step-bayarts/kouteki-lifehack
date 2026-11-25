@@ -76,4 +76,5 @@
 
 別PCでこのフォルダを開き、Antigravityに以下の通り指示してください：
 
-> **「このフォルダにある `ARCHITECTURE_AND_HANDOVER.md` と `x_browser_bot.py` を読み込んで内容を把握してください。その上で、このPCに `playwright` と `chromium` をインストールし、まず3アカウント（`@ramune_lilipat`, `@ikero_lab`, `@Onigon_yfks`）の初回ログイン（`--login`）を案内してください。ログイン完了後、毎日 `07:00, 10:00, 12:15, 18:00, 21:00, 23:00, 00:30` に自動で `x_browser_bot.py --account all` が実行されるようにこのPCのタスクスケジューラ（またはcron）へ登録してください。」**
+> **「このフォルダにある `ARCHITECTURE_AND_HANDOVER.md` と `x_browser_bot.py` を読み込んで内容を把握してください。その上で、このPCに `playwright` と `chromium` をインストールし、まず3アカウント（`@ramune_lilipat`, `@ikero_lab`, `@Onigon_yfks`）の初回ログイン（`--login`）を案内してください。ログイン完了後、毎日 `07:00, 07:30, 10:00, 10:30, 12:15, 12:45, 18:00, 18:30, 21:00, 21:30, 22:30, 00:30` に自動で `setup_windows_scheduler.bat`（または `register_scheduler.ps1`）を実行してタスクスケジューラへ登録してください（ほぽりんとイケロの1日5回・30分ずらし分散投稿対応）。」**
+

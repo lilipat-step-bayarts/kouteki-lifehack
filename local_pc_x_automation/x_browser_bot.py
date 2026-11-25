@@ -159,6 +159,24 @@ def is_within_active_window(acc_cfg, now_jst):
         return (20 <= h <= 23) or (0 <= h < 3)
 
 
+def is_account_post_slot(key, now_jst):
+    """
+    1日5回（30分ずらし）分散投稿スロット判定
+    - store1_hoporin（ほぽりん）: 毎時 00分〜29分（07:00, 10:00, 12:15, 18:00, 21:00枠）
+    - store2_ikero（イケロ）: 毎時 30分〜59分（07:30, 10:30, 12:45, 18:30, 21:30枠 ※30分ずらし）
+    - store3_onigon（オニゴン）: 夜間 20:00〜翌02:59
+    """
+    m = now_jst.minute
+    if key == "store1_hoporin":
+        return 0 <= m < 30
+    elif key == "store2_ikero":
+        return 30 <= m < 60
+    elif key == "store3_onigon":
+        return True
+    return True
+
+
+
 def load_state():
     if os.path.exists(STATE_FILE):
         try:
@@ -457,6 +475,12 @@ def step0_post_scheduled_article(page, key, acc_cfg, acc_state, force_post=False
     if not force_post and today_count >= max_posts:
         print(f"    ℹ️ 本日上限（{max_posts}回）に達しているためポストをスキップします。")
         return
+
+    if not force_post and not is_account_post_slot(key, now_jst):
+        slot_desc = "毎時00分〜29分（ほぽりん枠）" if key == "store1_hoporin" else "毎時30分〜59分（イケロ30分ずらし枠）"
+        print(f"    ⏳ 現在（{now_jst.strftime('%H:%M')} JST）は {acc_cfg['name']} の投稿スロット（{slot_desc}）外のため記事ポストをスキップします。")
+        return
+
 
     last_posted_str = acc_state.get("last_posted_at")
     if not force_post and last_posted_str:
@@ -892,7 +916,11 @@ def run_diagnose(state, headless=False):
             # 時間帯判定
             in_window = is_within_active_window(acc_cfg, now_jst)
             window_desc = "06:00〜21:59 JST" if acc_cfg["active_window"] == "day" else "20:00〜翌02:59 JST"
+            in_slot = is_account_post_slot(key, now_jst)
+            slot_desc = "毎時00分〜29分（ほぽりん枠）" if key == "store1_hoporin" else ("毎時30分〜59分（イケロ30分ずらし枠）" if key == "store2_ikero" else "夜間20:00〜翌02:59")
             print(f"  ・稼働時間帯: {window_desc} ➔ {'✅ 現在稼働時間内' if in_window else '⏸️ 現在稼働時間外'}")
+            print(f"  ・分散スロット: {slot_desc} ➔ {'✅ 担当スロット中' if in_slot else '⏳ 他店スロット中（30分ずらし待機）'}")
+
 
             # 投稿間隔チェック
             last_posted_str = acc_state.get("last_posted_at")

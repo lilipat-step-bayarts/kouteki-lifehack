@@ -8,6 +8,11 @@
 
 import json
 import os
+import re
+import sys
+import time
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone, timedelta
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +22,8 @@ JSON_PATH = os.path.join(ARTICLES_DIR, "articles.json")
 
 JST = timezone(timedelta(hours=9))
 TODAY_STR = datetime.now(JST).strftime("%Y-%m-%d")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
+
 
 # 未執筆の公的制度・給付金・税制テーマプール（順次解放・重複絶対禁止）
 STORE1_TOPIC_POOL = [
@@ -347,6 +354,106 @@ source_url: "{item['source_url']}"
 """
     return md
 
+def call_gemini_api(prompt, api_key):
+    """Gemini API (gemini-2.5-flash / gemini-1.5-flash) を呼び出してJSONオブジェクトを取得"""
+    models = ["gemini-2.5-flash", "gemini-1.5-flash"]
+    for model in models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": prompt}
+                    ]
+                }
+            ],
+            "generationConfig": {
+                "responseMimeType": "application/json",
+                "temperature": 0.7
+            }
+        }
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        try:
+            print(f"🤖 Gemini API ({model}) に記事生成をリクエスト中...")
+            with urllib.request.urlopen(req, timeout=45) as resp:
+                res_body = resp.read().decode("utf-8")
+                res_json = json.loads(res_body)
+                content_text = res_json["candidates"][0]["content"]["parts"][0]["text"].strip()
+                if content_text.startswith("```"):
+                    content_text = re.sub(r"^```[a-zA-Z]*\n?", "", content_text)
+                    content_text = re.sub(r"\n?```$", "", content_text)
+                parsed = json.loads(content_text.strip())
+                print(f"✅ Gemini API ({model}) から記事データの生成に成功しました！")
+                return parsed
+        except urllib.error.HTTPError as e:
+            err_msg = e.read().decode("utf-8", errors="ignore")
+            print(f"⚠️ Gemini API ({model}) HTTPエラー {e.code}: {err_msg[:120]}")
+        except Exception as e:
+            print(f"⚠️ Gemini API ({model}) 呼び出し失敗: {e}")
+        time.sleep(1)
+    return None
+
+
+def generate_article_with_gemini(existing_titles, api_key):
+    """Gemini APIを活用して、既存タイトルと重複しない本格的な公的ライフハック記事を生成"""
+    today_str = datetime.now(JST).strftime("%Y-%m-%d")
+    recent_titles_str = "\n".join([f"- {t}" for t in existing_titles[:40]])
+
+    prompt = f"""あなたは公的制度・給付金・税制・生活防衛ハック専門の愛されキャラクター「ほぽりん」（ペンギン研究家 🐧）です。
+日本の厚生労働省、国税庁、こども家庭庁、経済産業省、各自治体が実施している「実在する公的支援制度・給付金・減税・補助金」について、一般の人が「知らなきゃ損する」超有益な最新解説記事を1件作成してください。
+
+【厳守ルール】
+1. 【重複絶対禁止】以下の「既存記事タイトル一覧」にある制度・テーマとは絶対に被らない、未執筆の公的制度・支援策を取り上げてください。
+--- 既存記事一覧 ---
+{recent_titles_str}
+--------------------
+2. 実在する正確な制度・根拠法・公的機関に基づき執筆してください（架空の制度や嘘は厳禁）。
+   例: 傷病手当金、高額療養費、介護休業給付金、自立支援医療、児童扶養手当、特定支出控除、住宅ローン減税、セルフメディケーション税制、求職者支援制度、遺族年金、障害年金、自治体の住居確保給付金・転居補助、リスキリング給付金など実在制度。
+3. 対象者、受給額・軽減額の目安、具体的な申請ステップ、よくある疑問（Q&A）、ほぽりんのアドバイス（語尾に🐧）を含めてください。
+4. 出力は必ず以下のJSONスキーマに従った単一のJSONオブジェクト（マークダウンのコードブロックなし）として出力してください。
+
+【出力JSONフォーマット】
+{{
+  "id": "英数字ハイフンのみのユニークなID（例: jiritushien-iryouhi-shougai-2026）",
+  "category": "カテゴリ名（例: 医療・福祉支援, 子育て支援, 税金・控除, 雇用・再就職, 住まい・暮らし）",
+  "title": "【読者の目を引くフック】制度の正式名と最大のメリット（35〜55文字程度）",
+  "summary": "3秒でわかる結論・概要（100〜180文字程度）",
+  "target_audience": [
+    "対象となる条件1",
+    "対象となる条件2",
+    "対象となる条件3"
+  ],
+  "benefit_amount": "いくら得する・受給できるかの目安（例: 自己負担額が3割から1割に軽減、月最大2万円支給 等）",
+  "table_headers": ["区分・条件", "支援内容・給付額", "自己負担・カバー率", "申請窓口・備考"],
+  "table_rows": [
+    ["項目1", "内容1", "割合1", "窓口1"],
+    ["項目2", "内容2", "割合2", "窓口2"],
+    ["項目3", "内容3", "割合3", "窓口3"]
+  ],
+  "steps": [
+    {{"step": "Step 1", "title": "ステップ1の要点", "desc": "具体的な手続き説明"}},
+    {{"step": "Step 2", "title": "ステップ2の要点", "desc": "具体的な手続き説明"}},
+    {{"step": "Step 3", "title": "ステップ3の要点", "desc": "具体的な手続き説明"}}
+  ],
+  "faq": [
+    {{"q": "読者が最も気になる疑問1", "a": "わかりやすい具体的回答1"}},
+    {{"q": "読者が最も気になる疑問2", "a": "わかりやすい具体的回答2"}}
+  ],
+  "hoporin_tip": "ほぽりん（ペンギン研究家）からの生活防衛ワンポイントアドバイス！語尾に🐧をつけてください。",
+  "source_name": "公的機関の正式名称（例: 厚生労働省「自立支援医療制度の概要」）",
+  "source_url": "実在する公的機関の公式ページURL（例: https://www.mhlw.go.jp/... 等）",
+  "date": "{today_str}"
+}}
+"""
+    return call_gemini_api(prompt, api_key)
+
+
 def main():
     os.makedirs(ARTICLES_DIR, exist_ok=True)
 
@@ -371,29 +478,63 @@ def main():
             seen_ids.add(art_id)
             cleaned_articles.append(art)
 
-    # 2. 未執筆の新規公的テーマがあれば追加
     added_count = 0
-    for topic in STORE1_TOPIC_POOL:
-        if topic["title"] not in seen_titles and topic["id"] not in seen_ids:
-            topic_date = topic.get("date", TODAY_STR)
-            if topic_date > TODAY_STR:
-                continue
-            new_item = dict(topic)
-            if "date" not in new_item or not new_item["date"]:
-                new_item["date"] = TODAY_STR
-            seen_titles.add(new_item["title"])
-            seen_ids.add(new_item["id"])
-            cleaned_articles.append(new_item)
-            # Markdown生成
-            md_path = os.path.join(ARTICLES_DIR, f"{new_item['id']}.md")
-            if not os.path.exists(md_path):
-                with open(md_path, "w", encoding="utf-8") as f:
-                    f.write(generate_markdown_article(new_item))
-            added_count += 1
-            print(f"✨ [Store 1 新規独自記事追加] {new_item['title'][:32]}...")
-            break
 
-    # 3. 日付降順でソートして保存
+    # 2. Gemini API連携によるAI記事自動生成（定型文廃止）
+    if GEMINI_API_KEY:
+        print("🚀 [Store 1: ほぽりん] Gemini API連携によるAI新着記事生成を開始します...")
+        try:
+            ai_article = generate_article_with_gemini(list(seen_titles), GEMINI_API_KEY)
+            if ai_article and isinstance(ai_article, dict):
+                art_id = ai_article.get("id") or f"lifehack-{TODAY_STR}-{int(time.time())}"
+                # ハイフン・英数字に正規化
+                art_id = re.sub(r"[^a-zA-Z0-9\-]", "-", art_id).strip("-").lower()
+                ai_article["id"] = art_id
+                title = ai_article.get("title", "")
+
+                if title and title not in seen_titles and art_id not in seen_ids:
+                    if "date" not in ai_article or not ai_article["date"]:
+                        ai_article["date"] = TODAY_STR
+                    
+                    seen_titles.add(title)
+                    seen_ids.add(art_id)
+                    cleaned_articles.append(ai_article)
+
+                    # Markdown記事ファイルを生成
+                    md_path = os.path.join(ARTICLES_DIR, f"{art_id}.md")
+                    with open(md_path, "w", encoding="utf-8") as f:
+                        f.write(generate_markdown_article(ai_article))
+
+                    added_count += 1
+                    print(f"✨ [Store 1 Gemini AI新着記事生成成功] {title[:36]}... (ID: {art_id})")
+        except Exception as e:
+            print(f"⚠️ [Store 1] Gemini API記事生成中に例外発生: {e}")
+
+    # 3. フォールバック（APIキー未設定またはAPIエラー時のセーフティネット）
+    if added_count == 0:
+        if not GEMINI_API_KEY:
+            print("ℹ️ GEMINI_API_KEY が未設定のため、未執筆テーマプールからのフォールバック追加を確認します。")
+        for topic in STORE1_TOPIC_POOL:
+            if topic["title"] not in seen_titles and topic["id"] not in seen_ids:
+                topic_date = topic.get("date", TODAY_STR)
+                if topic_date > TODAY_STR:
+                    continue
+                new_item = dict(topic)
+                if "date" not in new_item or not new_item["date"]:
+                    new_item["date"] = TODAY_STR
+                seen_titles.add(new_item["title"])
+                seen_ids.add(new_item["id"])
+                cleaned_articles.append(new_item)
+                # Markdown生成
+                md_path = os.path.join(ARTICLES_DIR, f"{new_item['id']}.md")
+                if not os.path.exists(md_path):
+                    with open(md_path, "w", encoding="utf-8") as f:
+                        f.write(generate_markdown_article(new_item))
+                added_count += 1
+                print(f"✨ [Store 1 フォールバック記事追加] {new_item['title'][:32]}...")
+                break
+
+    # 4. 日付降順でソートして保存
     cleaned_articles = sorted(
         cleaned_articles,
         key=lambda x: x.get("date", "2026-11-11"),
@@ -403,7 +544,8 @@ def main():
     with open(JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(cleaned_articles, f, ensure_ascii=False, indent=2)
 
-    print(f"🎉 Store 1 記事更新完了: 全{len(cleaned_articles)}記事（重複タイトル・ID: 0件）")
+    print(f"🎉 Store 1 (ほぽりん) 記事更新完了: 全{len(cleaned_articles)}記事（新規追加: {added_count}件, 重複タイトル・ID: 0件）")
 
 if __name__ == "__main__":
     main()
+

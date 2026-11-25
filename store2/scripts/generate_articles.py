@@ -9,7 +9,11 @@
 
 import json
 import os
-import glob
+import re
+import sys
+import time
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone, timedelta
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,6 +23,8 @@ JSON_PATH = os.path.join(ARTICLES_DIR, "articles.json")
 
 JST = timezone(timedelta(hours=9))
 TODAY_STR = datetime.now(JST).strftime("%Y-%m-%d")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
+
 
 # 未執筆の専門成分・エビデンス比較プール（順次解放・重複絶対禁止）
 STORE2_TOPIC_POOL = [
@@ -203,6 +209,89 @@ def generate_default_markdown(item):
 """
 
 
+def call_gemini_api(prompt, api_key):
+    """Gemini API (gemini-2.5-flash / gemini-1.5-flash) を呼び出してJSONオブジェクトを取得"""
+    models = ["gemini-2.5-flash", "gemini-1.5-flash"]
+    for model in models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": prompt}
+                    ]
+                }
+            ],
+            "generationConfig": {
+                "responseMimeType": "application/json",
+                "temperature": 0.7
+            }
+        }
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        try:
+            print(f"🤖 [Store 2: イケロ] Gemini API ({model}) にコスメ専門記事の生成をリクエスト中...")
+            with urllib.request.urlopen(req, timeout=45) as resp:
+                res_body = resp.read().decode("utf-8")
+                res_json = json.loads(res_body)
+                content_text = res_json["candidates"][0]["content"]["parts"][0]["text"].strip()
+                if content_text.startswith("```"):
+                    content_text = re.sub(r"^```[a-zA-Z]*\n?", "", content_text)
+                    content_text = re.sub(r"\n?```$", "", content_text)
+                parsed = json.loads(content_text.strip())
+                print(f"✅ [Store 2: イケロ] Gemini API ({model}) から高品質コスメ記事の生成に成功しました！")
+                return parsed
+        except urllib.error.HTTPError as e:
+            err_msg = e.read().decode("utf-8", errors="ignore")
+            print(f"⚠️ [Store 2: イケロ] Gemini API ({model}) HTTPエラー {e.code}: {err_msg[:120]}")
+        except Exception as e:
+            print(f"⚠️ [Store 2: イケロ] Gemini API ({model}) 呼び出し失敗: {e}")
+        time.sleep(1)
+    return None
+
+
+def generate_article_with_gemini(existing_titles, api_key):
+    """Gemini APIを活用して、知恵の白キツネ・イケロ視点の専門コスメ科学記事を生成"""
+    today_str = datetime.now(JST).strftime("%Y-%m-%d")
+    recent_titles_str = "\n".join([f"- {t}" for t in existing_titles[:40]])
+
+    prompt = f"""あなたはコスメ成分ラボ・プチプラ速報のメインキャラクター「知恵の白キツネ研究員・イケロ」🦊です。
+【重要注意】あなたは「白キツネ（白狐）」です。絶対にフクロウや鳥にしないでください。語尾や口調は知性的で読者に寄り添う研究員スタイル（語尾アイコン: 🦊✨）です。
+
+厚労省承認の医薬部外品有効成分、日本化粧品技術者会（SCCJ）や皮膚科学会等のエビデンスに基づく「専門的なスキンケア成分・科学的処方解析・デパコス級プチプラ比較」について、超有益な最新解説記事を1件作成してください。
+
+【厳守ルール】
+1. 【重複絶対禁止】以下の「既存記事タイトル一覧」にある成分・テーマとは絶対に被らない、未執筆の専門成分・処方比較を取り上げてください。
+--- 既存記事一覧 ---
+{recent_titles_str}
+--------------------
+2. 実在する正確な化粧品成分（INCI名・表示名称）・薬理機序に基づき執筆してください（架空の成分は厳禁）。
+   取り上げ可能な成分例: アゼライン酸、グルタチオン、PDRN（ポリデオキシリボヌクレオチド）、エクソソーム、グリシルグリシン、トラネキサム酸、ナイアシンアミド、ヒト型セラミド（EOP/NP/AP）、コウジ酸、アルブチン、CICA（マデカッソシド）、バクチオール、ヘパリン類似物質、イデベノン、エクトイン、レスベラトロール、ヒアルロン酸クロスポリマー等。
+3. デパコスとプチプラの処方差、角質層への浸透機序、全成分表示の裏読みテクニック、失敗しない活用ルール3選（🦊✨）を含めてください。
+4. 出力は必ず以下のJSONスキーマに従った単一のJSONオブジェクト（マークダウンのコードブロックなし）として出力してください。
+
+【出力JSONフォーマット】
+{{
+  "slug": "英数字ハイフンのみのユニークなスラッグ（例: azelaic-acid-sebum-acne-barrier）",
+  "title": "【読者の目を引くフック】成分名と科学的効果（35〜55文字程度）",
+  "category": "カテゴリ名（例: 美白・透明感, 毛穴・くすみ対策, エイジング・再生医療, 高保湿・バリア機能, 肌荒れ鎮静, 角質ケア・ピーリング）",
+  "tags": ["成分名", "悩みタグ", "スキンケア", "プチプラ比較", "科学解説"],
+  "summary": "要約（100〜180文字程度。白キツネ研究員イケロの視点）",
+  "reading_time": 4,
+  "featured": true,
+  "icon": "成分に合った絵文字（例: 🍊, 💧, 🌿, 🛡️, 🧪, 🍶, ⚡）",
+  "date": "{today_str}",
+  "markdown_content": "# タイトル\\n\\nリード文（読者の悩みと成分の革新性）...\\n\\n---\\n\\n## 1. 科学的根拠（エビデンス）と成分メカニズム\\n\\nエビデンス解説...\\n\\n| 比較項目 | 一般的な市販品・旧処方 | イケロ推奨・最新サイエンス処方 | 科学的な判定 |\\n| :--- | :--- | :--- | :--- |\\n| **主成分の純度・配合設計** | 微量配合または安定化不十分 | 高純度・最適pH・浸透設計 | **成分本来の力を最大化** |\\n| **肌への刺激と相性** | 合成香料・着色料で肌負担 | 敏感肌パッチテスト済み・無添加処方 | **毎日の継続使用に安心** |\\n| **コストパフォーマンス** | ブランド広告費が価格の大半 | 原料・処方に費用を集中 | **圧倒的な費用対効果** |\\n\\n詳細な作用機序の解説...\\n\\n---\\n\\n## 2. 知恵の白キツネ・イケロが教える「失敗しない活用ルール」3選\\n\\n1. **全成分表示の裏読みポイント:**\\n   具体的な選び方の基準を解説。\\n2. **相乗効果を生む併用成分・NGな組み合わせ:**\\n   併用すべき成分や注意点。\\n3. **肌のターンオーバーを見据えた継続ルール:**\\n   正しい使用頻度や期間のアドバイス🦊✨\\n"
+}}
+"""
+    return call_gemini_api(prompt, api_key)
+
+
 def main():
     os.makedirs(ARTICLES_DIR, exist_ok=True)
 
@@ -227,32 +316,74 @@ def main():
             seen_slugs.add(slug)
             cleaned_articles.append(art)
 
-    # 2. 未執筆の新規テーマがあれば追加（日毎に最大1記事ずつ順次投入）
     added_count = 0
-    for topic in STORE2_TOPIC_POOL:
-        if topic["title"] not in seen_titles and topic["slug"] not in seen_slugs:
-            topic_date = topic.get("date", TODAY_STR)
-            if topic_date > TODAY_STR:
-                continue
 
-            new_item = dict(topic)
-            if "date" not in new_item or not new_item["date"]:
-                new_item["date"] = TODAY_STR
+    # 2. Gemini API連携によるAI新着記事生成（定型文廃止）
+    if GEMINI_API_KEY:
+        print("🚀 [Store 2: イケロ] Gemini API連携によるAI新着コスメ記事生成を開始します...")
+        try:
+            ai_article = generate_article_with_gemini(list(seen_titles), GEMINI_API_KEY)
+            if ai_article and isinstance(ai_article, dict):
+                slug = ai_article.get("slug") or f"cosme-science-{TODAY_STR}-{int(time.time())}"
+                slug = re.sub(r"[^a-zA-Z0-9\-]", "-", slug).strip("-").lower()
+                ai_article["slug"] = slug
+                title = ai_article.get("title", "")
 
-            # Markdownファイルの存在確認・作成
-            md_path = os.path.join(ARTICLES_DIR, f"{new_item['slug']}.md")
-            if not os.path.exists(md_path):
-                with open(md_path, "w", encoding="utf-8") as mf:
-                    mf.write(generate_default_markdown(new_item))
+                if title and title not in seen_titles and slug not in seen_slugs:
+                    if "date" not in ai_article or not ai_article["date"]:
+                        ai_article["date"] = TODAY_STR
+                    if "reading_time" not in ai_article:
+                        ai_article["reading_time"] = 4
+                    if "featured" not in ai_article:
+                        ai_article["featured"] = True
+                    if "icon" not in ai_article:
+                        ai_article["icon"] = "🧪"
 
-            seen_titles.add(new_item["title"])
-            seen_slugs.add(new_item["slug"])
-            cleaned_articles.append(new_item)
-            added_count += 1
-            print(f"✨ [Store 2 新規独自記事追加] ({new_item['date']}) {new_item['title'][:32]}...")
-            break  # 1回の定期実行につき1記事ずつ新着追加
+                    # Markdown本文の取得または生成
+                    md_content = ai_article.pop("markdown_content", None)
+                    if not md_content or len(md_content.strip()) < 50:
+                        md_content = generate_default_markdown(ai_article)
 
-    # 3. 日付降順でソートして保存
+                    md_path = os.path.join(ARTICLES_DIR, f"{slug}.md")
+                    with open(md_path, "w", encoding="utf-8") as mf:
+                        mf.write(md_content)
+
+                    seen_titles.add(title)
+                    seen_slugs.add(slug)
+                    cleaned_articles.append(ai_article)
+                    added_count += 1
+                    print(f"✨ [Store 2 Gemini AI新着記事生成成功] {title[:36]}... (Slug: {slug})")
+        except Exception as e:
+            print(f"⚠️ [Store 2] Gemini API記事生成中に例外発生: {e}")
+
+    # 3. フォールバック（APIキー未設定またはエラー時のセーフティネット）
+    if added_count == 0:
+        if not GEMINI_API_KEY:
+            print("ℹ️ GEMINI_API_KEY が未設定のため、未執筆テーマプールからのフォールバック追加を確認します。")
+        for topic in STORE2_TOPIC_POOL:
+            if topic["title"] not in seen_titles and topic["slug"] not in seen_slugs:
+                topic_date = topic.get("date", TODAY_STR)
+                if topic_date > TODAY_STR:
+                    continue
+
+                new_item = dict(topic)
+                if "date" not in new_item or not new_item["date"]:
+                    new_item["date"] = TODAY_STR
+
+                # Markdownファイルの存在確認・作成
+                md_path = os.path.join(ARTICLES_DIR, f"{new_item['slug']}.md")
+                if not os.path.exists(md_path):
+                    with open(md_path, "w", encoding="utf-8") as mf:
+                        mf.write(generate_default_markdown(new_item))
+
+                seen_titles.add(new_item["title"])
+                seen_slugs.add(new_item["slug"])
+                cleaned_articles.append(new_item)
+                added_count += 1
+                print(f"✨ [Store 2 フォールバック記事追加] ({new_item['date']}) {new_item['title'][:32]}...")
+                break
+
+    # 4. 日付降順でソートして保存
     cleaned_articles = sorted(
         cleaned_articles,
         key=lambda x: x.get("date", "2026-11-09"),
@@ -262,8 +393,9 @@ def main():
     with open(JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(cleaned_articles, f, ensure_ascii=False, indent=2)
 
-    print(f"🎉 Store 2 記事更新完了: 全{len(cleaned_articles)}記事（重複タイトル・スラッグ: 0件, 新規追加: {added_count}件）")
+    print(f"🎉 Store 2 (イケロ) 記事更新完了: 全{len(cleaned_articles)}記事（新規追加: {added_count}件, 重複タイトル・スラッグ: 0件）")
 
 
 if __name__ == "__main__":
     main()
+
