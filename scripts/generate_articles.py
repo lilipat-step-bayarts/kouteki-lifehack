@@ -354,10 +354,34 @@ source_url: "{item['source_url']}"
 """
     return md
 
+def get_available_gemini_models(api_key):
+    """APIキーで利用可能なモデル一覧を動的に取得（バージョン移行に永久自動適応）"""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "HoporinBot/2.0"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            models = []
+            for m in data.get("models", []):
+                name = m.get("name", "").replace("models/", "")
+                methods = m.get("supportedGenerationMethods", [])
+                if "generateContent" in methods:
+                    models.append(name)
+            # flash系、新しいバージョンを優先ソート
+            flash_models = [m for m in models if "flash" in m and "tts" not in m]
+            other_models = [m for m in models if "flash" not in m and "tts" not in m and "embedding" not in m]
+            if flash_models or other_models:
+                return flash_models + other_models
+    except Exception as e:
+        print(f"ℹ️ 利用可能モデル一覧の動的取得スキップ: {e}")
+    return ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-2.0-flash", "gemini-1.5-flash"]
+
+
 def call_gemini_api(prompt, api_key):
-    """Gemini API (gemini-2.5-flash / gemini-1.5-flash) を呼び出してJSONオブジェクトを取得"""
-    models = ["gemini-2.5-flash", "gemini-1.5-flash"]
-    for model in models:
+    """Gemini API を呼び出してJSONオブジェクトを取得"""
+    models = get_available_gemini_models(api_key)
+    print(f"📋 Gemini API 検出モデル候補: {models[:5]}")
+    for model in models[:6]:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
         payload = {
             "contents": [
@@ -398,6 +422,7 @@ def call_gemini_api(prompt, api_key):
             print(f"⚠️ Gemini API ({model}) 呼び出し失敗: {e}")
         time.sleep(1)
     return None
+
 
 
 def generate_article_with_gemini(existing_titles, api_key):
