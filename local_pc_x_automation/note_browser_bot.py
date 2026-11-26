@@ -350,39 +350,71 @@ def post_article_to_note(page, key, acc_cfg, article, publish=False):
     if eyecatch_path and os.path.exists(eyecatch_path):
         try:
             print(f"    📷 見出し画像の設定を開始します: {os.path.basename(eyecatch_path)}")
-            # 1) noteエディタ上部の見出し画像ボタン（円形カメラ＋アイコン）を特定
-            # noteの仕様: textarea[placeholder*="タイトル"] の上部にある button[aria-label*="画像を追加"]
-            img_btn_candidates = page.locator('button[aria-label*="画像を追加"], button[aria-label*="見出し画像"], button[aria-label*="画像"]')
+            # 1) noteエディタ上部の見出し画像ボタン（円形カメラ＋アイコン / 「見出し画像を追加」等）を特定
+            # noteの複数UIバージョンに対応する拡張セレクタ
+            header_selectors = [
+                'button:has-text("見出し画像")',
+                'button:has-text("画像を追加")',
+                'button[aria-label*="見出し画像"]',
+                'button[aria-label*="画像を追加"]',
+                '[data-testid*="header-image"]',
+                '[data-name*="headerImage"]',
+                '.o-noteEditorHeaderImage button',
+                '.c-coverImage button',
+                'button[aria-label*="画像"]'
+            ]
+            
             target_btn = None
-            if img_btn_candidates.count() > 0:
-                # 画面内で一番上にある画像ボタンを選択（本文側の誤クリック防止）
-                min_y = float("inf")
-                for i in range(img_btn_candidates.count()):
-                    try:
-                        box = img_btn_candidates.nth(i).bounding_box()
-                        if box and box["y"] < min_y:
-                            min_y = box["y"]
-                            target_btn = img_btn_candidates.nth(i)
-                    except Exception:
-                        pass
+            for sel in header_selectors:
+                candidates = page.locator(sel)
+                if candidates.count() > 0:
+                    # 画面上部（タイトル欄より上）にあるボタンを優先選択
+                    min_y = float("inf")
+                    for i in range(candidates.count()):
+                        try:
+                            box = candidates.nth(i).bounding_box()
+                            if box and box["y"] < min_y and box["y"] < 400:
+                                min_y = box["y"]
+                                target_btn = candidates.nth(i)
+                        except Exception:
+                            pass
+                    if target_btn:
+                        break
 
             if not target_btn or target_btn.count() == 0:
-                # タイトル入力欄の直前にあるボタンを探す
+                # フォールバック: タイトル入力欄の直前にあるボタン
                 title_loc = page.locator('textarea[placeholder*="タイトル"]').first
                 if title_loc.count() > 0:
                     target_btn = title_loc.locator('xpath=preceding::button[1]')
 
             if target_btn and target_btn.count() > 0:
                 target_btn.scroll_into_view_if_needed()
+                human_sleep(0.5, 1.0)
                 target_btn.click(force=True)
-                human_sleep(1.0, 1.8)
+                print("    🔍 見出し画像ボタンをクリックしました。")
+                human_sleep(1.0, 2.0)
 
             # 2) ドロップダウンメニューの「画像をアップロード」をクリック
-            upload_item = page.locator('button:has-text("画像をアップロード"), div:has-text("画像をアップロード"), li:has-text("画像をアップロード")').first
+            upload_selectors = [
+                'button:has-text("画像をアップロード")',
+                'div:has-text("画像をアップロード")',
+                'li:has-text("画像をアップロード")',
+                '[role="menuitem"]:has-text("画像をアップロード")',
+                'button:has-text("アップロード")',
+                'li:has-text("アップロード")'
+            ]
+            
+            upload_item = None
+            for u_sel in upload_selectors:
+                it = page.locator(u_sel).first
+                if it.count() > 0 and it.is_visible():
+                    upload_item = it
+                    break
+
             file_chooser = None
-            if upload_item.count() > 0 and upload_item.is_visible():
+            if upload_item and upload_item.count() > 0:
                 try:
-                    with page.expect_file_chooser(timeout=6000) as fc_info:
+                    with page.expect_file_chooser(timeout=7000) as fc_info:
                         upload_item.click(force=True)
                     file_chooser = fc_info.value
                 except Exception as fc_err:
@@ -392,22 +424,34 @@ def post_article_to_note(page, key, acc_cfg, article, publish=False):
                 file_chooser.set_files(eyecatch_path)
                 print(f"    ✅ ファイルチューザー経由でアップロード成功: {os.path.basename(eyecatch_path)}")
             else:
-                # フォールバック: input[type="file"] がマウントされているかチェック
-                file_input = page.locator('input[type="file"]').first
-                if file_input.count() > 0:
-                    file_input.set_input_files(eyecatch_path)
+                # フォールバック: DOM内に存在する input[type="file"] に直接セット
+                file_inputs = page.locator('input[type="file"]')
+                if file_inputs.count() > 0:
+                    # 一番先頭（またはaccept="image/*"）にセット
+                    file_inputs.first.set_input_files(eyecatch_path)
                     print(f"    ✅ input[type=file] 経由でアップロード成功: {os.path.basename(eyecatch_path)}")
+                else:
+                    print("    ⚠️ ファイル入力要素（input[type=file]）が見つかりませんでした。")
 
-            # 3) クロップ・トリミングダイアログが出現した場合の「保存」処理
+            # 3) クロップ・トリミングダイアログが出現した場合の「保存」「適用」処理
             human_sleep(2.5, 4.0)
-            dialog = page.locator('div[role="dialog"]')
+            save_selectors = [
+                'div[role="dialog"] button:has-text("保存")',
+                'div[role="dialog"] button:has-text("適用")',
+                'div[role="dialog"] button:has-text("決定")',
+                'div[role="dialog"] button:has-text("完了")',
+                'button:has-text("保存")',
+                'button:has-text("適用")'
+            ]
+            
             save_btn = None
-            if dialog.count() > 0 and dialog.is_visible():
-                save_btn = dialog.locator('button:has-text("保存")').first
-            if not save_btn or save_btn.count() == 0 or not save_btn.is_visible():
-                save_btn = page.locator('button:has-text("保存")').first
+            for s_sel in save_selectors:
+                b = page.locator(s_sel).first
+                if b.count() > 0 and b.is_visible():
+                    save_btn = b
+                    break
 
-            if save_btn and save_btn.count() > 0 and save_btn.is_visible():
+            if save_btn and save_btn.count() > 0:
                 for _ in range(15):
                     if save_btn.is_enabled():
                         break
@@ -415,6 +459,8 @@ def post_article_to_note(page, key, acc_cfg, article, publish=False):
                 save_btn.click(force=True)
                 print("    ✅ 見出し画像の配置・トリミングを保存しました。")
                 human_sleep(2.0, 3.5)
+            else:
+                print("    ℹ️ クロップ保存ダイアログは表示されませんでした（自動反映済み）。")
 
         except Exception as img_err:
             print(f"    ⚠️ ヘッダー画像設定処理中に例外（続行します）: {img_err}")
