@@ -15,7 +15,26 @@ echo 【完全無料 $0.00】3店舗 X自動記事ポスト＆フォロバ＆フ
 echo 実行ログは logs\x_bot.log に常時追記保存されます
 echo ====================================================================
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "python x_browser_bot.py --account all %* 2>&1 | Tee-Object -FilePath '%LOGFILE%' -Append"
+:: Python実行コマンドの安全な自動検出
+set "PYTHON_CMD=python"
+where python >nul 2>&1
+if %ERRORLEVEL% equ 0 (
+    set "PYTHON_CMD=python"
+) else (
+    where py >nul 2>&1
+    if %ERRORLEVEL% equ 0 (
+        set "PYTHON_CMD=py -3"
+    ) else (
+        if exist "%LOCALAPPDATA%\Programs\Python\Python312\python.exe" set "PYTHON_CMD=\"%LOCALAPPDATA%\Programs\Python\Python312\python.exe\""
+        if exist "%LOCALAPPDATA%\Programs\Python\Python311\python.exe" set "PYTHON_CMD=\"%LOCALAPPDATA%\Programs\Python\Python311\python.exe\""
+        if exist "%ProgramFiles%\Python312\python.exe" set "PYTHON_CMD=\"%ProgramFiles%\Python312\python.exe\""
+        if exist "%ProgramFiles%\Python311\python.exe" set "PYTHON_CMD=\"%ProgramFiles%\Python311\python.exe\""
+    )
+)
+
+echo [DEBUG] 使用Python: !PYTHON_CMD! >> "%LOGFILE%"
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& !PYTHON_CMD! x_browser_bot.py --account all %* 2>&1 | Tee-Object -FilePath '%LOGFILE%' -Append"
 set EXITCODE=%ERRORLEVEL%
 
 echo. >> "%LOGFILE%"

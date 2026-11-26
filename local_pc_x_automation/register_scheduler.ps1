@@ -28,12 +28,15 @@ foreach ($t in $times) {
 }
 
 $action = New-ScheduledTaskAction -Execute $batchPath -Argument "--headless" -WorkingDirectory $baseDir
-$settings = New-ScheduledTaskSettingsSet -WakeToRun -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 20)
+$settings = New-ScheduledTaskSettingsSet -WakeToRun -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 25)
+
+# 現在のユーザー権限かつ最上位特権で登録
+$principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType Interactive -RunLevel Highest
 
 try {
     # 既存タスクがあれば上書き
     Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
-    Register-ScheduledTask -TaskName $taskName -Trigger $triggers -Action $action -Settings $settings -Description "X (Twitter) ほぽりん＆イケロ30分ずらし1日5回分散投稿＆オニゴン定期実行ボット"
+    Register-ScheduledTask -TaskName $taskName -Trigger $triggers -Action $action -Settings $settings -Principal $principal -Description "X (Twitter) ほぽりん＆イケロ30分ずらし1日5回分散投稿＆オニゴン定期実行ボット"
     Write-Host ""
     Write-Host "🎉 成功: タスクスケジューラに「$taskName」を正常に登録しました！" -ForegroundColor Green
     Write-Host "   - 1日5回（ほぽりんとイケロの30分ずらし）＋夜間オニゴンに自動起動します。"
