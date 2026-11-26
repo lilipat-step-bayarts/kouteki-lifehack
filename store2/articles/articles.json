@@ -16,6 +16,9 @@
     "reading_time": 4,
     "featured": true,
     "icon": "🧪",
+    "contrast_top": "「ピーリングは肌が荒れる？」",
+    "contrast_bottom": "【刺激ゼロ】で水分爆増！",
+    "contrast_sub": "◆ AHAの時代終了！次世代PHAの驚異の保水科学",
     "date": "2026-11-27"
   },
   {
@@ -33,6 +36,9 @@
     "reading_time": 4,
     "featured": true,
     "icon": "🧪",
+    "contrast_top": "「毛穴汚れは削って落とす？」",
+    "contrast_bottom": "【溶かして消す】新常識！",
+    "contrast_sub": "◆ 敏感肌でも安心！次世代コハク酸の毛穴アプローチ",
     "date": "2026-11-27"
   },
   {
@@ -51,6 +57,9 @@
     "reading_time": 4,
     "featured": true,
     "icon": "⚡",
+    "contrast_top": "「デパコスじゃないと効かない？」",
+    "contrast_bottom": "【プチプラ】でミトコンドリア直撃！",
+    "contrast_sub": "◆ ユビキノン配合量を見抜く科学的スキンケア術",
     "date": "2026-11-27"
   },
   {
@@ -103,6 +112,23 @@
     "reading_time": 4,
     "featured": true,
     "icon": "🧪",
+    "date": "2026-11-27"
+  },
+  {
+    "slug": "polyglutamic-acid-vs-hyaluronic-acid-hydration",
+    "title": "【ヒアルロン酸の5倍保水】納豆のネバネバ成分『ポリグルタミン酸』がインナードライを根本解決するメカニズム",
+    "category": "高保湿・水分保持",
+    "tags": [
+      "ポリグルタミン酸",
+      "γ-PGA",
+      "ヒアルロン酸比較",
+      "インナードライ",
+      "超保水"
+    ],
+    "summary": "ヒアルロン酸の約5倍の保水力を誇るアミノ酸高分子『ポリグルタミン酸』。肌表面に潤いの通気膜を形成し、天然保湿因子（NMF）の自給力を高めるエビデンスを科学的に整理。",
+    "reading_time": 4,
+    "featured": false,
+    "icon": "🌊",
     "date": "2026-11-27"
   },
   {

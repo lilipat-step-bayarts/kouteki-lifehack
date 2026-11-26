@@ -321,12 +321,11 @@ def post_article_to_note(page, key, acc_cfg, article, publish=False):
     # 2. ヘッダーアイキャッチ画像の生成・解決とアップロード (note公式推奨 1280x670)
     eyecatch_path = None
     try:
-        # 自律的ダイナミック見出し画像生成モジュール
-        from generate_eyecatch import generate_note_eyecatch
-        article_title = article.get("title", title)
-        eyecatch_path = generate_note_eyecatch(
+        # ヒロ@ヒロデザch流：高CTR『意外な対比』見出し画像自動生成
+        from generate_eyecatch import generate_contrast_eyecatch
+        eyecatch_path = generate_contrast_eyecatch(
             store_key=key,
-            title=article_title,
+            article=article,
             article_id=id_val,
             base_image_path=acc_cfg.get("header_image")
         )

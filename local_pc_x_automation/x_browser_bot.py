@@ -297,20 +297,39 @@ def build_tweet_bundle(key, acc_cfg, article, now_jst):
         else:
             time_hook = "【夜の家計見直し速報🌙】"
         url = f"{acc_cfg['site_url']}/articles/{id_val}"
+
+        # ヒロ@ヒロデザch流：高CTR「意外な対比」フレーズを抽出
+        c_top, c_bottom, c_sub = "", "", ""
+        try:
+            from generate_eyecatch import extract_contrast_phrases
+            c_top, c_bottom, c_sub = extract_contrast_phrases(key, article)
+        except Exception:
+            pass
+
         main_patterns = [
-            f"{time_hook}\n『{short_title}』\n\n国は自動で振り込んでくれません！知らないと数十万円単位で損する公的給付金・控除の要点を図解解説🐧✨\n\n👇受給条件・シミュレーターの詳細はリプ欄へ！\n#公的ライフハック #給付金 #ほぽりん",
-            f"【知らなきゃ大損する公的制度🐧】\n『{short_title}』\n\n「自分には関係ない」と放置していませんか？\n知っている人だけが得をする公的支援の最新情報を整理しました✨\n\n👇具体的な申請手順・対象者条件はリプ欄へ！\n#公的ライフハック #節税 #ほぽりん",
+            f"{time_hook}\n『{short_title}』\n\n常識：{c_top if c_top else '「自分には関係ない…」'}\n現実：【{c_bottom if c_bottom else '申請すれば数十万円の差！'}】\n\n国は自動で振り込んでくれません！知らないと大損する公的給付金・控除の要点を図解解説🐧✨\n\n👇受給条件・シミュレーターの詳細はリプ欄へ！\n#公的ライフハック #給付金 #ほぽりん",
+            f"【知らなきゃ大損する公的制度🐧】\n『{short_title}』\n\n{c_top if c_top else '「知らずにスルーしていませんか？」'}\n実は…【{c_bottom if c_bottom else '合法的に手取りを守る裏ワザ！'}】\n\n知っている人だけが得をする公的支援の最新情報を整理しました✨\n\n👇具体的な申請手順・対象者条件はリプ欄へ！\n#公的ライフハック #節税 #ほぽりん",
             f"{time_hook}\n『{short_title}』\n\n手取りを守るための最新公的マネー知識です🐧\n会社も国も教えてくれない重要ポイントを整理しました✨\n\n👇詳細・公式申請ガイドはリプ欄へ！\n#公的ライフハック #家計防衛 #ほぽりん"
         ]
         main_text = random.choice(main_patterns)
         reply_text = f"🐧【詳細な申請手順・シミュレーターはこちら】\n『{short_title}』の公式情報・申請ステップまとめ👇\n{url}\n\n※あとで見返せるように【ブックマーク🔖】推奨です！"
-        local_card = os.path.join(BASE_DIR, "assets", "hoporin_infographic_card.jpg")
-        remote_card = f"{GITHUB_RAW_BASE}/assets/hoporin_infographic_card.jpg"
-        img_source = (
-            article.get("package_image_url") or 
-            article.get("image_url") or 
-            (local_card if os.path.exists(local_card) else remote_card)
-        )
+
+        # 高CTR「意外な対比」サムネイル画像を自動生成
+        img_source = None
+        try:
+            from generate_eyecatch import generate_contrast_eyecatch
+            img_source = generate_contrast_eyecatch(key, article, article_id=id_val)
+        except Exception as e:
+            print(f"    ℹ️ 対比サムネイル生成フォールバック: {e}")
+
+        if not img_source or not os.path.exists(img_source):
+            local_card = os.path.join(BASE_DIR, "assets", "hoporin_infographic_card.jpg")
+            remote_card = f"{GITHUB_RAW_BASE}/assets/hoporin_infographic_card.jpg"
+            img_source = (
+                article.get("package_image_url") or 
+                article.get("image_url") or 
+                (local_card if os.path.exists(local_card) else remote_card)
+            )
         return main_text, reply_text, img_source
 
     elif key == "store2_ikero":
@@ -327,19 +346,38 @@ def build_tweet_bundle(key, acc_cfg, article, now_jst):
             time_hook = "【夜のスキンケア速報🌙】"
             lead = "知恵の白キツネ・イケロが忖度なしで解説する成分の真実👇"
         url = f"{acc_cfg['site_url']}/articles/{id_val}"
+
+        # ヒロ@ヒロデザch流：高CTR「意外な対比」フレーズを抽出
+        c_top, c_bottom, c_sub = "", "", ""
+        try:
+            from generate_eyecatch import extract_contrast_phrases
+            c_top, c_bottom, c_sub = extract_contrast_phrases(key, article)
+        except Exception:
+            pass
+
         main_patterns = [
-            f"{time_hook}\n『{short_title}』\n\n{lead}\n実は有効成分がほぼ同じ？！知らなきゃ一生損するスキンケアの科学を徹底比較🧪✨\n\n👇1,000円台のおすすめ名品・成分比較はリプ欄へ！\n#コスメ成分 #プチプラコスメ #スキンケア #イケロ",
-            f"【デパコスvsプチプラ成分比較🦊】\n『{short_title}』\n\n高い化粧品＝肌に良いとは限りません。\n全成分表示を見極めて、コスパ最強で美肌を作る秘訣を解説します🧪✨\n\n👇詳しい成分分析・おすすめ一覧はリプ欄へ！\n#コスメ成分 #美容垢さんと繋がりたい #イケロ"
+            f"{time_hook}\n『{short_title}』\n\n思い込み：{c_top if c_top else '「デパコスだから効果抜群？」'}\n科学の真実：【{c_bottom if c_bottom else '全成分表示を見極めよ！'}】\n\n{lead}\n実は有効成分がほぼ同じ？！知らなきゃ一生損するスキンケアの科学を徹底比較🧪✨\n\n👇1,000円台のおすすめ名品・成分比較はリプ欄へ！\n#コスメ成分 #プチプラコスメ #スキンケア #イケロ",
+            f"【デパコスvsプチプラ成分比較🦊】\n『{short_title}』\n\n{c_top if c_top else '「高い美容液を買い続けるべき？」'}\n実は…【{c_bottom if c_bottom else 'プチプラ名品で十分代用可能！'}】\n\n高い化粧品＝肌に良いとは限りません。\n全成分表示を見極めて、コスパ最強で美肌を作る秘訣を解説します🧪✨\n\n👇詳しい成分分析・おすすめ一覧はリプ欄へ！\n#コスメ成分 #美容垢さんと繋がりたい #イケロ"
         ]
         main_text = random.choice(main_patterns)
         reply_text = f"🦊【詳しい成分解説・おすすめアイテムはこちら】\n『{short_title}』の科学的根拠＆プチプラ名品比較まとめ👇\n{url}\n\n※お買い物前のチェック用に【ブックマーク🔖】推奨です！"
-        local_card = os.path.join(BASE_DIR, "assets", "ikero_infographic_card.jpg")
-        remote_card = f"{GITHUB_RAW_BASE}/store2/assets/ikero_infographic_card.jpg"
-        img_source = (
-            article.get("package_image_url") or 
-            article.get("image_url") or 
-            (local_card if os.path.exists(local_card) else remote_card)
-        )
+
+        # 高CTR「意外な対比」サムネイル画像を自動生成
+        img_source = None
+        try:
+            from generate_eyecatch import generate_contrast_eyecatch
+            img_source = generate_contrast_eyecatch(key, article, article_id=id_val)
+        except Exception as e:
+            print(f"    ℹ️ 対比サムネイル生成フォールバック: {e}")
+
+        if not img_source or not os.path.exists(img_source):
+            local_card = os.path.join(BASE_DIR, "assets", "ikero_infographic_card.jpg")
+            remote_card = f"{GITHUB_RAW_BASE}/store2/assets/ikero_infographic_card.jpg"
+            img_source = (
+                article.get("package_image_url") or 
+                article.get("image_url") or 
+                (local_card if os.path.exists(local_card) else remote_card)
+            )
         return main_text, reply_text, img_source
 
     else:  # store3_onigon (チュウ犬スタイル：極短文・共感・男の本音＋大判カード展開)
