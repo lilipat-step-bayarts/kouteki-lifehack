@@ -69,7 +69,8 @@
     "hoporin_tip": "介護業界は人手不足が深刻だからこそ、国の手厚いバックアップが用意されているんだよ！スキルアップを諦める前に、まずはハローワークで指定講座のチェックから始めてみてね🐧",
     "source_name": "厚生労働省「教育訓練給付制度」",
     "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/jinzai/kyouiku/index.html",
-    "date": "2026-11-28"
+    "date": "2026-11-28",
+    "slot": "slot1"
   },
   {
     "id": "shoubyou-teatekin-taishokugo-2026",
@@ -141,7 +142,8 @@
     "hoporin_tip": "ペンギンだって体調が悪い時は無理せず休むんだよ！退職する時に「会社に迷惑がかかるから…」と焦って出社すると、数百万円の権利をドブに捨てることになるから絶対気をつけてね🐧！",
     "source_name": "全国健康保険協会（協会けんぽ）「病気やケガで会社を休んだとき（傷病手当金）」",
     "source_url": "https://www.kyoukaikenpo.or.jp/g3/sb3040/r139/",
-    "date": "2026-11-28"
+    "date": "2026-11-28",
+    "slot": "slot2"
   },
   {
     "id": "shugyou-shien-sokushin-teate-2026",
@@ -213,7 +215,8 @@
     "hoporin_tip": "失業保険は「のんびり満額もらう」よりも「さっさと再就職して手当をもらう」ほうが、トータルの手取りが現金一括でガッツリ増えるケースが圧倒的に多いんだよ！次の仕事が決まったら、必ず1ヶ月以内にハローワークへ走るのが鉄則なのだ🐧",
     "source_name": "厚生労働省「就業促進手当について」",
     "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/koyouhoken/other12.html",
-    "date": "2026-11-28"
+    "date": "2026-11-28",
+    "slot": "slot3"
   },
   {
     "id": "kosodate-shussan-hiyou-jisshitsumuryouka-2026",
@@ -285,7 +288,8 @@
     "hoporin_tip": "出産育児一時金は自動的には振り込まれないから要注意！直接支払制度の合意書を産院に提出するか、退院後に自分で申請手続きをしないと1円ももらえないんだペン。さらに、大手企業の健康保険組合にある「付加給付」は見落としがちだから、自分の健保の名称を今すぐチェックしてね🐧",
     "source_name": "厚生労働省「出産育児一時金について」",
     "source_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/shussan/",
-    "date": "2026-11-28"
+    "date": "2026-11-28",
+    "slot": "slot4"
   },
   {
     "id": "sonota-juusangenmen-kokuhoshu-2026",

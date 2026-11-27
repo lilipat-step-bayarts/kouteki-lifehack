@@ -482,6 +482,21 @@ def generate_article_with_gemini(existing_titles, api_key):
     return call_gemini_api(prompt, api_key)
 
 
+def get_current_slot_store1(now_jst):
+    total_min = now_jst.hour * 60 + now_jst.minute
+    if 360 <= total_min < 540:  # 06:00 - 09:00 JST (07:00枠)
+        return "slot1", "朝枠（07:00投稿）"
+    elif 540 <= total_min < 700: # 09:00 - 11:40 JST (10:00枠)
+        return "slot2", "午前枠（10:00投稿）"
+    elif 700 <= total_min < 960: # 11:40 - 16:00 JST (12:15枠)
+        return "slot3", "昼枠（12:15投稿）"
+    elif 960 <= total_min < 1200: # 16:00 - 20:00 JST (18:00枠)
+        return "slot4", "夕方枠（18:00投稿）"
+    elif 1200 <= total_min: # 20:00 - 24:00 JST (21:00枠)
+        return "slot5", "夜枠（21:00投稿）"
+    return None, "時間帯外（深夜・早朝）"
+
+
 def main():
     os.makedirs(ARTICLES_DIR, exist_ok=True)
 
@@ -506,6 +521,18 @@ def main():
             seen_ids.add(art_id)
             cleaned_articles.append(art)
 
+    now_jst = datetime.now(JST)
+    cur_slot, slot_desc = get_current_slot_store1(now_jst)
+
+    if "--force" not in sys.argv:
+        if not cur_slot:
+            print(f"⏸️ [Store 1] 現在（{now_jst.strftime('%H:%M')} JST）は深夜・早朝のため生成をスキップします。")
+            return
+        slot_exists = any(a.get("date") == TODAY_STR and a.get("slot") == cur_slot for a in cleaned_articles)
+        if slot_exists:
+            print(f"ℹ️ [Store 1] 本日 {TODAY_STR} の {slot_desc} はすでに生成済みです。重複生成を防止するためスキップします。")
+            return
+
     added_count = 0
 
     # 2. Gemini API連携によるAI記事自動生成（定型文廃止）
@@ -523,6 +550,7 @@ def main():
                 if title and title not in seen_titles and art_id not in seen_ids:
                     if "date" not in ai_article or not ai_article["date"]:
                         ai_article["date"] = TODAY_STR
+                    ai_article["slot"] = cur_slot or "slot1"
                     
                     seen_titles.add(title)
                     seen_ids.add(art_id)
@@ -534,7 +562,7 @@ def main():
                         f.write(generate_markdown_article(ai_article))
 
                     added_count += 1
-                    print(f"✨ [Store 1 Gemini AI新着記事生成成功] {title[:36]}... (ID: {art_id})")
+                    print(f"✨ [Store 1 Gemini AI新着記事生成成功] {title[:36]}... (ID: {art_id}, Slot: {ai_article['slot']})")
         except Exception as e:
             print(f"⚠️ [Store 1] Gemini API記事生成中に例外発生: {e}")
 
@@ -550,6 +578,7 @@ def main():
                 new_item = dict(topic)
                 if "date" not in new_item or not new_item["date"]:
                     new_item["date"] = TODAY_STR
+                new_item["slot"] = cur_slot or "slot1"
                 seen_titles.add(new_item["title"])
                 seen_ids.add(new_item["id"])
                 cleaned_articles.append(new_item)

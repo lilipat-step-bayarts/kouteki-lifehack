@@ -6,6 +6,41 @@ Cloudflare Pages公開用の静的HTMLサイトジェネレーター（忍者AdM
 import json
 import os
 import urllib.parse
+from datetime import datetime, timezone, timedelta
+
+JST = timezone(timedelta(hours=9))
+
+def get_unlocked_slots_store1(now_jst):
+    """
+    1号店（ほぽりん）投稿時間（07:00, 10:00, 12:15, 18:00, 21:00 JST）に基づく公開解放スロット
+    指定時刻になるまで、未来のスロット記事はサイト（index, rss）に掲載しない
+    """
+    total_min = now_jst.hour * 60 + now_jst.minute
+    if total_min < 420: # 07:00 JST 未満
+        return []
+    elif total_min < 600: # 10:00 JST 未満
+        return ["slot1"]
+    elif total_min < 735: # 12:15 JST 未満
+        return ["slot1", "slot2"]
+    elif total_min < 1080: # 18:00 JST 未満
+        return ["slot1", "slot2", "slot3"]
+    elif total_min < 1260: # 21:00 JST 未満
+        return ["slot1", "slot2", "slot3", "slot4"]
+    else: # 21:00 JST 以降
+        return ["slot1", "slot2", "slot3", "slot4", "slot5"]
+
+def is_article_unlocked_store1(article, now_jst):
+    art_date = article.get("date", "")
+    today_str = now_jst.strftime("%Y-%m-%d")
+    if not art_date or art_date < today_str:
+        return True # 過去の記事は全公開
+    if art_date > today_str:
+        return False # 未来日付は非公開
+    # 当日記事の場合
+    slot = article.get("slot")
+    if not slot:
+        return True
+    return slot in get_unlocked_slots_store1(now_jst)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
@@ -965,15 +1000,20 @@ def main():
     with open(ARTICLES_JSON, "r", encoding="utf-8") as f:
         articles = json.load(f)
 
-    # 1. index.html
-    with open(os.path.join(DIST_DIR, "index.html"), "w", encoding="utf-8") as f:
-        f.write(build_index(articles))
+    now_jst = datetime.now(JST)
+    unlocked_slots = get_unlocked_slots_store1(now_jst)
+    published_articles = [a for a in articles if is_article_unlocked_store1(a, now_jst)]
+    print(f"🕒 [Store 1] 現在JST: {now_jst.strftime('%H:%M')} | 解放スロット: {unlocked_slots} | 公開記事数: {len(published_articles)}/{len(articles)}")
 
-    # 2. article pages
+    # 1. index.html (解放済み記事のみ掲載)
+    with open(os.path.join(DIST_DIR, "index.html"), "w", encoding="utf-8") as f:
+        f.write(build_index(published_articles))
+
+    # 2. article pages (全記事HTMLを生成)
     for art in articles:
         p = os.path.join(DIST_DIR, "articles", f"{art['id']}.html")
         with open(p, "w", encoding="utf-8") as f:
-            f.write(build_article_page(art, articles))
+            f.write(build_article_page(art, published_articles))
 
     # 3. about & privacy & SEO files (sitemap.xml, robots.txt, rss.xml)
     about_html, privacy_html = build_static_pages()
@@ -981,60 +1021,9 @@ def main():
         f.write(about_html)
     with open(os.path.join(DIST_DIR, "privacy.html"), "w", encoding="utf-8") as f:
         f.write(privacy_html)
-    build_seo_files(articles)
+    build_seo_files(published_articles)
 
     print("Site generated with real Ninja AdMax tags, OGP cards, and SEO sitemaps at:", DIST_DIR)
-
-    import sys
-    build_only = "--build-only" in sys.argv
-
-    # 2号店（コスメ成分ラボ・イケロ）の記事生成＆サイトビルド
-    try:
-        import subprocess
-        store2_dir = os.path.join(PROJECT_ROOT, "store2")
-        store2_gen = os.path.join(store2_dir, "scripts", "generate_articles.py")
-        store2_build = os.path.join(store2_dir, "scripts", "build_site.py")
-        if os.path.exists(store2_gen):
-            print("Running Store 2 (Ikero Cosme Lab) article generator...")
-            subprocess.run(["python3", store2_gen], check=False)
-        if os.path.exists(store2_build):
-            print("Triggering Store 2 (Ikero Cosme Lab) site build...")
-            subprocess.run(["python3", store2_build], check=False)
-    except Exception as e:
-        print("Note: Store 2 build skipped or failed:", e)
-
-    if build_only:
-        return
-
-    # サイトビルド完了時に自動でXへ新着記事を速報ツイート (1号店: @ramune_lilipat)
-    try:
-        distribute_script = os.path.join(SCRIPT_DIR, "distribute_tweet.py")
-        if os.path.exists(distribute_script):
-            import subprocess
-            print("Triggering automated X tweet distribution for Store 1 (@ramune_lilipat)...")
-            subprocess.run(["python3", distribute_script], check=False)
-    except Exception as e:
-        print("Note: Store 1 automated tweet skipped or failed:", e)
-
-    # 2号店のデプロイ＆自動ツイート (2号店: @ikero_lab)
-    try:
-        import subprocess
-        store2_dir = os.path.join(PROJECT_ROOT, "store2")
-        store2_tweet = os.path.join(store2_dir, "scripts", "distribute_tweet.py")
-        if os.environ.get("CLOUDFLARE_API_TOKEN"):
-            print("Deploying Store 2 to Cloudflare Pages (cosme-lab-ikero)...")
-            subprocess.run([
-                "npx", "wrangler", "pages", "deploy",
-                os.path.join(store2_dir, "dist"),
-                "--project-name=cosme-lab-ikero",
-                "--commit-dirty=true"
-            ], check=False)
-
-        if os.path.exists(store2_tweet):
-            print("Triggering Store 2 automated X tweet distribution (@ikero_lab)...")
-            subprocess.run(["python3", store2_tweet], check=False)
-    except Exception as e:
-        print("Note: Store 2 automated pipeline skipped or failed:", e)
 
 if __name__ == "__main__":
     main()

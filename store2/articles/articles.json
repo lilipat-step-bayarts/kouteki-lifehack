@@ -17,7 +17,8 @@
     "contrast_top": "「高い美容液でも効果が実感できない…」",
     "contrast_bottom": "抗酸化の王者が細胞ダメージを遮断！",
     "contrast_sub": "◆ 活性酸素を無害化する『イデベノン』の次世代エイジングケア",
-    "date": "2026-11-28"
+    "date": "2026-11-28",
+    "slot": "slot1"
   },
   {
     "slug": "azelaic-acid-sebum-redness-science",
@@ -37,7 +38,8 @@
     "contrast_top": "皮脂テカリと赤みが消えない…",
     "contrast_bottom": "アゼライン酸で根本鎮火！",
     "contrast_sub": "◆ 皮膚科医が愛用する多機能カルボン酸の角化抑制＆皮脂コントロール科学",
-    "date": "2026-11-28"
+    "date": "2026-11-28",
+    "slot": "slot2"
   },
   {
     "slug": "copper-peptide-ghk-cu-skin-repair",
@@ -58,7 +60,8 @@
     "contrast_top": "「肌のハリが急になくなってきた…」",
     "contrast_bottom": "青いペプチドで弾力復活！？",
     "contrast_sub": "◆ 銅ペプチド（GHK-Cu）の線維芽細胞刺激メカニズム",
-    "date": "2026-11-28"
+    "date": "2026-11-28",
+    "slot": "slot3"
   },
   {
     "slug": "ectoin-extreme-moisture-barrier-science",
@@ -78,7 +81,8 @@
     "contrast_top": "何度保湿しても粉を吹くカサカサ肌に…",
     "contrast_bottom": "砂漠の盾『エクトイン』の超保水力！",
     "contrast_sub": "◆ 水分を抱え込んで逃がさない細胞保護アミノ酸誘導体の科学",
-    "date": "2026-11-28"
+    "date": "2026-11-28",
+    "slot": "slot5"
   },
   {
     "slug": "glutathione-translucent-skin-science",
@@ -98,23 +102,8 @@
     "contrast_top": "「何を塗っても顔がどんより暗い…」",
     "contrast_bottom": "白玉成分で透明感覚醒！？",
     "contrast_sub": "◆ グルタチオンの強力な抗酸化・メラニン還元メカニズム",
-    "date": "2026-11-28"
-  },
-  {
-    "slug": "ectoin-extremolyte-skinbarrier-uv",
-    "title": "【砂漠の極限微生物から発見】細胞保護成分『エクトイン』の驚異的バリア補修力！乾燥と紫外線刺激に負けない次世代保水",
-    "category": "肌バリア・極限保水",
-    "tags": [
-      "エクトイン",
-      "細胞保護アミノ酸",
-      "紫外線ストレス",
-      "敏感肌バリア"
-    ],
-    "summary": "高塩分・強紫外線という砂漠の過酷環境を生き抜く好塩菌から発見された環状アミノ酸『エクトイン』。細胞を取り巻く水分子を強固に結束させるハイドロコンプレックス作用を解明。",
-    "reading_time": 4,
-    "featured": true,
-    "icon": "🏜️",
-    "date": "2026-11-28"
+    "date": "2026-11-28",
+    "slot": "slot4"
   },
   {
     "slug": "gluconolactone-pha-sensitive-skin-peeling",

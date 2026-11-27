@@ -104,6 +104,7 @@ def generate_store2():
     print("🦊 【Store 2: イケロ】コスメ成分ラボ 記事生成＆ビルド")
     print("=======================================================")
     run_command(["python3", "store2/scripts/generate_articles.py"])
+    run_command(["python3", "store2/scripts/build_site.py"])
 
 
 def generate_store3():

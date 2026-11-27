@@ -9,6 +9,41 @@ import os
 import json
 import re
 import urllib.parse
+from datetime import datetime, timezone, timedelta
+
+JST = timezone(timedelta(hours=9))
+
+def get_unlocked_slots_store2(now_jst):
+    """
+    2号店（イケロ）投稿時間（07:30, 10:30, 12:45, 18:30, 21:30 JST ※30分ずらし）に基づく公開解放スロット
+    指定時刻になるまで、未来のスロット記事はサイト（index, rss）に掲載しない
+    """
+    total_min = now_jst.hour * 60 + now_jst.minute
+    if total_min < 450: # 07:30 JST 未満
+        return []
+    elif total_min < 630: # 10:30 JST 未満
+        return ["slot1"]
+    elif total_min < 765: # 12:45 JST 未満
+        return ["slot1", "slot2"]
+    elif total_min < 1110: # 18:30 JST 未満
+        return ["slot1", "slot2", "slot3"]
+    elif total_min < 1290: # 21:30 JST 未満
+        return ["slot1", "slot2", "slot3", "slot4"]
+    else: # 21:30 JST 以降
+        return ["slot1", "slot2", "slot3", "slot4", "slot5"]
+
+def is_article_unlocked_store2(article, now_jst):
+    art_date = article.get("date", "")
+    today_str = now_jst.strftime("%Y-%m-%d")
+    if not art_date or art_date < today_str:
+        return True # 過去の記事は全公開
+    if art_date > today_str:
+        return False # 未来日付は非公開
+    # 当日記事の場合
+    slot = article.get("slot")
+    if not slot:
+        return True
+    return slot in get_unlocked_slots_store2(now_jst)
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARTICLES_DIR = os.path.join(PROJECT_ROOT, "articles")
@@ -1035,17 +1070,22 @@ def main():
     with open(ARTICLES_JSON, "r", encoding="utf-8") as f:
         articles = json.load(f)
 
-    # 1. 各記事ページ生成
+    now_jst = datetime.now(JST)
+    unlocked_slots = get_unlocked_slots_store2(now_jst)
+    published_articles = [a for a in articles if is_article_unlocked_store2(a, now_jst)]
+    print(f"🕒 [Store 2] 現在JST: {now_jst.strftime('%H:%M')} | 解放スロット: {unlocked_slots} | 公開記事数: {len(published_articles)}/{len(articles)}")
+
+    # 1. 各記事ページ生成（全記事HTML）
     for art in articles:
         build_article_page(art)
 
-    # 2. トップページ生成
-    build_home_page(articles)
+    # 2. トップページ生成（解放済み記事のみ掲載）
+    build_home_page(published_articles)
 
     # 3. 固定ページ＆SEOファイル生成
     build_about_page()
     build_privacy_page()
-    build_seo_files(articles)
+    build_seo_files(published_articles)
 
     print("✨ Successfully built Store 2 static site with OGP cards and SEO sitemaps in dist/!")
 
