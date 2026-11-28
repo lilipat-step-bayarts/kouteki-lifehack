@@ -152,7 +152,7 @@ AMAZON_TAG = "ikerocosme-22"
 RAKUTEN_AF_ID = "597f29ed.f305c9f6.597f29ee.8555f86c"
 
 # A8.net / 物販成約型アフィリエイト商品カードテンプレート（実稼働リンク＋Amazon＆楽天アソシエイトID搭載）
-def get_affiliate_card(product_name, category, price, key_ingredients, merit, search_keyword=None, official_url="https://www.jcia.org/", official_name="メーカー公式製品ページ"):
+def get_affiliate_card(product_name, category, price, key_ingredients, merit, search_keyword=None, official_url="https://www.jcia.org/", official_name="メーカー公式製品ページ", badge_text="イケロ太鼓判・成分解析ピックアップ"):
     query = urllib.parse.quote(search_keyword or product_name)
     amazon_url = f"https://www.amazon.co.jp/s?k={query}&tag={AMAZON_TAG}"
     rakuten_search_url = f"https://search.rakuten.co.jp/search/mall/{query}/"
@@ -167,7 +167,7 @@ def get_affiliate_card(product_name, category, price, key_ingredients, merit, se
     return f"""
     <div class="my-6 p-5 bg-gradient-to-r from-emerald-50/70 to-teal-50/70 rounded-2xl border border-emerald-200/80 shadow-sm">
       <div class="flex items-center justify-between mb-2">
-        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white">イケロ太鼓判・成分解析ピックアップ</span>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white">{badge_text}</span>
         <span class="text-xs font-medium text-emerald-800 font-mono">参考価格: {price}</span>
       </div>
       <h4 class="text-base font-bold text-slate-800 mb-1">{product_name}</h4>
@@ -448,6 +448,40 @@ def build_article_page(article_meta):
             search_keyword="ラロッシュポゼ シカプラスト リペアクリーム B5",
             official_url="https://www.laroche-posay.jp/",
             official_name="ラ ロッシュ ポゼ 公式ブランドサイト"
+        )
+    elif "idebenone" in slug or "ubiquinone" in slug:
+        affiliate_card = get_affiliate_card(
+            product_name="【イデベノン代替・高濃度抗酸化】DHC 薬用Qフェースクリーム / イデベノン配合アンプル",
+            category="高濃度ユビキノン(CoQ10)・イデベノン誘導体 濃厚クリーム/美容液",
+            price="¥1,900〜¥4,000台 (高濃度本格処方)",
+            key_ingredients=["コエンザイムQ10(ユビキノン0.3%配合)", "ヒドロキシデシルユビキノン(イデベノン)", "水溶性プラセンタ", "甘草誘導体"],
+            merit="💡【イケロの成分回避策】：純粋なイデベノン高配合品は国内ドラッグストアでは入手が難しいため、イデベノンの母体成分であり日本国内で高濃度認可（0.3%）されている「コエンザイムQ10」の医薬部外品を国内準拠アイテムとして推奨！本格的なイデベノン原液・アンプル（韓国コスメ等）と並べて、Amazon・楽天で比較検討できます。",
+            search_keyword="イデベノン 美容液 DHC 薬用Q",
+            official_url="https://www.dhc.co.jp/",
+            official_name="DHC公式 薬用Qシリーズ成分詳細ページ",
+            badge_text="純粋イデベノン希少時の【代替・準拠アイテム】案内"
+        )
+    elif "copper-peptide" in slug:
+        affiliate_card = get_affiliate_card(
+            product_name="The Ordinary(ジオーディナリー) マルチペプチド + 銅ペプチド 1% 美容液",
+            category="高濃度ブルー銅ペプチド(GHK-Cu)美容液",
+            price="¥4,500前後 (税込)",
+            key_ingredients=["銅トリペプチド-1(GHK-Cu 1%)", "マトリキシル3000", "アルジルリン"],
+            merit="青色の本格銅ペプチドを高濃度1%配合。コラーゲン産生と肌の修復シグナルをサポートする次世代エイジングケアの決定版。",
+            search_keyword="The Ordinary 銅ペプチド 美容液",
+            official_url="https://theordinary.com/",
+            official_name="The Ordinary 公式ブランドページ"
+        )
+    elif "astaxanthin" in slug or "fullerene" in slug:
+        affiliate_card = get_affiliate_card(
+            product_name="KISO(キソ) フラーレン10%原液美容液 / アスタキサンチン配合美容液",
+            category="高濃度抗酸化原液・フラーレン美容液",
+            price="¥1,980 (税込)",
+            key_ingredients=["水溶性フラーレン(RSマーク10%)", "アスタキサンチン", "ヒアルロン酸"],
+            merit="ビタミンCの250倍の抗酸化持続力を持つフラーレンを高濃度配合。紫外線による皮脂酸化と毛穴の黒ずみを長時間ブロック。",
+            search_keyword="KISO フラーレン 美容液 原液",
+            official_url="https://kiso-official.jp/",
+            official_name="KISO（キソ）公式オンラインショップ"
         )
     else:
         affiliate_card = get_affiliate_card(
