@@ -174,11 +174,35 @@ STORE2_TOPIC_POOL = [
         "reading_time": 4,
         "featured": True,
         "icon": "⚡"
+    },
+    {
+        "slug": "pdrn-salmon-dna-skin-regeneration",
+        "title": "【サーモン注射の成分PDRN】韓国皮膚科の肌再生DNA『ポリデオキシリボヌクレオチド』は塗るだけで毛穴とハリに効くのか？",
+        "category": "肌再生・エイジングケア",
+        "tags": ["PDRN", "サーモン注射", "リジュラン成分", "肌再生", "ハリ毛穴"],
+        "summary": "美容医療のサーモン注射（リジュラン）の主成分として知られるPDRN。魚類のDNA断片が線維芽細胞のアデノシンA2A受容体を刺激し、真皮コラーゲンやエラスチンの自己産生を促す科学的エビデンスを白キツネが解説します。",
+        "reading_time": 4,
+        "featured": True,
+        "icon": "🧬",
+        "date": "2026-11-29"
+    },
+    {
+        "slug": "exosome-stem-cell-cellular-repair",
+        "title": "【次世代エクソソームの真実】幹細胞が分泌する情報伝達カプセル『エクソソーム』の細胞修復力とプチプラコスメの見極め方",
+        "category": "幹細胞サイエンス・細胞修復",
+        "tags": ["エクソソーム", "幹細胞培養液", "細胞修復", "エイジングケア", "科学解説"],
+        "summary": "細胞間のメッセージ伝達物質として皮膚科学界で注目を集めるエクソソーム。ナノサイズの小胞が角質深部へ成長因子やマイクロRNAを届ける仕組みと、失活させない抽出・安定化技術をクリアした本物の選び方を解説。",
+        "reading_time": 4,
+        "featured": True,
+        "icon": "🧪",
+        "date": "2026-11-29"
     }
 ]
 
 
 def generate_default_markdown(item):
+    tags_str = ", ".join(item.get("tags", ["スキンケア", "成分解析"]))
+    cat = item.get("category", "成分解析")
     return f"""# {item['title']}
 
 {item['summary']}
@@ -188,11 +212,11 @@ def generate_default_markdown(item):
 ## 1. 科学的根拠（エビデンス）と成分メカニズム
 
 美容成分の真の実力は、広告コピーではなく分子構造と作用機序で決まります。
-当ラボの専門調査に基づき、従来の一般的なスキンケア処方とイケロが厳選する名品の違いを比較検証します。
+当ラボの専門調査に基づき、{cat}における従来の一般的なスキンケア処方とイケロが厳選する名品の違いを比較検証します。
 
 | 比較項目 | 一般的な市販品・旧処方 | イケロ推奨・最新サイエンス処方 | 科学的な判定 |
 | :--- | :--- | :--- | :--- |
-| **主成分の純度・配合設計** | 微量配合または安定化不十分 | 高純度・最適pH・浸透設計 | **成分本来の力を最大化** |
+| **主成分の純度・配合設計** | 微量配合または安定化不十分 | 高純度・最適pH・浸透設計（{tags_str}） | **成分本来の力を最大化** |
 | **肌への刺激と相性** | 合成香料・着色料で肌負担 | 敏感肌パッチテスト済み・無添加処方 | **毎日の継続使用に安心** |
 | **コストパフォーマンス** | ブランド広告費が価格の大半 | 原料・処方に費用を集中 | **圧倒的な費用対効果** |
 
@@ -201,7 +225,7 @@ def generate_default_markdown(item):
 ## 2. 知恵の白キツネ・イケロが教える「失敗しない活用ルール」3選
 
 1. **裏面（全成分表示）の有効成分記載位置を確認する:**
-   化粧品は配合量が多い順に記載されます（医薬部外品は有効成分欄をチェック）。主役成分が上位にある本物を選びましょう。
+   化粧品は配合量が多い順に記載されます（医薬部外品は有効成分欄をチェック）。主役成分（{tags_str}）が上位にある本物を選びましょう。
 2. **肌のターンオーバー（28日〜45日）を見据えて継続する:**
    皮膚細胞が生まれ変わる前に次々と化粧品を変えても効果は実感できません。最低1ヶ月は同処方をじっくりテストしてください。
 3. **ライン使いにこだわらず、必要な成分をピンポイントで補う:**
@@ -222,14 +246,28 @@ def get_available_gemini_models(api_key):
                 methods = m.get("supportedGenerationMethods", [])
                 if "generateContent" in methods:
                     models.append(name)
-            # flash系、新しいバージョンを優先ソート
+            # Flashモデルを優先ソート（高速・高品質な最新版を先頭に）
             flash_models = [m for m in models if "flash" in m and "tts" not in m]
+            def flash_priority(m_name):
+                if "2.5" in m_name: return 0
+                if "2.0-flash" in m_name and "lite" not in m_name: return 1
+                if "2.0" in m_name: return 2
+                if "1.5-flash" in m_name and "8b" not in m_name: return 3
+                if "1.5-flash-8b" in m_name: return 4
+                return 5
+            flash_models.sort(key=flash_priority)
             other_models = [m for m in models if "flash" not in m and "tts" not in m and "embedding" not in m]
             if flash_models or other_models:
                 return flash_models + other_models
     except Exception as e:
         print(f"ℹ️ [Store 2] 利用可能モデル一覧の動的取得スキップ: {e}")
-    return ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-2.0-flash", "gemini-1.5-flash"]
+    return [
+        "gemini-2.5-flash",
+        "gemini-2.0-flash",
+        "gemini-1.5-flash",
+        "gemini-1.5-flash-8b",
+        "gemini-2.0-flash-lite"
+    ]
 
 
 def call_gemini_api(prompt, api_key):
@@ -439,10 +477,11 @@ def main():
                 print(f"✨ [Store 2 フォールバック記事追加] ({new_item['date']}) {new_item['title'][:32]}...")
                 break
 
-    # 4. 日付降順でソートして保存
+    # 4. 日付降順・同日内はスロット昇順（slot1〜slot5）でソートして保存
+    slot_order = {"slot1": 1, "slot2": 2, "slot3": 3, "slot4": 4, "slot5": 5}
     cleaned_articles = sorted(
         cleaned_articles,
-        key=lambda x: x.get("date", "2026-11-09"),
+        key=lambda x: (x.get("date", "2026-11-09"), -slot_order.get(x.get("slot"), 99)),
         reverse=True
     )
 
